@@ -12,7 +12,7 @@ await page.addInitScript(() => {
   window.goatcounter = { count(event) { window.__recordGoatEvent(event) } }
 })
 const events = () => sent
-const key = (token) => ({ '<CR>': 'Enter', '<Esc>': 'Escape', '<C-a>': 'Control+a', '<C-b>': 'Control+b', '<C-u>': 'Control+u' }[token] ?? token)
+const key = (token) => ({ '<CR>': 'Enter', '<Esc>': 'Escape', '<C-a>': 'Control+a', '<C-b>': 'Control+b', '<C-u>': 'Control+u' }[token])
 
 await page.goto('http://localhost:4173/?lang=ko#hjkl')
 assert.deepEqual((await events()).at(-1), { path: '/main/hjkl', title: 'nvim-edu' })
@@ -24,8 +24,8 @@ await Promise.all([page.waitForNavigation(), page.locator('#lang').click()])
 assert.ok((await events()).some((event) => event.path === 'language/en' && event.event === true))
 await page.goto('http://localhost:4173/#mission-move')
 for (let round = 0; round < 10; round++) {
-  for (const token of tokenize(await page.evaluate(() => window.__edu.level.solution))) await page.keyboard.press(key(token))
-  await page.waitForTimeout(round < 9 ? 300 : 50)
+  for (const token of tokenize(await page.evaluate(() => window.__edu.level.solution))) key(token) ? await page.keyboard.press(key(token)) : await page.keyboard.type(token)
+  await page.waitForFunction((r) => window.__edu.session.round === r + 1 && (r === 9 || !window.__edu.done), round)
 }
 assert.ok((await events()).some((event) => event.path === 'drill-finished/mission-move' && event.event === true))
 await page.goto('http://localhost:4173/real/#hjkl')

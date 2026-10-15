@@ -32,6 +32,8 @@ export function initializeAnalytics() {
     window.goatcounter = { ...window.goatcounter, no_onload: true }
     const script = document.createElement('script')
     script.async = true
+    // real/ runs under COEP require-corp; a no-cors cross-origin script is blocked there.
+    script.crossOrigin = 'anonymous'
     script.src = 'https://gc.zgo.at/count.js'
     script.dataset.goatcounter = GOATCOUNTER_ENDPOINT
     script.dataset.goatcounterSettings = JSON.stringify({ no_onload: true })
