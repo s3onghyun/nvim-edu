@@ -1,4 +1,4 @@
-// 사용자 실사용에서 나온 버그 재발 방지: undo/redo, df{없는 글자}, 한글 IME 조합 후 키 입력
+// 사용자 실사용에서 나온 버그 재발 방지: undo/redo, df{없는 글자}, 한글 IME 조합 후 키 입력, 진행 기록 저장
 import { preview } from 'vite'
 import * as pw from 'playwright-core'
 import { levels } from '../src/levels.js'
@@ -107,6 +107,58 @@ if (name === 'chromium') {
   await page.keyboard.type('u')
   expect('한글 입력도 u 로 되돌리기', (await state()).doc, 'Hello, Vimm!')
 }
+
+// 4) 진행 기록(localStorage): 새로고침 후 복원 · 최고 기록 유지 · 두 번째 풀이도 완료 알림
+const stored = (k) => page.evaluate((k) => JSON.parse(localStorage.getItem(`nvim-edu:${k}`)), k)
+const banner = () => page.evaluate(() => {
+  const b = document.querySelector('#banner')
+  return { shown: !b.hidden, title: b.querySelector('.float-title')?.innerText, text: b.innerText }
+})
+const navItem = (id) => page.evaluate((id) => {
+  const a = document.querySelector(`#nav a[href="#${id}"]`)
+  return { cleared: a.classList.contains('cleared'), ico: a.querySelector('.ico').innerText, meta: a.querySelector('.meta').innerText }
+}, id)
+async function solve(keys) {
+  for (const k of keys) k === '<CR>' ? await page.keyboard.press('Enter') : await page.keyboard.type(k)
+  await page.waitForFunction(() => window.__edu.done, null, { timeout: 3000 }).catch(() => {}) // 완료 안 되면 아래 expect 가 FAIL 로 보고
+}
+// 미션: 라운드마다 생성된 답안을 입력, extraMs 만큼 쉬어서 일부러 느리게 완주
+async function finishDrill(extraMs = 0) {
+  for (let r = 0; r < 10; r++) {
+    if (r === 5) await page.waitForTimeout(extraMs)
+    const sol = await page.evaluate(() => window.__edu.level.solution)
+    await solve(sol.split(/(<CR>)/).filter(Boolean))
+    if (r < 9) await page.waitForFunction((n) => window.__edu.session.round === n && !window.__edu.done, r + 1)
+  }
+}
+
+await open('x')
+await page.evaluate(() => localStorage.clear())
+await open('x')
+expect('처음엔 x 레벨 미클리어', await navItem('x'), { cleared: false, ico: '○', meta: '' })
+await solve(['3l', 'x', 'fm', 'x'])
+expect('x 레벨 클리어 알림', (await banner()).title, '✔ 클리어')
+expect('클리어하면 progress 저장', (await stored('progress')).x, 3)
+await open('x')
+expect('새로고침 후 progress 유지', (await stored('progress')).x, 3)
+expect('새로고침 후 레벨 목록에 클리어·별 표시', await navItem('x'), { cleared: true, ico: '●', meta: '★★★' })
+expect('다시 열면 알림은 닫혀 있음', (await banner()).shown, false)
+await solve(['3l', 'x', 'fm', 'x'])
+expect('이미 클리어한 레벨도 두 번째 풀이에 클리어 알림', await banner().then((b) => [b.shown, b.title]), [true, '✔ 클리어'])
+
+await open('mission-move')
+await finishDrill()
+const first = await stored('records').then((r) => r['mission-move'])
+expect('첫 미션 완주 → 최고 기록 알림', await banner().then((b) => [b.shown, b.title]), [true, '🏆 최고 기록'])
+await page.click('#next') // 한 번 더
+expect('한 번 더 → 알림 닫히고 새 세션', [(await banner()).shown, await page.evaluate(() => window.__edu.session.round)], [false, 0])
+await finishDrill(1500)
+const second = await banner()
+expect('두 번째 미션 완주도 완료 알림', [second.shown, second.title], [true, '✔ 미션 완료'])
+expect('느린 기록이면 기존 최고 기록 표시', second.text.includes(`최고 기록 ${first.time.toFixed(1)}s`), true)
+expect('느린 기록이면 저장된 최고 기록 유지', (await stored('records'))['mission-move'], first)
+await open('mission-move')
+expect('새로고침 후 최고 기록 유지', [(await stored('records'))['mission-move'], await navItem('mission-move').then((n) => n.meta)], [first, `${first.time.toFixed(1)}s`])
 
 // 5) 폰 폭(390px)에서 페이지가 가로로 밀리지 않음 (긴 레벨 제목·정규식 때문에 생겼던 문제). 해설 표도 펼쳐서 확인
 const phone = await browser.newPage({ viewport: { width: 390, height: 844 } })
