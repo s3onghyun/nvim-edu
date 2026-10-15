@@ -33,6 +33,11 @@ await page.waitForFunction(() => window.crossOriginIsolated && window.__real, nu
 await Promise.all([page.waitForNavigation(), page.evaluate(() => { location.hash = 'sandbox' })])
 await page.waitForFunction(() => window.__real?.level.id === 'sandbox')
 assert.equal((await events()).filter((event) => event.path === 'real-vim-opened' && event.event === true).length, 1)
+assert.ok((await events()).some((event) => event.path === '/real/sandbox'))
+await page.goto('http://localhost:4173/#hjkl')
+await page.goto('http://localhost:4173/real/#hjkl')
+await page.waitForFunction(() => window.crossOriginIsolated && window.__real, null, { timeout: 30000 })
+assert.equal((await events()).filter((event) => event.path === 'real-vim-opened' && event.event === true).length, 2)
 
 const dnt = await browser.newContext()
 await dnt.addInitScript(() => {
