@@ -4,7 +4,8 @@ import * as pw from 'playwright-core'
 import { levels, tokenize } from '../src/levels.js'
 
 const server = await preview({ preview: { port: 4173 } })
-const browser = await pw.chromium.launch()
+const name = process.env.BROWSER ?? 'chromium'
+const browser = await pw[name].launch()
 const page = await browser.newPage()
 const sent = []
 await page.exposeFunction('__recordGoatEvent', (event) => sent.push(event))
@@ -28,16 +29,19 @@ for (let round = 0; round < 10; round++) {
   await page.waitForFunction((r) => window.__edu.session.round === r + 1 && (r === 9 || !window.__edu.done), round)
 }
 assert.ok((await events()).some((event) => event.path === 'drill-finished/mission-move' && event.event === true))
-await page.goto('http://localhost:4173/real/#hjkl')
-await page.waitForFunction(() => window.crossOriginIsolated && window.__real, null, { timeout: 30000 })
-await Promise.all([page.waitForNavigation(), page.evaluate(() => { location.hash = 'sandbox' })])
-await page.waitForFunction(() => window.__real?.level.id === 'sandbox')
-assert.equal((await events()).filter((event) => event.path === 'real-vim-opened' && event.event === true).length, 1)
-assert.ok((await events()).some((event) => event.path === '/real/sandbox'))
-await page.goto('http://localhost:4173/#hjkl')
-await page.goto('http://localhost:4173/real/#hjkl')
-await page.waitForFunction(() => window.crossOriginIsolated && window.__real, null, { timeout: 30000 })
-assert.equal((await events()).filter((event) => event.path === 'real-vim-opened' && event.event === true).length, 2)
+// WebKit 은 두 번째 로드부터 격리가 안 돼 real/ 이 fallback 으로 뜨고 집계도 안 함 (real.e2e.mjs 와 같은 제약)
+if (name !== 'webkit') {
+  await page.goto('http://localhost:4173/real/#hjkl')
+  await page.waitForFunction(() => window.crossOriginIsolated && window.__real, null, { timeout: 30000 })
+  await Promise.all([page.waitForNavigation(), page.evaluate(() => { location.hash = 'sandbox' })])
+  await page.waitForFunction(() => window.__real?.level.id === 'sandbox')
+  assert.equal((await events()).filter((event) => event.path === 'real-vim-opened' && event.event === true).length, 1)
+  assert.ok((await events()).some((event) => event.path === '/real/sandbox'))
+  await page.goto('http://localhost:4173/#hjkl')
+  await page.goto('http://localhost:4173/real/#hjkl')
+  await page.waitForFunction(() => window.crossOriginIsolated && window.__real, null, { timeout: 30000 })
+  assert.equal((await events()).filter((event) => event.path === 'real-vim-opened' && event.event === true).length, 2)
+}
 
 const dnt = await browser.newContext()
 await dnt.addInitScript(() => {
