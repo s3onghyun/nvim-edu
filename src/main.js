@@ -566,19 +566,18 @@ function showDashboard() {
 function load(id) {
   if (!id) {
     showDashboard()
-    return trackPageView('/main/dashboard')
+    return 'dashboard'
   }
   $('#dashboard').hidden = true
   $('#work').hidden = false
   const known = id === 'sandbox' || levels.some((l) => l.id === id) || missions.some((m) => m.id === id)
   if (!known) id = levels[0].id
-  trackPageView(`/main/${id}`)
   if (!buffers.includes(id)) buffers.push(id)
   if (buffers.length > 4) buffers.shift()
   msg(`"${fileFor(id)}" — ${tr(':colo <이름> 으로 테마 변경', ':colo <name> changes the theme')}`)
 
   const mission = missions.find((m) => m.id === id)
-  if (mission) { startMission(mission); return renderNav() }
+  if (mission) { startMission(mission); renderNav(); return id }
   clearInterval(session?.timer)
   session = null
   const lvl = levels.find((l) => l.id === id) ?? SANDBOX
@@ -597,6 +596,7 @@ function load(id) {
   $('#real-link').href = `real/#${lvl.id}`
   lvl.kind === 'tmux' ? mountTmux(lvl) : mount(lvl)
   renderNav()
+  return id
 }
 
 // alpha-nvim 로고: 박스 문자는 웹폰트마다 폭이 달라 깨지므로 칸 단위 그리드로 그림
@@ -632,9 +632,10 @@ const langText = lang === 'en' ? '한국어' : 'EN'
 $('#lang').append(langText)
 $('#lang').setAttribute('aria-label', `${langText} ${$('#lang').getAttribute('aria-label')}`)
 $('#lang').onclick = () => setLang(lang === 'en' ? 'ko' : 'en')
-window.addEventListener('hashchange', () => load(location.hash.slice(1)))
+const route = () => trackPageView(`/main/${load(location.hash.slice(1))}`)
+window.addEventListener('hashchange', route)
 initializeAnalytics()
-load(location.hash.slice(1))
+route()
 
 // e2e 테스트용 훅
 window.__edu = {

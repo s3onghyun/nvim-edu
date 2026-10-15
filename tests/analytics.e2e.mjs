@@ -16,6 +16,8 @@ const key = (token) => ({ '<CR>': 'Enter', '<Esc>': 'Escape', '<C-a>': 'Control+
 
 await page.goto('http://localhost:4173/?lang=ko#hjkl')
 assert.deepEqual((await events()).at(-1), { path: '/main/hjkl', title: 'nvim-edu' })
+await page.locator('#reset').click()
+assert.equal((await events()).filter((event) => event.path === '/main/hjkl').length, 1)
 for (const key of tokenize(levels.find((level) => level.id === 'hjkl').solution)) await page.keyboard.press(key === '<CR>' ? 'Enter' : key)
 assert.ok((await events()).some((event) => event.path === 'level-cleared/hjkl' && event.event === true))
 await Promise.all([page.waitForNavigation(), page.locator('#lang').click()])
@@ -27,7 +29,10 @@ for (let round = 0; round < 10; round++) {
 }
 assert.ok((await events()).some((event) => event.path === 'drill-finished/mission-move' && event.event === true))
 await page.goto('http://localhost:4173/real/#hjkl')
-assert.ok((await events()).some((event) => event.path === 'real-vim-opened' && event.event === true))
+await page.waitForFunction(() => window.crossOriginIsolated && window.__real, null, { timeout: 30000 })
+await Promise.all([page.waitForNavigation(), page.evaluate(() => { location.hash = 'sandbox' })])
+await page.waitForFunction(() => window.__real?.level.id === 'sandbox')
+assert.equal((await events()).filter((event) => event.path === 'real-vim-opened' && event.event === true).length, 1)
 
 const dnt = await browser.newContext()
 await dnt.addInitScript(() => {

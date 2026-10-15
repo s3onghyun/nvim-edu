@@ -28,9 +28,7 @@ const SANDBOX = {
   start: tr('// 자유 연습장', '// free practice') + '\nfunction greet(name) {\n  const msg = "Hello, " + name;\n  console.log(msg);\n  return msg;\n}\n\ngreet("vim");',
 }
 const level = vimLevels.find((l) => l.id === location.hash.slice(1)) ?? (location.hash === '#sandbox' ? SANDBOX : vimLevels[0])
-window.addEventListener('hashchange', () => {
-  location.reload() // Vim 을 새 파일로 다시 띄움
-})
+window.addEventListener('hashchange', () => location.reload()) // Vim 을 새 파일로 다시 띄움
 
 // ── 화면 ──
 $('#level').innerHTML = chapters.filter((c) => vimLevels.some((l) => l.chapter === c.id)).map((c) =>
@@ -167,8 +165,14 @@ function start() {
 renderGoal(lines)
 renderStatus()
 initializeAnalytics()
-trackPageView(`/real/${level.id}`)
-trackEvent('real-vim-opened')
+// 이 페이지는 coi-serviceworker 설치·레벨 전환·언어 변경·다시 시작 때마다 새로고침되므로, 탭마다 격리된 첫 로드만 셈
+try {
+  if (window.crossOriginIsolated && !sessionStorage.getItem('nvim-edu:real-opened')) {
+    sessionStorage.setItem('nvim-edu:real-opened', '1')
+    trackPageView(`/real/${level.id}`)
+    trackEvent('real-vim-opened')
+  }
+} catch {}
 // coi-serviceworker 가 처음 설치될 땐 페이지를 한 번 새로고침하므로, 격리된 상태에서만 시작
 if (window.crossOriginIsolated) start()
 else setTimeout(start, 6000) // 서비스 워커가 새로고침해 주지 않으면(미지원 브라우저 등) 6초 뒤 안내만 띄움
