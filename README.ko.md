@@ -29,6 +29,10 @@ Neovim 같은 화면: neo-tree 사이드바, bufferline, lualine, cmdline 메시
 
 습관 교정: 1장(이동)·이동 미션에선 방향키 차단, 마우스 차단, NORMAL 모드에서 한글 IME 로 입력하면 "한/영 전환" 안내.
 
+## 개인정보·분석
+
+이 사이트는 쿠키 없는 [GoatCounter](https://www.goatcounter.com/) 분석을 사용합니다. 페이지 조회와 레벨·미션 완료, 진짜 Vim 모드 열기, 한국어/영어 언어 변경 같은 집계 이벤트만 기록하며, 입력한 키·풀이·그 밖의 텍스트는 전송하지 않습니다. Do Not Track 또는 Global Privacy Control을 켜면 분석을 보내지 않습니다.
+
 ## 개발
 
 ```bash

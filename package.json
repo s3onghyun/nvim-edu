@@ -5,7 +5,7 @@
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview",
-    "test": "node --test tests/tmux.test.mjs && vite build && node tests/regress.e2e.mjs && node tests/levels.e2e.mjs && node tests/real.e2e.mjs",
+    "test": "node --test tests/tmux.test.mjs && vite build && node tests/regress.e2e.mjs && node tests/levels.e2e.mjs && node tests/analytics.e2e.mjs && node tests/real.e2e.mjs",
     "postinstall": "patch-package",
     "test:nvim": "vite build && node tests/nvim-diff.mjs",
     "test:en": "vite build && UI_LANG=en node tests/levels.e2e.mjs && UI_LANG=en node tests/real.e2e.mjs && node tests/i18n.e2e.mjs"

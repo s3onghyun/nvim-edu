@@ -9,6 +9,7 @@ import { missions, createSession, streak, ymd, rngFrom } from './drill.js'
 import { createTmux, press as tmuxPress, tmuxTask, AGENT_LOG } from './tmux.js'
 import { renderTmux, tmuxMode, tmuxTarget } from './tmux-view.js'
 import { lang, t as tr, setLang, translateDom } from './i18n.js'
+import { initializeAnalytics, trackEvent, trackPageView } from './analytics.js'
 import { replay } from './explain.js'
 import './style.css'
 
@@ -318,6 +319,7 @@ function explainHtml(title, tokens, open) {
 }
 
 function levelCleared() {
+  trackEvent(`level-cleared/${level.id}`)
   const par = tokenize(level.solution).length
   const s = stars(count, par)
   progress[level.id] = Math.max(progress[level.id] ?? 0, s)
@@ -348,6 +350,7 @@ function roundCleared() {
 
   const time = (performance.now() - session.t0) / 1000
   const id = session.mission.id
+  // A drill is one complete ten-round session, not each individual round.
   const best = records[id]
   const isBest = !best || time < best.time
   if (isBest) records[id] = { time, keys: session.keys }
@@ -355,6 +358,7 @@ function roundCleared() {
   if (!days.includes(ymd(new Date()))) days.push(ymd(new Date()))
   store.set('days', days)
   clearInterval(session.timer)
+  trackEvent(`drill-finished/${id}`)
   renderNav()
   msg(`${session.mission.title} ${tr('완료', 'done')} — ${time.toFixed(1)}s, ${session.keys}${KEYS_UNIT}`, 'ok')
   showBanner(isBest ? tr('🏆 최고 기록', '🏆 New best') : tr('✔ 미션 완료', '✔ Drill complete'), `
@@ -560,11 +564,15 @@ function showDashboard() {
 }
 
 function load(id) {
-  if (!id) return showDashboard()
+  if (!id) {
+    showDashboard()
+    return trackPageView('/main/dashboard')
+  }
   $('#dashboard').hidden = true
   $('#work').hidden = false
   const known = id === 'sandbox' || levels.some((l) => l.id === id) || missions.some((m) => m.id === id)
   if (!known) id = levels[0].id
+  trackPageView(`/main/${id}`)
   if (!buffers.includes(id)) buffers.push(id)
   if (buffers.length > 4) buffers.shift()
   msg(`"${fileFor(id)}" — ${tr(':colo <이름> 으로 테마 변경', ':colo <name> changes the theme')}`)
@@ -625,6 +633,7 @@ $('#lang').append(langText)
 $('#lang').setAttribute('aria-label', `${langText} ${$('#lang').getAttribute('aria-label')}`)
 $('#lang').onclick = () => setLang(lang === 'en' ? 'ko' : 'en')
 window.addEventListener('hashchange', () => load(location.hash.slice(1)))
+initializeAnalytics()
 load(location.hash.slice(1))
 
 // e2e 테스트용 훅

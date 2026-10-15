@@ -1,3 +1,5 @@
+import { trackEvent } from './analytics.js'
+
 // 언어 선택: ?lang=en|ko → 저장값 → 브라우저 언어(한국어가 아니면 영어). Node(테스트)에서는 UI_LANG 또는 ko
 const LANGS = ['ko', 'en']
 const inBrowser = typeof window !== 'undefined'
@@ -13,6 +15,7 @@ if (inBrowser && LANGS.includes(param)) try { localStorage.setItem('nvim-edu:lan
 export const t = (ko, en) => (lang === 'en' ? en : ko)
 
 export function setLang(next) {
+  trackEvent(`language/${next}`)
   try { localStorage.setItem('nvim-edu:lang', next) } catch {}
   const url = new URL(location.href)
   url.searchParams.delete('lang')

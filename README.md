@@ -31,6 +31,10 @@ Habit training: arrow keys are blocked in chapter 1 (motions) and the motion dri
 
 Languages: English and Korean. Picked from `?lang=en|ko`, then your saved choice, then the browser language.
 
+## Privacy and analytics
+
+This site uses cookie-free [GoatCounter](https://www.goatcounter.com/) analytics. It records page views and only aggregate product events (a level or drill finished, opening real Vim mode, and a Korean/English language change); it never sends keystrokes, solutions, or other text you enter. Analytics is disabled when Do Not Track or Global Privacy Control is enabled.
+
 ## Does it behave like real Neovim?
 
 Levels run on the [@replit/codemirror-vim](https://github.com/replit/codemirror-vim) emulator for speed, and **real Neovim is the reference**:
