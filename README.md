@@ -68,9 +68,10 @@ npm run test:en   # English UI: every level, plus a scan that no Korean text is 
 | `src/tmux.js` | tmux simulator (pure state machine: session/window/pane tree, prefix keys, vi copy mode, a tiny shell) |
 | `src/tmux-view.js` | tmux state → HTML |
 | `src/main.js` | Editor ([CodeMirror 6](https://codemirror.net/) + codemirror-vim), scoring, UI |
+| `src/analytics.js` | Cookie-free GoatCounter page views and events; skipped under Do Not Track / GPC |
 | `src/real.js`, `real/index.html` | Real Vim mode. State comes from Vim's `titlestring` (injecting commands from JS mid-command freezes Vim) |
 | `patches/` | Emulator fixes to match real Neovim |
-| `tests/` | `nvim-diff` (vs. real Neovim), `regress` (bugs found in real use), `levels`, `real`, `i18n`, `tmux` |
+| `tests/` | `nvim-diff` (vs. real Neovim), `regress` (bugs found in real use), `levels`, `real`, `i18n`, `tmux`, `analytics` |
 
 ## Adding a level
 

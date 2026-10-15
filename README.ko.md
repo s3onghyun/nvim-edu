@@ -65,6 +65,7 @@ npm run test:nvim   # nvim 이 PATH 에 있어야 함
 | `src/tmux.js` | tmux 시뮬레이터 (순수 상태 머신: 세션/윈도우/pane 트리, prefix 키, vi copy mode, 미니 쉘) |
 | `src/tmux-view.js` | tmux 상태 → 화면 |
 | `src/drill.js` | 미션 라운드 생성기 (이동/줄 삭제/단어 삭제/단어 변경/괄호·따옴표 안 비우기) |
+| `src/analytics.js` | 쿠키 없는 GoatCounter 페이지 조회·이벤트 집계 (Do Not Track / GPC 면 보내지 않음) |
 | `src/real.js`, `real/index.html` | 진짜 Vim 모드. 상태는 Vim 의 `titlestring` 으로 받음 (명령 도중 JS 가 끼어들면 Vim 이 멈춤) |
 | `patches/` | 에뮬레이터 수정 (실제 Neovim 과 맞추기) |
 | `src/main.js` | 에디터([CodeMirror 6](https://codemirror.net/) + [@replit/codemirror-vim](https://github.com/replit/codemirror-vim)), 채점, UI |
@@ -74,6 +75,7 @@ npm run test:nvim   # nvim 이 PATH 에 있어야 함
 | `tests/regress.e2e.mjs` | 실사용에서 나온 버그 재발 방지 (undo, 한글 IME 등) |
 | `tests/real.e2e.mjs` | 진짜 Vim 모드로 모든 레벨을 풀어 봄 |
 | `tests/levels.e2e.mjs` | 모든 레벨 답안·미션 150라운드를 실제 키 입력으로 검증 |
+| `tests/analytics.e2e.mjs` | 분석 이벤트 호출 위치와 Do Not Track 시 미전송 확인 |
 
 ## 레벨 추가하기
 
