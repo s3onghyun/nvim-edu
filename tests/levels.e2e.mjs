@@ -2,6 +2,7 @@
 import { preview } from 'vite'
 import * as pw from 'playwright-core'
 import { chapters, levels, tokenize, difficultyLabel, difficultyText } from '../src/levels.js'
+import { solveReport } from './level-report.mjs'
 
 const KEY = {
   '<Esc>': 'Escape', '<CR>': 'Enter', '<C-a>': 'Control+a', '<C-v>': 'Control+v', '<C-b>': 'Control+b', '<C-u>': 'Control+u',
@@ -49,20 +50,23 @@ for (const level of levels) {
   const tokens = tokenize(level.solution)
   await typeKeys(tokens)
   await page.waitForTimeout(50)
-  const { done, count, text } = await page.evaluate(() => ({
+  const { done, count, text, editor } = await page.evaluate(() => ({
     done: window.__edu.done, count: window.__edu.count,
     text: (document.querySelector('.cm-content') ?? document.querySelector('#term')).innerText,
+    editor: document.querySelector('.cm-content') && window.__edu.editor,
   }))
   let ok = done && count === tokens.length
   if (!ok) failed++
-  console.log(`${ok ? 'PASS' : 'FAIL'} ${level.id} done=${done} count=${count}/${tokens.length}${ok ? '' : `\n${text}`}`)
+  // Vim 레벨은 어느 검사가 왜 틀렸는지(기대/실제 버퍼·커서), tmux 레벨은 화면 그대로
+  const report = level.kind ? `FAIL ${level.id} done=${done} count=${count}/${tokens.length}\n${text}` : solveReport('에뮬레이터 풀이', level, tokens, { done, count, ...editor })
+  console.log(ok ? `PASS ${level.id} done=${done} count=${count}/${tokens.length}` : report)
   // 풀이 해설: 내 키·모범 답안을 보이지 않는 에디터에서 다시 실행한 결과가 실제 에디터의 마지막 상태와 같아야 함
   if (!level.kind) {
     const ex = await page.evaluate(() => ({ ...window.__edu.explainCheck(), now: window.__edu.editor }))
     const want = JSON.stringify({ text: ex.now.text, cursor: ex.now.cursor })
     ok = JSON.stringify(ex.mine) === want && JSON.stringify(ex.solution) === want && ex.rows > 0
     if (!ok) failed++
-    console.log(`${ok ? 'PASS' : 'FAIL'} ${level.id} explain${ok ? '' : `\n  editor   ${want}\n  mine     ${JSON.stringify(ex.mine)}\n  solution ${JSON.stringify(ex.solution)}\n  rows ${ex.rows}`}`)
+    console.log(ok ? `PASS ${level.id} explain` : `FAIL 레벨 ${level.id} [해설 리플레이] 다시 실행한 마지막 상태가 에디터와 다릅니다\n  editor   ${want}\n  mine     ${JSON.stringify(ex.mine)}\n  solution ${JSON.stringify(ex.solution)}\n  rows ${ex.rows}`)
   }
 }
 

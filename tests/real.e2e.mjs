@@ -2,6 +2,7 @@
 import { preview } from 'vite'
 import * as pw from 'playwright-core'
 import { levels, tokenize } from '../src/levels.js'
+import { solveReport } from './level-report.mjs'
 
 const KEY_GAP = Number(process.env.KEY_GAP ?? 40)
 const KEY = { '<Esc>': 'Escape', '<CR>': 'Enter', '<C-a>': 'Control+a', '<C-v>': 'Control+v' }
@@ -50,7 +51,8 @@ for (const level of levels.filter((l) => !l.kind)) {
   const { done, count, state } = await page.evaluate(() => ({ done: window.__real.done, count: window.__real.count, state: window.__real.state }))
   const ok = done && count === tokens.length
   if (!ok) failed++
-  console.log(`${ok ? 'PASS' : 'FAIL'} real:${level.id} done=${done} count=${count}/${tokens.length}${ok ? '' : `\n  ${JSON.stringify(state)}`}`)
+  const got = { done, count, text: state?.lines.join('\n'), cursor: state && [state.line, state.col], mode: state?.mode }
+  console.log(ok ? `PASS real:${level.id} done=${done} count=${count}/${tokens.length}` : solveReport('진짜 Vim(vim.wasm) 풀이', level, tokens, got))
 }
 
 await browser.close()

@@ -1,0 +1,11 @@
+{
+  "id": "x-delete",
+  "chapter": "edit",
+  "title": "x 로 지우기",
+  "desc": "오타 글자를 <kbd>x</kbd> 로 지우세요",
+  "keys": ["x"],
+  "start": "heello",
+  "cursor": [0, 0],
+  "goal": { "text": "hello" },
+  "solution": "lxx"
+}

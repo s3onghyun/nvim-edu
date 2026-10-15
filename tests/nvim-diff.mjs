@@ -8,6 +8,7 @@ import { preview } from 'vite'
 import * as pw from 'playwright-core'
 import { cases } from './nvim-diff/cases.mjs'
 import { tokenize } from '../src/levels.js'
+import { expected } from './level-report.mjs'
 
 const KEY = {
   '<Esc>': 'Escape', '<CR>': 'Enter', '<BS>': 'Backspace',
@@ -48,11 +49,13 @@ cases.forEach(([name, , , keys], i) => {
   if (a.text !== b.text) why.push('텍스트')
   if (a.cursor[0] !== b.cursor[0] || a.cursor[1] !== b.cursor[1]) why.push(`커서 nvim ${a.cursor} / 사이트 ${b.cursor}`)
   if (a.mode !== b.mode) why.push(`모드 nvim ${a.mode} / 사이트 ${b.mode}`)
-  if (why.length) diffs.push({ name, keys, why, nvim: a.text, site: b.text })
+  if (why.length) diffs.push({ name, keys, why, nvim: a, site: b })
 })
+// 기대 = 실제 Neovim, 실제 = 사이트 에디터. 레벨 케이스는 "레벨:<id>" 로 나옴
 for (const d of diffs) {
-  console.log(`DIFF ${d.name}  [${d.keys}]  ${d.why.join(', ')}`)
-  if (d.nvim !== d.site) console.log(`  nvim: ${JSON.stringify(d.nvim)}\n  site: ${JSON.stringify(d.site)}`)
+  console.log(`DIFF ${d.name} [실제 Neovim 비교]  keys ${JSON.stringify(d.keys)}  다른 곳: ${d.why.join(', ')}`)
+  if (d.nvim.text !== d.site.text) console.log(expected('버퍼', d.nvim.text, d.site.text).map((l) => `  ${l}`).join('\n'))
+  console.log(expected('커서', d.nvim.cursor, d.site.cursor).map((l) => `  ${l}`).join('\n'))
 }
 console.log(`\n${cases.length}개 중 ${cases.length - diffs.length}개 일치, ${diffs.length}개 다름`)
 process.exit(diffs.length ? 1 : 0)
