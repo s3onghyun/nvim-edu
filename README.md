@@ -61,7 +61,8 @@ npm run test:en   # English UI: every level, plus a scan that no Korean text is 
 
 | File | Purpose |
 |------|------|
-| `src/levels.js` | Level data. `solution` is both the reference answer and the par |
+| `src/levels/vim-levels.json` | Vim level data (schema in `src/levels/schema.js`, checked by `npm test`). `solution` is both the reference answer and the par |
+| `src/levels.js` | Loads the Vim levels, tmux levels, chapters |
 | `src/levels.en.js` | English text for levels (same ids) |
 | `src/i18n.js` | Language selection; `t('한국어', 'English')` for inline strings |
 | `src/drill.js` | Drill task generators |
@@ -75,17 +76,19 @@ npm run test:en   # English UI: every level, plus a scan that no Korean text is 
 
 ## Adding a level
 
-Add one object to `src/levels.js` (and its English text to `src/levels.en.js`):
+Add one object to `src/levels/vim-levels.json` (and its English text to `src/levels.en.js`):
 
-```js
+```json
 {
-  id: 'my-level', chapter: 'edit', title: '제목',
-  desc: 'Description (HTML)', keys: ['dd'], lang: 'js',
-  start: 'starting text', cursor: [0, 0],
-  goal: { text: 'goal text' },          // or { cursor: [line, col] }
-  solution: 'jdd',                       // <Esc> <CR> <C-a> notation; its length is the par
+  "id": "my-level", "chapter": "edit", "title": "제목",
+  "desc": "Description (HTML)", "keys": ["dd"], "lang": "js",
+  "start": "first\nsecond", "cursor": [0, 0],
+  "goal": { "text": "first" },
+  "solution": "jdd"
 }
 ```
+
+`goal` is `{ "text": ... }` or `{ "cursor": [line, col] }`; `solution` uses `<Esc> <CR> <C-a>` notation and its key count is the par.
 
 `npm test` checks that the solution really clears the level, in the emulator and in real Vim. See [CONTRIBUTING.md](CONTRIBUTING.md) for step-by-step instructions and par guidelines. PRs welcome!
 

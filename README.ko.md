@@ -61,7 +61,8 @@ npm run test:nvim   # nvim 이 PATH 에 있어야 함
 | 파일 | 역할 |
 |------|------|
 | `src/i18n.js`, `src/levels.en.js` | 한국어/영어. `?lang=en` 또는 브라우저 언어(한국어가 아니면 영어) |
-| `src/levels.js` | 레벨 데이터. `solution` 이 모범 답안이자 par(기준 타수) |
+| `src/levels/vim-levels.json` | Vim 레벨 데이터 (스키마는 `src/levels/schema.js`, `npm test` 가 검사). `solution` 이 모범 답안이자 par(기준 타수) |
+| `src/levels.js` | Vim 레벨 불러오기, tmux 레벨, 챕터 |
 | `src/tmux.js` | tmux 시뮬레이터 (순수 상태 머신: 세션/윈도우/pane 트리, prefix 키, vi copy mode, 미니 쉘) |
 | `src/tmux-view.js` | tmux 상태 → 화면 |
 | `src/drill.js` | 미션 라운드 생성기 (이동/줄 삭제/단어 삭제/단어 변경/괄호·따옴표 안 비우기) |
@@ -79,17 +80,19 @@ npm run test:nvim   # nvim 이 PATH 에 있어야 함
 
 ## 레벨 추가하기
 
-`src/levels.js` 에 객체 하나를 추가하면 됩니다.
+`src/levels/vim-levels.json` 에 객체 하나를 추가하면 됩니다 (영어 문구는 `src/levels.en.js`).
 
-```js
+```json
 {
-  id: 'my-level', chapter: 'edit', title: '제목',
-  desc: '설명 (HTML 가능)', keys: ['dd'], lang: 'js',
-  start: '시작 텍스트', cursor: [0, 0],
-  goal: { text: '목표 텍스트' },      // 또는 { cursor: [줄, 열] }
-  solution: 'jdd',                     // <Esc> <CR> <C-a> 표기, 길이가 곧 par
+  "id": "my-level", "chapter": "edit", "title": "제목",
+  "desc": "설명 (HTML 가능)", "keys": ["dd"], "lang": "js",
+  "start": "첫 줄\n둘째 줄", "cursor": [0, 0],
+  "goal": { "text": "첫 줄" },
+  "solution": "jdd"
 }
 ```
+
+`goal` 은 `{ "text": ... }` 또는 `{ "cursor": [줄, 칸] }`, `solution` 은 `<Esc> <CR> <C-a>` 표기이고 키 수가 곧 par 입니다.
 
 `npm test` 가 그 답안으로 실제로 클리어되는지 확인해 줍니다. 자세한 단계 및 par 가이드는 [CONTRIBUTING.md](CONTRIBUTING.md)를 참고하세요. PR 환영합니다.
 
