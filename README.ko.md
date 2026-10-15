@@ -71,6 +71,7 @@ npm run test:nvim   # nvim 이 PATH 에 있어야 함
 | `patches/` | 에뮬레이터 수정 (실제 Neovim 과 맞추기) |
 | `src/main.js` | 에디터([CodeMirror 6](https://codemirror.net/) + [@replit/codemirror-vim](https://github.com/replit/codemirror-vim)), 채점, UI |
 | `src/style.css` | 컬러스킴 토큰 + nvim 스타일 레이아웃 |
+| `tests/levels-schema.test.mjs`, `tests/level-report.test.mjs` | 레벨 데이터 스키마 검사, 레벨별 실패 메시지가 읽기 쉬운지 확인 (`node --test`) |
 | `tests/tmux.test.mjs` | tmux 상태 머신 단위 테스트 + 모든 tmux 레벨 답안 검증 (`node --test`) |
 | `tests/nvim-diff.mjs` | 실제 Neovim 과 비교 |
 | `tests/regress.e2e.mjs` | 실사용에서 나온 버그 재발 방지 (undo, 한글 IME 등) |

@@ -72,7 +72,7 @@ npm run test:en   # English UI: every level, plus a scan that no Korean text is 
 | `src/analytics.js` | Cookie-free GoatCounter page views and events; skipped under Do Not Track / GPC |
 | `src/real.js`, `real/index.html` | Real Vim mode. State comes from Vim's `titlestring` (injecting commands from JS mid-command freezes Vim) |
 | `patches/` | Emulator fixes to match real Neovim |
-| `tests/` | `nvim-diff` (vs. real Neovim), `regress` (bugs found in real use), `levels`, `real`, `i18n`, `tmux`, `analytics` |
+| `tests/` | `nvim-diff` (vs. real Neovim), `regress` (bugs found in real use), `levels`, `real`, `i18n`, `tmux`, `analytics`, `levels-schema` (level data schema), `level-report` (readable per-level failure messages) |
 
 ## Adding a level
 
