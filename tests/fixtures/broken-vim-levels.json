@@ -1,0 +1,25 @@
+[
+  {
+    "id": "hjkl",
+    "chapter": "move",
+    "title": "중복 id",
+    "desc": "x",
+    "keys": ["h"],
+    "start": "abc",
+    "cursor": [0, 0],
+    "goal": {"cursor": [0, 2]},
+    "solution": "2l"
+  },
+  {
+    "id": "hjkl",
+    "chapter": "moves",
+    "title": "",
+    "desc": "x",
+    "keys": ["h"],
+    "start": "abc",
+    "cursor": [5, 0],
+    "goal": {"txt": "abc"},
+    "solution": "x",
+    "par": 3
+  }
+]
