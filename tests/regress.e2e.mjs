@@ -73,7 +73,8 @@ await Promise.all([page.waitForEvent('load'), page.click('#lang')])
 expect('다시 누르면 한국어', await langButton(), langKo)
 for (const [l, want] of [['ko', langKo], ['en', langEn]]) {
   await page.goto(`${BASE}real/?lang=${l}#x`)
-  await page.waitForFunction(() => document.querySelector('#lang').innerText.trim())
+  // 첫 방문은 서비스 워커가 한 번 새로고침하므로, 격리(또는 안내)까지 기다려야 다음 goto 가 끊기지 않음
+  await page.waitForFunction(() => document.querySelector('#lang').innerText.trim() && (window.crossOriginIsolated || document.querySelector('.fallback')), null, { timeout: 30000 })
   expect(`진짜 Vim 화면 언어 버튼 (${l})`, await langButton(), want)
 }
 

@@ -23,6 +23,8 @@ for (const chapter of chapters) {
   const level = levels.find((item) => item.chapter === chapter.id)
   const difficultyQS = `?lang=${process.env.UI_LANG ?? 'ko'}`
   await page.goto(`${BASE}${difficultyQS}#${level.id}`)
+  // 해시만 바뀌면 goto 가 hashchange 처리 전에 끝날 수 있음
+  await page.waitForFunction((id) => window.__edu?.level?.id === id, level.id)
   const treeBadge = page.locator(`.tree .dir[data-chapter="${chapter.id}"] .difficulty`)
   const helpBadge = page.locator('#difficulty')
   const [treeText, treeLabel, helpText] = await Promise.all([
