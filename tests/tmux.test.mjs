@@ -66,6 +66,34 @@ test('윈도우: 새로 만들기, 이름 바꾸기, 번호 이동, 마지막 pa
   assert.equal(s.attached, null)
 })
 
+test('tmux kill-session: 대상 생략은 기본 세션, 세션이 없으면 서버 없음 안내', () => {
+  const s = createTmux()
+  line(s, 'tmux kill-session')
+  assert.equal(s.outer.lines.at(-1), 'no server running on /tmp/tmux-1000/default')
+  line(s, 'tmux new -s agent')
+  assert.equal(s.attached, 'agent')
+  line(s, 'tmux kill-session')
+  assert.equal(s.attached, null)
+  assert.deepEqual(s.sessions, [])
+  assert.equal(s.outer.lines.at(-1), '[exited]')
+  line(s, 'tmux a')
+  assert.equal(pane(s).lines.at(-1), 'no sessions')
+})
+
+test('tmux kill-session 이후에도 대상 없는 attach 이 남아 있는 세션을 찾는다', () => {
+  const t = createTmux({ attached: 'agent', sessions: [
+    { name: 'agent', windows: [{ panes: [{ program: 'claude', lines: AGENT_LOG }] }] },
+    { name: 'blog', windows: [{ panes: [{}] }] },
+  ] })
+  type(t, ['C-b', 'd'])
+  line(t, 'tmux kill-session -t agent')
+  assert.deepEqual(t.sessions.map((x) => x.name), ['blog'])
+  line(t, 'tmux a')
+  assert.equal(t.attached, 'blog')
+  line(t, 'tmux kill-session -t nosuch')
+  assert.equal(pane(t).lines.at(-1), "can't find session: nosuch")
+})
+
 test('모든 tmux 레벨: 시작 상태는 미완료, 모범 답안으로 완료', async () => {
   const { levels, tokenize } = await import('../src/levels.js')
   const KEY = { '<C-b>': 'C-b', '<CR>': 'Enter', '<Esc>': 'Escape', '<C-u>': 'C-u', '<Left>': 'Left', '<Right>': 'Right', '<Up>': 'Up', '<Down>': 'Down' }

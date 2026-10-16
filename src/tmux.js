@@ -201,6 +201,12 @@ function tmuxCli(s, term, args, inside) {
   const [sub = 'new', ...rest] = args
   const flag = (f) => { const i = rest.indexOf(f); return i >= 0 ? rest[i + 1] : undefined }
   const nested = () => term.lines.push('sessions should be nested with care, unset $TMUX to force')
+  const has = (name) => s.sessions.some((x) => x.name === name)
+  // tmux 는 세션 대상을 생략하면 "가장 최근 세션"을 고른다. 시뮬레이터에서는 붙어 있는 세션 →
+  // detach 하기 전 세션 → 마지막으로 만든 세션 순으로, 그중 실제로 남아 있는 첫 것.
+  // 목록에 없는 이름을 그대로 넘기면 안내 문구에 undefined 가 새어 나온다.
+  const defaultSession = () => [s.attached, s.lastSession, s.sessions.at(-1)?.name].find(has)
+  const NO_SERVER = 'no server running on /tmp/tmux-1000/default'
   if (['new', 'new-session'].includes(sub)) {
     if (inside) return nested()
     let name = flag('-s')
@@ -212,22 +218,26 @@ function tmuxCli(s, term, args, inside) {
     return attach(s, name)
   }
   if (['ls', 'list-sessions'].includes(sub)) {
-    if (!s.sessions.length) return term.lines.push('no server running on /tmp/tmux-1000/default')
+    if (!s.sessions.length) return term.lines.push(NO_SERVER)
     return term.lines.push(...s.sessions.map((x) => `${x.name}: ${x.windows.length} windows${x.name === s.attached ? ' (attached)' : ''}`))
   }
   if (['a', 'at', 'attach', 'attach-session'].includes(sub)) {
     if (inside) return nested()
-    const name = flag('-t') ?? s.lastSession ?? s.sessions.at(-1)?.name
     if (!s.sessions.length) return term.lines.push('no sessions')
-    if (!s.sessions.some((x) => x.name === name)) return term.lines.push(`can't find session: ${name}`)
+    const name = flag('-t') ?? defaultSession()
+    if (!has(name)) return term.lines.push(`can't find session: ${name}`)
     return attach(s, name)
   }
   if (sub === 'kill-session') {
-    const name = flag('-t')
-    if (!s.sessions.some((x) => x.name === name)) return term.lines.push(`can't find session: ${name}`)
+    if (!s.sessions.length) return term.lines.push(NO_SERVER)
+    const name = flag('-t') ?? defaultSession()
+    if (!has(name)) return term.lines.push(`can't find session: ${name}`)
     for (const w of s.sessions.find((x) => x.name === name).windows) paneIds(w.layout).forEach((id) => delete s.panes[id])
     s.sessions = s.sessions.filter((x) => x.name !== name)
-    if (s.attached === name) s.attached = null
+    if (s.attached === name) {
+      s.attached = null
+      s.outer.lines.push('[exited]')
+    }
     return
   }
   term.lines.push(`unknown command: ${sub}`)
