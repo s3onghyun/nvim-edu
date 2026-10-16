@@ -72,6 +72,16 @@ Vim 레벨은 코드가 아니라 데이터 파일 **`src/levels/vim-levels.json
 | par/별 | `par/별: 클리어 타수 2 ≠ par 3 (solution 키 수)` | 답안 끝의 남는 키 제거 (중간에 이미 클리어됨) |
 | 실제 Neovim 비교 (`nvim-diff`) | `DIFF 레벨:my-level [실제 Neovim 비교]` 다음에 기대(Neovim)/실제(사이트) 버퍼·커서 | 답안이 에뮬레이터에서만 동작함 → 다른 키로 |
 
+### AI 도구를 사용한 기여
+
+AI 도구는 보조 수단으로 써도 됩니다. PR 하나는 한 가지 문제에 집중하고, 제출하는 모든 변경을 직접
+검토하고 이해하고 테스트하고 이후에도 책임져 주세요. 코드·테스트·문서·레벨 작성에 AI가 실질적으로
+도움을 줬다면 PR 템플릿에 밝혀 주세요.
+
+대량 자동 생성되었거나 검토하지 않은 변경, 라이선스를 알 수 없는 복사 자료, 동작을 설명할 수 없는
+변경은 제출하지 마세요. 기여를 제출하면 이 저장소의 MIT 라이선스로 그 기여를 제공할 권리가 있음을
+확인하는 것입니다. 유지보수자는 더 작은 PR, 재현 방법, 테스트, 출처를 요청할 수 있습니다.
+
 ---
 
 ## English
@@ -115,3 +125,14 @@ Every message names the level `id` and the check that failed.
 | Emulator / real Vim solve (`levels.e2e`, `real.e2e`) | `FAIL 레벨 my-level [에뮬레이터 풀이]` followed by `solution`, expected/actual buffer (`기대 버퍼`/`실제 버퍼`), cursor, and mode | `solution` or `goal` |
 | Par / stars | `par/별: 클리어 타수 2 ≠ par 3` (cleared after 2 keys, par is 3) | drop trailing keys; the level clears early |
 | Real Neovim diff (`nvim-diff`) | `DIFF 레벨:my-level [실제 Neovim 비교]` followed by expected (Neovim) vs actual (site) buffer and cursor | the solution only works in the emulator; use other keys |
+
+### AI-assisted contributions
+
+AI tools may be used as an aid. Please keep each pull request focused and review,
+understand, test, and maintain every change you submit. If AI materially helped write
+code, tests, documentation, or a level, disclose that in the pull-request template.
+
+Do not submit bulk-generated or unreviewed changes, copied material with an unknown
+license, or a change whose behavior you cannot explain. By submitting a contribution,
+you confirm that you have the right to contribute it under this repository's MIT
+license. Maintainers may ask for a smaller PR, reproduction, tests, or provenance.
