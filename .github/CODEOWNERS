@@ -1,0 +1,9 @@
+# Ownership routes review requests; it does not itself block a merge.
+* @s3onghyun
+
+# Security-sensitive paths
+/.github/ @s3onghyun
+/package.json @s3onghyun
+/package-lock.json @s3onghyun
+/vite.config.js @s3onghyun
+/patches/ @s3onghyun
