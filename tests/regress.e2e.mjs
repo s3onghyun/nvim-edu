@@ -183,7 +183,7 @@ expect('새로고침 후 최고 기록 유지', [(await stored('records'))['miss
 const phone = await browser.newPage({ viewport: { width: 390, height: 844 } })
 const wide = []
 for (const id of ['', ...levels.map((l) => l.id)]) {
-  for (const lang of ['ko', 'en']) {
+  for (const lang of ['ko', 'en', 'zh-CN']) {
     await phone.goto('about:blank'); await phone.goto(`${BASE}?lang=${lang}#${id}`); await phone.waitForTimeout(150)
     if (id && !levels.find((l) => l.id === id).kind) await phone.click('#hint')
     const w = await phone.evaluate(() => document.documentElement.scrollWidth)
@@ -191,6 +191,11 @@ for (const id of ['', ...levels.map((l) => l.id)]) {
   }
 }
 expect('390px 폭에서 가로 스크롤 없음', wide, [])
+await phone.click('#lang')
+expect('390px 폭에서 언어 메뉴가 화면 안', await phone.evaluate(() => {
+  const r = document.querySelector('#lang-menu').getBoundingClientRect()
+  return r.width > 0 && r.left >= 0 && r.right <= 390 && document.documentElement.scrollWidth <= 390
+}), true)
 
 await browser.close()
 server?.httpServer.close()

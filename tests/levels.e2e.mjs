@@ -13,7 +13,7 @@ const KEY = {
 const BASE = process.env.BASE_URL ?? 'http://localhost:4179/'
 const server = process.env.BASE_URL ? null : await preview({ preview: { port: 4179 } })
 const name = process.env.BROWSER ?? 'chromium'
-// UI_LANG=en 이면 영어 화면으로 (레벨 데이터도 node 쪽에서 같은 언어로 불러옴)
+// UI_LANG=en · zh-CN 이면 그 언어 화면으로 (레벨 데이터도 node 쪽에서 같은 언어로 불러옴)
 const QS = process.env.UI_LANG ? `?lang=${process.env.UI_LANG}` : ''
 const browser = await pw[name].launch({ executablePath: name === 'chromium' ? process.env.CHROME_PATH || undefined : undefined })
 const page = await browser.newPage()
