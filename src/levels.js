@@ -161,11 +161,13 @@ const chapterOrder = chapters.map((c) => c.id)
 export const levels = [...vimLevels, ...tmuxLevels].sort((a, b) => chapterOrder.indexOf(a.chapter) - chapterOrder.indexOf(b.chapter))
 
 
-// 영어: 같은 id 의 필드를 levels.en.js 값으로 바꿈 (checks 는 라벨만)
-if (lang === 'en') {
-  for (const c of chapters) c.title = EN.chapters[c.id] ?? c.title
+// 영어 · 중국어: 같은 id 의 필드를 번역 파일 값으로 차례로 바꿈 (checks 는 라벨만).
+// 중국어는 영어 위에 덮어써서, 중국어에 없는 필드(연습 텍스트 start/goal 등)는 영어 것을 씀
+const OVERRIDES = { ko: [], en: [EN], 'zh-CN': [EN] }
+for (const tr of OVERRIDES[lang]) {
+  for (const c of chapters) c.title = tr.chapters[c.id] ?? c.title
   for (const l of levels) {
-    const { checks, ...rest } = EN.levels[l.id] ?? {}
+    const { checks, ...rest } = tr.levels[l.id] ?? {}
     Object.assign(l, rest)
     if (checks) l.checks = l.checks.map((c, i) => ({ ...c, label: checks[i] ?? c.label }))
   }
