@@ -47,3 +47,52 @@ export function translateDom(root = document) {
   for (const el of root.querySelectorAll('[data-en]')) el.innerHTML = el.dataset[key] ?? el.dataset.en
   for (const el of root.querySelectorAll('[data-en-label]')) el.setAttribute('aria-label', el.dataset[`${key}Label`] ?? el.dataset.enLabel)
 }
+
+// #lang 버튼 → 한국어 / EN / 中文 메뉴. 메인 화면과 진짜 Vim 화면이 같이 씀
+export function mountLangMenu(button) {
+  const label = button.getAttribute('aria-label')
+  button.append(LANG_NAMES[lang])
+  button.setAttribute('aria-label', `${LANG_NAMES[lang]} ${label}`)
+  button.setAttribute('aria-haspopup', 'menu')
+  button.setAttribute('aria-expanded', 'false')
+  const menu = document.createElement('div')
+  menu.id = 'lang-menu'
+  menu.className = 'lang-menu'
+  menu.setAttribute('role', 'menu')
+  menu.setAttribute('aria-label', label)
+  menu.hidden = true
+  menu.innerHTML = LANGS.map((l) => `<button role="menuitemradio" aria-checked="${l === lang}" data-lang="${l}" lang="${l}">${LANG_NAMES[l]}</button>`).join('')
+  button.after(menu)
+  const items = [...menu.querySelectorAll('button')]
+  const close = (focus) => {
+    menu.hidden = true
+    button.setAttribute('aria-expanded', 'false')
+    if (focus) button.focus()
+  }
+  const open = () => {
+    const r = button.getBoundingClientRect()
+    menu.style.top = `${r.bottom + 4}px`
+    menu.style.right = `${Math.max(4, document.documentElement.clientWidth - r.right)}px`
+    menu.hidden = false
+    button.setAttribute('aria-expanded', 'true')
+    items.find((b) => b.dataset.lang === lang).focus()
+  }
+  button.onclick = () => (menu.hidden ? open() : close(true))
+  menu.onclick = (e) => {
+    const next = e.target.closest('button')?.dataset.lang
+    if (!next) return
+    if (next === lang) close(true)
+    else setLang(next)
+  }
+  // 메뉴 안의 키는 대시보드 단축키(n, d …)로 새지 않게
+  menu.addEventListener('keydown', (e) => {
+    e.stopPropagation()
+    const i = items.indexOf(document.activeElement)
+    if (e.key === 'Escape') close(true)
+    else if (e.key === 'ArrowDown' || e.key === 'ArrowUp') items[(i + (e.key === 'ArrowDown' ? 1 : items.length - 1)) % items.length].focus()
+    else return
+    e.preventDefault()
+  })
+  menu.addEventListener('focusout', (e) => { if (!menu.contains(e.relatedTarget) && e.relatedTarget !== button) close(false) })
+  document.addEventListener('mousedown', (e) => { if (!menu.hidden && !menu.contains(e.target) && !button.contains(e.target)) close(false) })
+}

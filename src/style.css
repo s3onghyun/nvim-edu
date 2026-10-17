@@ -28,6 +28,8 @@
   --orange: #b15c00; --red: #f52a65; --yellow: #8c6c3e;
 }
 :root { --mono: 'JetBrains Mono', 'Nanum Gothic Coding', ui-monospace, Menlo, monospace; }
+/* 중국어 화면: 한글 폰트 대신 시스템 중국어 폰트로 (전각 문장부호가 한글 폰트 모양으로 나오지 않게) */
+:root:lang(zh-CN) { --mono: 'JetBrains Mono', ui-monospace, Menlo, 'PingFang SC', 'Microsoft YaHei', 'Noto Sans Mono CJK SC', 'Noto Sans CJK SC', monospace; }
 
 * { box-sizing: border-box; }
 [hidden] { display: none !important; }
@@ -269,6 +271,12 @@ body.real main { display: grid; grid-template-columns: minmax(0, 1fr); gap: 12px
 .lang:hover { background: var(--bg-hl); border-color: var(--blue); }
 .lang:focus-visible { outline-offset: 1px; border-color: var(--blue); }
 .lang-icon { width: 14px; height: 14px; fill: none; stroke: currentColor; stroke-width: 1.7; }
+/* 언어 메뉴 (#lang 아래에 뜸, 위치는 i18n.js 가 정함) */
+.lang-menu { position: fixed; z-index: 7; flex-direction: column; align-items: stretch; padding: 2px; background: var(--bg-dark); border: 1px solid var(--line); }
+.lang-menu button { display: block; text-align: left; margin: 0; background: transparent; color: var(--fg); border-color: transparent; }
+.lang-menu button:hover, .lang-menu button:focus-visible { background: var(--bg-hl); border-color: var(--blue); }
+.lang-menu [aria-checked="true"] { color: var(--green); }
+.lang-menu [aria-checked="true"]::before { content: '✓ '; }
 
 /* ── 풀이 해설 ── */
 /* 화면 밖(left:-10000px)이나 visibility:hidden 이면 CodeMirror 가 줄 좌표를 못 재서 j/k 가 틀어짐 → 화면 안에 투명하게 */

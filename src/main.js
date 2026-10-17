@@ -8,7 +8,7 @@ import { chapters, levels, tokenize, stars, difficultyLabel, difficultyText } fr
 import { missions, createSession, streak, ymd, rngFrom } from './drill.js'
 import { createTmux, press as tmuxPress, tmuxTask, AGENT_LOG } from './tmux.js'
 import { renderTmux, tmuxMode, tmuxTarget } from './tmux-view.js'
-import { lang, t as tr, setLang, translateDom } from './i18n.js'
+import { t as tr, translateDom, mountLangMenu } from './i18n.js'
 import { initializeAnalytics, trackEvent, trackPageView } from './analytics.js'
 import { replay } from './explain.js'
 import './style.css'
@@ -628,10 +628,7 @@ $('#hint').onclick = () => {
 $('#menu').onclick = () => document.body.classList.toggle('nav-open')
 $('#nav').onclick = (e) => { if (e.target.closest('a')) document.body.classList.remove('nav-open') }
 translateDom()
-const langText = lang === 'en' ? '한국어' : 'EN'
-$('#lang').append(langText)
-$('#lang').setAttribute('aria-label', `${langText} ${$('#lang').getAttribute('aria-label')}`)
-$('#lang').onclick = () => setLang(lang === 'en' ? 'ko' : 'en')
+mountLangMenu($('#lang'))
 const route = () => trackPageView(`/main/${load(location.hash.slice(1))}`)
 window.addEventListener('hashchange', route)
 initializeAnalytics()

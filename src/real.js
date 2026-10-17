@@ -2,7 +2,7 @@
 // 상태는 Vim 의 titlestring 으로 받는다 — JS 가 명령 도중에 끼어들면 Vim 이 멈춰서(실측) Vim 이 스스로 그릴 때 보고하게 함
 import { VimWasm, checkBrowserCompatibility } from 'vim-wasm'
 import { chapters, levels, tokenize, stars } from './levels.js'
-import { lang, t as tr, setLang, translateDom } from './i18n.js'
+import { t as tr, translateDom, mountLangMenu } from './i18n.js'
 import { initializeAnalytics, trackEvent, trackPageView } from './analytics.js'
 import './style.css'
 
@@ -15,10 +15,7 @@ document.documentElement.dataset.scheme = store.get('scheme', 'tokyonight')
 const escapeHtml = (s) => String(s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]))
 // 고정 문구 번역은 #chapter 등을 채우기 전에 (data-en 이 안쪽 span 을 새로 만듦)
 translateDom()
-const langText = lang === 'en' ? '한국어' : 'EN'
-$('#lang').append(langText)
-$('#lang').setAttribute('aria-label', `${langText} ${$('#lang').getAttribute('aria-label')}`)
-$('#lang').onclick = () => setLang(lang === 'en' ? 'ko' : 'en')
+mountLangMenu($('#lang'))
 const msg = (text, kind = '') => { $('#cmdline').textContent = text; $('#cmdline').className = kind }
 
 const vimLevels = levels.filter((l) => !l.kind)

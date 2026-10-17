@@ -10,37 +10,37 @@
 <body class="real">
   <header class="bufferline">
     <a href="../" class="logo"><span>nvim</span>-edu</a>
-    <span class="buf active" data-en="Real Vim 8.2 &lt;span class=&quot;dim&quot;&gt;(beta)&lt;/span&gt;">진짜 Vim 8.2 <span class="dim">(beta)</span></span>
+    <span class="buf active" data-en="Real Vim 8.2 &lt;span class=&quot;dim&quot;&gt;(beta)&lt;/span&gt;" data-zh-cn="真 Vim 8.2 &lt;span class=&quot;dim&quot;&gt;(beta)&lt;/span&gt;">진짜 Vim 8.2 <span class="dim">(beta)</span></span>
     <span class="spacer"></span>
-    <label class="scheme"><span data-en="Level">레벨</span>
-      <select id="level" aria-label="레벨 선택" data-en-label="Choose a level"></select>
+    <label class="scheme"><span data-en="Level" data-zh-cn="关卡">레벨</span>
+      <select id="level" aria-label="레벨 선택" data-en-label="Choose a level" data-zh-cn-label="选择关卡"></select>
     </label>
-    <button id="lang" class="lang" aria-label="언어 전환" data-en-label="Switch language" title="Language / 언어"><svg class="lang-icon" aria-hidden="true" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"></circle><path d="M4 12h16M12 4c3 3 3 13 0 16M12 4c-3 3-3 13 0 16"></path></svg></button>
-    <a class="gh" id="back" href="../" data-en="Back to emulator ←">에뮬레이터로 ←</a>
+    <button id="lang" class="lang" aria-label="언어 전환" data-en-label="Switch language" data-zh-cn-label="切换语言" title="Language / 언어 / 语言"><svg class="lang-icon" aria-hidden="true" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"></circle><path d="M4 12h16M12 4c3 3 3 13 0 16M12 4c-3 3-3 13 0 16"></path></svg></button>
+    <a class="gh" id="back" href="../" data-en="Back to emulator ←" data-zh-cn="回到模拟器 ←">에뮬레이터로 ←</a>
   </header>
   <main>
     <div class="float help">
-      <span class="float-title" data-en="Help · &lt;span id=&quot;chapter&quot;&gt;&lt;/span&gt;">도움말 · <span id="chapter"></span></span>
+      <span class="float-title" data-en="Help · &lt;span id=&quot;chapter&quot;&gt;&lt;/span&gt;" data-zh-cn="帮助 · &lt;span id=&quot;chapter&quot;&gt;&lt;/span&gt;">도움말 · <span id="chapter"></span></span>
       <h2 id="title"></h2>
       <p id="desc"></p>
       <ul id="checks" class="checks"></ul>
       <div class="help-foot">
         <div id="keychips" class="chips"></div>
         <div class="actions">
-          <button id="reset" data-en="↺ Restart">↺ 처음부터</button>
-          <button id="hint" data-en="? Solution">? 모범 답안</button>
+          <button id="reset" data-en="↺ Restart" data-zh-cn="↺ 重新开始">↺ 처음부터</button>
+          <button id="hint" data-en="? Solution" data-zh-cn="? 参考答案">? 모범 답안</button>
           <span id="hint-text" hidden></span>
         </div>
       </div>
     </div>
-    <p class="dim real-note" data-en="A &lt;b&gt;real Vim&lt;/b&gt; (vim.wasm, Vim 8.2) runs inside your browser. Unlike the emulator, every command behaves exactly like the real thing. Click the screen to type.">브라우저 안에서 <b>진짜 Vim</b>(vim.wasm, Vim 8.2)이 돌아갑니다. 에뮬레이터와 달리 모든 명령이 실제와 같습니다. 화면을 클릭하면 입력을 받습니다.</p>
+    <p class="dim real-note" data-en="A &lt;b&gt;real Vim&lt;/b&gt; (vim.wasm, Vim 8.2) runs inside your browser. Unlike the emulator, every command behaves exactly like the real thing. Click the screen to type." data-zh-cn="浏览器里跑着一个&lt;b&gt;真正的 Vim&lt;/b&gt;（vim.wasm，Vim 8.2）。和模拟器不同，所有命令的表现都和真的一模一样。点击屏幕即可输入。">브라우저 안에서 <b>진짜 Vim</b>(vim.wasm, Vim 8.2)이 돌아갑니다. 에뮬레이터와 달리 모든 명령이 실제와 같습니다. 화면을 클릭하면 입력을 받습니다.</p>
     <div class="workspace">
       <div class="win">
         <div class="winbar" id="winbar">vim</div>
         <div class="vim-box" id="vim-box">
           <canvas id="vim-canvas"></canvas>
-          <input id="vim-input" autocomplete="off" autofocus aria-label="Vim 입력" data-en-label="Vim input" />
-          <div id="vim-loading" class="vim-loading" data-en="Loading real Vim… (about 0.8MB the first time)">진짜 Vim 불러오는 중… (처음 한 번 약 0.8MB)</div>
+          <input id="vim-input" autocomplete="off" autofocus aria-label="Vim 입력" data-en-label="Vim input" data-zh-cn-label="Vim 输入" />
+          <div id="vim-loading" class="vim-loading" data-en="Loading real Vim… (about 0.8MB the first time)" data-zh-cn="正在加载真正的 Vim…（首次约 0.8MB）">진짜 Vim 불러오는 중… (처음 한 번 약 0.8MB)</div>
         </div>
       </div>
       <div class="win">

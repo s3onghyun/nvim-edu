@@ -64,14 +64,33 @@ const langButton = () => page.evaluate(() => {
     bordered: style.borderTopColor !== 'rgba(0, 0, 0, 0)' && style.borderTopStyle !== 'none',
   }
 })
-const langKo = { text: 'EN', label: 'EN 언어 전환', hasIcon: true, focused: true, bordered: true }
-const langEn = { text: '한국어', label: '한국어 Switch language', hasIcon: true, focused: true, bordered: true }
+const langMenu = () => page.evaluate(() => {
+  const menu = document.querySelector('#lang-menu')
+  return {
+    open: !menu.hidden,
+    items: [...menu.querySelectorAll('[role=menuitemradio]')].map((b) => `${b.textContent}${b.getAttribute('aria-checked') === 'true' ? '*' : ''}`),
+    focused: document.activeElement?.dataset.lang ?? document.activeElement?.id ?? null,
+  }
+})
+const pickLang = async (code) => { await page.click('#lang'); await Promise.all([page.waitForEvent('load'), page.click(`#lang-menu [data-lang="${code}"]`)]) }
+const langKo = { text: '한국어', label: '한국어 언어 전환', hasIcon: true, focused: true, bordered: true }
+const langEn = { text: 'EN', label: 'EN Switch language', hasIcon: true, focused: true, bordered: true }
+const langZh = { text: '中文', label: '中文 切换语言', hasIcon: true, focused: true, bordered: true }
 expect('언어 버튼은 아이콘·이름·테두리·키보드 포커스를 제공', await langButton(), langKo)
-await Promise.all([page.waitForEvent('load'), page.click('#lang')])
-expect('레벨 화면에서 언어 버튼 → 영어', await langButton(), langEn)
-await Promise.all([page.waitForEvent('load'), page.click('#lang')])
-expect('다시 누르면 한국어', await langButton(), langKo)
-for (const [l, want] of [['ko', langKo], ['en', langEn]]) {
+await page.keyboard.press('Enter')
+expect('Enter 로 언어 메뉴 → 현재 언어에 포커스', await langMenu(), { open: true, items: ['한국어*', 'EN', '中文'], focused: 'ko' })
+await page.keyboard.press('Escape')
+expect('Esc 로 닫으면 버튼으로 포커스', await langMenu(), { open: false, items: ['한국어*', 'EN', '中文'], focused: 'lang' })
+await page.keyboard.press('Enter')
+await page.keyboard.press('ArrowDown')
+await Promise.all([page.waitForEvent('load'), page.keyboard.press('Enter')])
+expect('레벨 화면에서 키보드로 ↓ Enter → 영어', await langButton(), langEn)
+await pickLang('zh-CN')
+expect('메뉴에서 中文 → 중국어', await langButton(), langZh)
+expect('중국어 메뉴는 中文 에 표시', (await langMenu()).items, ['한국어', 'EN', '中文*'])
+await pickLang('ko')
+expect('다시 한국어', await langButton(), langKo)
+for (const [l, want] of [['ko', langKo], ['en', langEn], ['zh-CN', langZh]]) {
   await page.goto(`${BASE}real/?lang=${l}#x`)
   // 첫 방문은 서비스 워커가 한 번 새로고침하므로, 격리(또는 안내)까지 기다려야 다음 goto 가 끊기지 않음
   await page.waitForFunction(() => document.querySelector('#lang').innerText.trim() && (window.crossOriginIsolated || document.querySelector('.fallback')), null, { timeout: 30000 })

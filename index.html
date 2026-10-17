@@ -12,37 +12,37 @@
 </head>
 <body>
   <header class="bufferline">
-    <button id="menu" aria-label="파일 트리 열기" data-en-label="Open file tree">☰</button>
+    <button id="menu" aria-label="파일 트리 열기" data-en-label="Open file tree" data-zh-cn-label="打开文件树">☰</button>
     <a href="#" class="logo"><span>nvim</span>-edu</a>
     <span id="buffers"></span>
     <span class="spacer"></span>
     <label class="scheme"><span>:colo</span>
-      <select id="scheme" aria-label="컬러스킴" data-en-label="Color scheme"></select>
+      <select id="scheme" aria-label="컬러스킴" data-en-label="Color scheme" data-zh-cn-label="配色方案"></select>
     </label>
-    <button id="lang" class="lang" aria-label="언어 전환" data-en-label="Switch language" title="Language / 언어"><svg class="lang-icon" aria-hidden="true" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"></circle><path d="M4 12h16M12 4c3 3 3 13 0 16M12 4c-3 3-3 13 0 16"></path></svg></button>
+    <button id="lang" class="lang" aria-label="언어 전환" data-en-label="Switch language" data-zh-cn-label="切换语言" title="Language / 언어 / 语言"><svg class="lang-icon" aria-hidden="true" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"></circle><path d="M4 12h16M12 4c3 3 3 13 0 16M12 4c-3 3-3 13 0 16"></path></svg></button>
     <a class="gh" href="https://github.com/s3onghyun/nvim-edu" target="_blank" rel="noopener">GitHub</a>
   </header>
 
   <div class="layout">
-    <nav id="nav" class="tree" aria-label="레벨 목록" data-en-label="Levels"></nav>
+    <nav id="nav" class="tree" aria-label="레벨 목록" data-en-label="Levels" data-zh-cn-label="关卡列表"></nav>
     <main>
       <section id="dashboard" hidden>
         <div class="ascii" id="logo" role="img" aria-label="NVIM"></div>
-        <p class="tagline" data-en="Until your fingers remember. Neovim practice, right in your browser">손가락이 기억할 때까지. 브라우저에서 바로 하는 Neovim 연습</p>
+        <p class="tagline" data-en="Until your fingers remember. Neovim practice, right in your browser" data-zh-cn="练到手指记住为止。在浏览器里直接练 Neovim">손가락이 기억할 때까지. 브라우저에서 바로 하는 Neovim 연습</p>
         <div class="dash-menu">
-          <a href="#hjkl" data-en="&lt;span class=&quot;ico&quot;&gt;▸&lt;/span&gt;Start from the beginning&lt;kbd&gt;n&lt;/kbd&gt;"><span class="ico">▸</span>처음부터 배우기<kbd>n</kbd></a>
-          <a href="#mission-daily" data-en="&lt;span class=&quot;ico&quot;&gt;▸&lt;/span&gt;Daily challenge&lt;kbd&gt;d&lt;/kbd&gt;"><span class="ico">▸</span>오늘의 미션<kbd>d</kbd></a>
-          <a href="#mission-move" data-en="&lt;span class=&quot;ico&quot;&gt;▸&lt;/span&gt;Motion drill&lt;kbd&gt;m&lt;/kbd&gt;"><span class="ico">▸</span>이동 미션<kbd>m</kbd></a>
-          <a href="#sandbox" data-en="&lt;span class=&quot;ico&quot;&gt;▸&lt;/span&gt;Free practice&lt;kbd&gt;s&lt;/kbd&gt;"><span class="ico">▸</span>자유 연습장<kbd>s</kbd></a>
-          <a href="real/" data-en="&lt;span class=&quot;ico&quot;&gt;▸&lt;/span&gt;Real Vim mode (beta)&lt;kbd&gt;r&lt;/kbd&gt;"><span class="ico">▸</span>진짜 Vim 모드 (beta)<kbd>r</kbd></a>
-          <a href="#" id="dash-scheme" data-en="&lt;span class=&quot;ico&quot;&gt;▸&lt;/span&gt;Change color scheme&lt;kbd&gt;c&lt;/kbd&gt;"><span class="ico">▸</span>컬러스킴 바꾸기<kbd>c</kbd></a>
+          <a href="#hjkl" data-en="&lt;span class=&quot;ico&quot;&gt;▸&lt;/span&gt;Start from the beginning&lt;kbd&gt;n&lt;/kbd&gt;" data-zh-cn="&lt;span class=&quot;ico&quot;&gt;▸&lt;/span&gt;从头开始学&lt;kbd&gt;n&lt;/kbd&gt;"><span class="ico">▸</span>처음부터 배우기<kbd>n</kbd></a>
+          <a href="#mission-daily" data-en="&lt;span class=&quot;ico&quot;&gt;▸&lt;/span&gt;Daily challenge&lt;kbd&gt;d&lt;/kbd&gt;" data-zh-cn="&lt;span class=&quot;ico&quot;&gt;▸&lt;/span&gt;每日挑战&lt;kbd&gt;d&lt;/kbd&gt;"><span class="ico">▸</span>오늘의 미션<kbd>d</kbd></a>
+          <a href="#mission-move" data-en="&lt;span class=&quot;ico&quot;&gt;▸&lt;/span&gt;Motion drill&lt;kbd&gt;m&lt;/kbd&gt;" data-zh-cn="&lt;span class=&quot;ico&quot;&gt;▸&lt;/span&gt;移动练习&lt;kbd&gt;m&lt;/kbd&gt;"><span class="ico">▸</span>이동 미션<kbd>m</kbd></a>
+          <a href="#sandbox" data-en="&lt;span class=&quot;ico&quot;&gt;▸&lt;/span&gt;Free practice&lt;kbd&gt;s&lt;/kbd&gt;" data-zh-cn="&lt;span class=&quot;ico&quot;&gt;▸&lt;/span&gt;自由练习&lt;kbd&gt;s&lt;/kbd&gt;"><span class="ico">▸</span>자유 연습장<kbd>s</kbd></a>
+          <a href="real/" data-en="&lt;span class=&quot;ico&quot;&gt;▸&lt;/span&gt;Real Vim mode (beta)&lt;kbd&gt;r&lt;/kbd&gt;" data-zh-cn="&lt;span class=&quot;ico&quot;&gt;▸&lt;/span&gt;真 Vim 模式 (beta)&lt;kbd&gt;r&lt;/kbd&gt;"><span class="ico">▸</span>진짜 Vim 모드 (beta)<kbd>r</kbd></a>
+          <a href="#" id="dash-scheme" data-en="&lt;span class=&quot;ico&quot;&gt;▸&lt;/span&gt;Change color scheme&lt;kbd&gt;c&lt;/kbd&gt;" data-zh-cn="&lt;span class=&quot;ico&quot;&gt;▸&lt;/span&gt;切换配色方案&lt;kbd&gt;c&lt;/kbd&gt;"><span class="ico">▸</span>컬러스킴 바꾸기<kbd>c</kbd></a>
         </div>
         <p id="dash-stats" class="dim"></p>
       </section>
 
       <section id="work">
         <div class="float help">
-          <span class="float-title" data-en="Help · &lt;span id=&quot;chapter&quot;&gt;&lt;/span&gt;">도움말 · <span id="chapter"></span></span>
+          <span class="float-title" data-en="Help · &lt;span id=&quot;chapter&quot;&gt;&lt;/span&gt;" data-zh-cn="帮助 · &lt;span id=&quot;chapter&quot;&gt;&lt;/span&gt;">도움말 · <span id="chapter"></span></span>
           <span id="difficulty" class="difficulty help-difficulty"></span>
           <h2 id="title"></h2>
           <p id="desc"></p>
@@ -50,10 +50,10 @@
           <div class="help-foot">
             <div id="keychips" class="chips"></div>
             <div class="actions">
-              <button id="reset" data-en="↺ Restart">↺ 처음부터</button>
-              <button id="hint" data-en="? Solution">? 모범 답안</button>
+              <button id="reset" data-en="↺ Restart" data-zh-cn="↺ 重新开始">↺ 처음부터</button>
+              <button id="hint" data-en="? Solution" data-zh-cn="? 参考答案">? 모범 답안</button>
               <span id="hint-text" hidden></span>
-              <a id="real-link" class="real-link" href="real/" hidden data-en="Solve in real Vim →">진짜 Vim 으로 풀기 →</a>
+              <a id="real-link" class="real-link" href="real/" hidden data-en="Solve in real Vim →" data-zh-cn="用真 Vim 来解 →">진짜 Vim 으로 풀기 →</a>
             </div>
           </div>
           <div id="explain"></div>
@@ -64,13 +64,13 @@
             <div id="editor"></div>
           </div>
           <div class="win">
-            <div class="winbar"><span class="dim">goal</span> [RO] <span class="dim" data-en="— red lines still differ">— 빨간 줄은 아직 다른 곳</span></div>
+            <div class="winbar"><span class="dim">goal</span> [RO] <span class="dim" data-en="— red lines still differ" data-zh-cn="— 红色的行还不一样">— 빨간 줄은 아직 다른 곳</span></div>
             <div id="goal"></div>
           </div>
         </div>
         <div class="term-wrap" id="term-wrap" hidden>
-          <div class="winbar">terminal <span class="dim" data-en="— default tmux keys · prefix &lt;kbd&gt;Ctrl-b&lt;/kbd&gt; · click to focus">— tmux 기본 설정 · prefix <kbd>Ctrl-b</kbd> · 클릭해서 포커스</span></div>
-          <div id="term" tabindex="0" aria-label="tmux 터미널 시뮬레이터" data-en-label="tmux terminal simulator"></div>
+          <div class="winbar">terminal <span class="dim" data-en="— default tmux keys · prefix &lt;kbd&gt;Ctrl-b&lt;/kbd&gt; · click to focus" data-zh-cn="— tmux 默认按键 · prefix &lt;kbd&gt;Ctrl-b&lt;/kbd&gt; · 点击获取焦点">— tmux 기본 설정 · prefix <kbd>Ctrl-b</kbd> · 클릭해서 포커스</span></div>
+          <div id="term" tabindex="0" aria-label="tmux 터미널 시뮬레이터" data-en-label="tmux terminal simulator" data-zh-cn-label="tmux 终端模拟器"></div>
         </div>
         <div id="banner" class="float notify" hidden></div>
       </section>
