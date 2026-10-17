@@ -3,50 +3,50 @@
 import { t } from './i18n.js'
 
 const MOTION = {
-  h: ['왼쪽으로', 'left'], j: ['아래로', 'down'], k: ['위로', 'up'], l: ['오른쪽으로', 'right'],
-  w: ['다음 단어 시작으로', 'to the next word'], b: ['이전 단어 시작으로', 'back to the previous word'], e: ['단어 끝으로', 'to the end of the word'],
-  W: ['다음 WORD(공백 기준)로', 'to the next WORD'], B: ['이전 WORD로', 'back to the previous WORD'], E: ['WORD 끝으로', 'to the end of the WORD'],
-  0: ['줄 맨 앞으로', 'to the start of the line'], '^': ['줄의 첫 글자로', 'to the first non-blank'], $: ['줄 끝으로', 'to the end of the line'],
-  gg: ['파일 맨 위로', 'to the top of the file'], G: ['파일 맨 아래로', 'to the bottom of the file'],
-  '%': ['짝 괄호로', 'to the matching bracket'], n: ['다음 검색 결과로', 'to the next match'], N: ['이전 검색 결과로', 'to the previous match'],
-  '*': ['커서 밑 단어를 단어 단위로 검색 (다음)', 'search the word under the cursor (forward)'], '#': ['커서 밑 단어를 단어 단위로 검색 (이전)', 'search the word under the cursor (backward)'],
-  ';': ['f/t 를 같은 방향으로 반복', 'repeat f/t'], ',': ['f/t 를 반대 방향으로 반복', 'repeat f/t backwards'],
-  '{': ['이전 빈 줄로', 'to the previous blank line'], '}': ['다음 빈 줄로', 'to the next blank line'],
-  H: ['화면 맨 위 줄로', 'to the top of the screen'], M: ['화면 가운데 줄로', 'to the middle of the screen'], L: ['화면 맨 아래 줄로', 'to the bottom of the screen'],
+  h: ['왼쪽으로', 'left', '向左'], j: ['아래로', 'down', '向下'], k: ['위로', 'up', '向上'], l: ['오른쪽으로', 'right', '向右'],
+  w: ['다음 단어 시작으로', 'to the next word', '到下一个单词开头'], b: ['이전 단어 시작으로', 'back to the previous word', '回到上一个单词开头'], e: ['단어 끝으로', 'to the end of the word', '到单词结尾'],
+  W: ['다음 WORD(공백 기준)로', 'to the next WORD', '到下一个 WORD（以空白分隔）'], B: ['이전 WORD로', 'back to the previous WORD', '回到上一个 WORD'], E: ['WORD 끝으로', 'to the end of the WORD', '到 WORD 结尾'],
+  0: ['줄 맨 앞으로', 'to the start of the line', '到行首'], '^': ['줄의 첫 글자로', 'to the first non-blank', '到本行第一个非空白字符'], $: ['줄 끝으로', 'to the end of the line', '到行尾'],
+  gg: ['파일 맨 위로', 'to the top of the file', '到文件顶部'], G: ['파일 맨 아래로', 'to the bottom of the file', '到文件底部'],
+  '%': ['짝 괄호로', 'to the matching bracket', '到配对的括号'], n: ['다음 검색 결과로', 'to the next match', '到下一个搜索结果'], N: ['이전 검색 결과로', 'to the previous match', '到上一个搜索结果'],
+  '*': ['커서 밑 단어를 단어 단위로 검색 (다음)', 'search the word under the cursor (forward)', '按完整单词搜索光标下的词（下一个）'], '#': ['커서 밑 단어를 단어 단위로 검색 (이전)', 'search the word under the cursor (backward)', '按完整单词搜索光标下的词（上一个）'],
+  ';': ['f/t 를 같은 방향으로 반복', 'repeat f/t', '同方向重复 f/t'], ',': ['f/t 를 반대 방향으로 반복', 'repeat f/t backwards', '反方向重复 f/t'],
+  '{': ['이전 빈 줄로', 'to the previous blank line', '到上一个空行'], '}': ['다음 빈 줄로', 'to the next blank line', '到下一个空行'],
+  H: ['화면 맨 위 줄로', 'to the top of the screen', '到屏幕顶行'], M: ['화면 가운데 줄로', 'to the middle of the screen', '到屏幕中间行'], L: ['화면 맨 아래 줄로', 'to the bottom of the screen', '到屏幕底行'],
 }
 const FIND = { f: ['까지 이동 (글자 위)', 'find'], t: ['바로 앞까지 이동', 'till'], F: ['를 거꾸로 찾아 이동', 'find backwards'], T: ['바로 뒤까지 거꾸로 이동', 'till backwards'] }
 const OBJECT = {
-  w: ['단어', 'word'], W: ['WORD', 'WORD'], s: ['문장', 'sentence'], p: ['문단', 'paragraph'],
-  '"': ['큰따옴표', 'double quotes'], "'": ['작은따옴표', 'single quotes'], '`': ['백틱', 'backticks'],
-  '(': ['괄호', 'parentheses'], ')': ['괄호', 'parentheses'], b: ['괄호', 'parentheses'],
-  '{': ['중괄호', 'braces'], '}': ['중괄호', 'braces'], B: ['중괄호', 'braces'],
-  '[': ['대괄호', 'brackets'], ']': ['대괄호', 'brackets'], '<': ['꺾쇠', 'angle brackets'], '>': ['꺾쇠', 'angle brackets'], t: ['태그', 'tag'],
+  w: ['단어', 'word', '单词'], W: ['WORD', 'WORD', 'WORD'], s: ['문장', 'sentence', '句子'], p: ['문단', 'paragraph', '段落'],
+  '"': ['큰따옴표', 'double quotes', '双引号'], "'": ['작은따옴표', 'single quotes', '单引号'], '`': ['백틱', 'backticks', '反引号'],
+  '(': ['괄호', 'parentheses', '括号'], ')': ['괄호', 'parentheses', '括号'], b: ['괄호', 'parentheses', '括号'],
+  '{': ['중괄호', 'braces', '花括号'], '}': ['중괄호', 'braces', '花括号'], B: ['중괄호', 'braces', '花括号'],
+  '[': ['대괄호', 'brackets', '方括号'], ']': ['대괄호', 'brackets', '方括号'], '<': ['꺾쇠', 'angle brackets', '尖括号'], '>': ['꺾쇠', 'angle brackets', '尖括号'], t: ['태그', 'tag', '标签'],
 }
 const OPERATOR = {
-  d: ['삭제', 'delete'], c: ['바꾸기 (지우고 입력)', 'change (delete and type)'], y: ['복사', 'yank (copy)'],
-  '>': ['들여쓰기', 'indent'], '<': ['내어쓰기', 'unindent'], '=': ['자동 들여쓰기', 'auto-indent'],
-  gU: ['대문자로', 'uppercase'], gu: ['소문자로', 'lowercase'], 'g~': ['대소문자 뒤집기', 'toggle case'],
+  d: ['삭제', 'delete', '删除'], c: ['바꾸기 (지우고 입력)', 'change (delete and type)', '修改（删除后输入）'], y: ['복사', 'yank (copy)', '复制'],
+  '>': ['들여쓰기', 'indent', '缩进'], '<': ['내어쓰기', 'unindent', '取消缩进'], '=': ['자동 들여쓰기', 'auto-indent', '自动缩进'],
+  gU: ['대문자로', 'uppercase', '转大写'], gu: ['소문자로', 'lowercase', '转小写'], 'g~': ['대소문자 뒤집기', 'toggle case', '切换大小写'],
 }
-const LINEWISE = { dd: ['줄 삭제', 'delete the line'], cc: ['줄 전체 바꾸기', 'change the whole line'], yy: ['줄 복사', 'yank the line'], '>>': ['줄 들여쓰기', 'indent the line'], '<<': ['줄 내어쓰기', 'unindent the line'] }
+const LINEWISE = { dd: ['줄 삭제', 'delete the line', '删除整行'], cc: ['줄 전체 바꾸기', 'change the whole line', '修改整行'], yy: ['줄 복사', 'yank the line', '复制整行'], '>>': ['줄 들여쓰기', 'indent the line', '缩进整行'], '<<': ['줄 내어쓰기', 'unindent the line', '整行取消缩进'] }
 const ACTION = {
-  x: ['커서 글자 삭제', 'delete the character'], X: ['앞 글자 삭제', 'delete the character before'],
-  p: ['커서 뒤(줄이면 아래)에 붙여넣기', 'paste after (below for lines)'], P: ['커서 앞(줄이면 위)에 붙여넣기', 'paste before (above for lines)'],
-  u: ['되돌리기', 'undo'], '<C-r>': ['다시 하기', 'redo'], '.': ['마지막 변경 반복', 'repeat the last change'],
-  J: ['아래 줄과 합치기', 'join with the next line'], D: ['줄 끝까지 삭제', 'delete to the end of the line'], Y: ['줄 끝까지 복사', 'yank to the end of the line'],
-  '~': ['대소문자 바꾸고 다음 글자로', 'toggle case and move right'], '<C-a>': ['숫자 1 올리기', 'increment the number'], '<C-x>': ['숫자 1 내리기', 'decrement the number'],
-  '@@': ['마지막 매크로 다시 실행', 'replay the last macro'], q: ['매크로 녹화 끝', 'stop recording'], gv: ['마지막 선택 다시', 'reselect'],
+  x: ['커서 글자 삭제', 'delete the character', '删除光标处的字符'], X: ['앞 글자 삭제', 'delete the character before', '删除前一个字符'],
+  p: ['커서 뒤(줄이면 아래)에 붙여넣기', 'paste after (below for lines)', '粘贴到光标后（整行则贴到下方）'], P: ['커서 앞(줄이면 위)에 붙여넣기', 'paste before (above for lines)', '粘贴到光标前（整行则贴到上方）'],
+  u: ['되돌리기', 'undo', '撤销'], '<C-r>': ['다시 하기', 'redo', '重做'], '.': ['마지막 변경 반복', 'repeat the last change', '重复上一次修改'],
+  J: ['아래 줄과 합치기', 'join with the next line', '与下一行合并'], D: ['줄 끝까지 삭제', 'delete to the end of the line', '删除到行尾'], Y: ['줄 끝까지 복사', 'yank to the end of the line', '复制到行尾'],
+  '~': ['대소문자 바꾸고 다음 글자로', 'toggle case and move right', '切换大小写并右移一格'], '<C-a>': ['숫자 1 올리기', 'increment the number', '数字加 1'], '<C-x>': ['숫자 1 내리기', 'decrement the number', '数字减 1'],
+  '@@': ['마지막 매크로 다시 실행', 'replay the last macro', '重放上一个宏'], q: ['매크로 녹화 끝', 'stop recording', '停止录制'], gv: ['마지막 선택 다시', 'reselect', '重新选中上次的选区'],
 }
 const INSERT = {
-  i: ['커서 앞에서 입력', 'insert before the cursor'], a: ['커서 뒤에서 입력', 'append after the cursor'],
-  I: ['줄 맨 앞에서 입력', 'insert at the start of the line'], A: ['줄 끝에서 입력', 'append at the end of the line'],
-  o: ['아래 새 줄에서 입력', 'open a line below'], O: ['위 새 줄에서 입력', 'open a line above'],
-  s: ['글자 지우고 입력', 'substitute the character'], S: ['줄 지우고 입력', 'substitute the line'], C: ['줄 끝까지 지우고 입력', 'change to the end of the line'],
+  i: ['커서 앞에서 입력', 'insert before the cursor', '在光标前输入'], a: ['커서 뒤에서 입력', 'append after the cursor', '在光标后输入'],
+  I: ['줄 맨 앞에서 입력', 'insert at the start of the line', '在行首输入'], A: ['줄 끝에서 입력', 'append at the end of the line', '在行尾输入'],
+  o: ['아래 새 줄에서 입력', 'open a line below', '在下方新开一行输入'], O: ['위 새 줄에서 입력', 'open a line above', '在上方新开一行输入'],
+  s: ['글자 지우고 입력', 'substitute the character', '删除字符后输入'], S: ['줄 지우고 입력', 'substitute the line', '清空整行后输入'], C: ['줄 끝까지 지우고 입력', 'change to the end of the line', '删到行尾后输入'],
 }
-const VISUAL = { v: ['글자 단위 선택', 'select characters'], V: ['줄 단위 선택', 'select lines'], '<C-v>': ['세로 블록 선택', 'select a block'] }
+const VISUAL = { v: ['글자 단위 선택', 'select characters', '按字符选择'], V: ['줄 단위 선택', 'select lines', '按行选择'], '<C-v>': ['세로 블록 선택', 'select a block', '按列块选择'] }
 const VISUAL_END = new Set(['d', 'x', 'c', 's', 'y', '>', '<', '=', 'J', '~', 'u', 'U', 'I', 'A', 'r', ':', 'p', 'P', '<Esc>'])
 const VISUAL_INSERT = new Set(['c', 's', 'I', 'A'])
 
-const tr = (pair) => t(pair[0], pair[1])
+const tr = (pair) => t(pair[0], pair[1], pair[2])
 const isCount = (k, first) => /^[0-9]$/.test(k) && !(first && k === '0')
 
 // tokens(['d','i','w',...]) → [{ keys: [...], kind }]. 한 번에 실행되는 단위로 묶음
@@ -119,45 +119,48 @@ function describeMotion(keys, target = false, op = '') {
   const n = j > 0 ? Number(keys.slice(0, j).join('')) : null
   const [k, arg] = [keys[j], keys[j + 1]]
   const nth = n ? `${n}번째 ` : ''
-  if (k === 'G' && n) return t(target ? `${n}번째 줄까지` : `${n}번째 줄로`, `to line ${n}`)
+  const nthZh = n ? `第 ${n} 个 ` : ''
+  if (k === 'G' && n) return t(target ? `${n}번째 줄까지` : `${n}번째 줄로`, `to line ${n}`, `到第 ${n} 行`)
   if (FIND[k]) {
     const en = `${n ? `the ${n}th ` : ''}${quote(arg)}`
     if (target) return t({ f: `${nth}${quote(arg)} 까지(포함)`, t: `${nth}${quote(arg)} 바로 앞까지`, F: `거꾸로 ${nth}${quote(arg)} 까지(포함)`, T: `거꾸로 ${nth}${quote(arg)} 바로 뒤까지` }[k],
-      { f: `up to and including ${en}`, t: `up to ${en}`, F: `back to and including ${en}`, T: `back to just after ${en}` }[k])
-    return t(`${nth}${quote(arg)} ${FIND[k][0]}`, `${FIND[k][1]} ${n ? `the ${n}th ` : ''}${quote(arg)}`)
+      { f: `up to and including ${en}`, t: `up to ${en}`, F: `back to and including ${en}`, T: `back to just after ${en}` }[k],
+      { f: `到${nthZh}${quote(arg)}（含）`, t: `到${nthZh}${quote(arg)} 之前`, F: `向回到${nthZh}${quote(arg)}（含）`, T: `向回到${nthZh}${quote(arg)} 之后` }[k])
+    return t(`${nth}${quote(arg)} ${FIND[k][0]}`, `${FIND[k][1]} ${n ? `the ${n}th ` : ''}${quote(arg)}`,
+      { f: `跳到${nthZh}${quote(arg)} 上`, t: `跳到${nthZh}${quote(arg)} 前一格`, F: `向回跳到${nthZh}${quote(arg)} 上`, T: `向回跳到${nthZh}${quote(arg)} 后一格` }[k])
   }
   if (k === '/' || k === '?') {
     const q = quote(typed(keys.slice(j + 1).filter((x) => x !== '<CR>')))
-    return t(target ? `${q} 검색 결과 앞까지` : `${q} 검색해서 이동`, `${target ? 'up to' : 'search for'} ${q}`)
+    return t(target ? `${q} 검색 결과 앞까지` : `${q} 검색해서 이동`, `${target ? 'up to' : 'search for'} ${q}`, target ? `到 ${q} 搜索结果之前` : `搜索 ${q} 并跳过去`)
   }
   if ((k === 'i' || k === 'a') && OBJECT[arg]) {
     const o = OBJECT[arg]
-    return k === 'i' ? t(`${o[0]} 안`, `inside the ${o[1]}`) : t(`${o[0]} 전체(감싼 것 포함)`, `around the ${o[1]}`)
+    return k === 'i' ? t(`${o[0]} 안`, `inside the ${o[1]}`, `${o[2]}内部`) : t(`${o[0]} 전체(감싼 것 포함)`, `around the ${o[1]}`, `整个${o[2]}（含外围）`)
   }
   // cw 는 실제로 ce 처럼 단어 끝까지만 (Vim 의 오래된 예외)
-  if (target && op === 'c' && (k === 'w' || k === 'W')) return t(n ? `${n}번째 단어 끝까지` : '단어 끝까지', n ? `to the end of word ${n}` : 'to the end of the word')
+  if (target && op === 'c' && (k === 'w' || k === 'W')) return t(n ? `${n}번째 단어 끝까지` : '단어 끝까지', n ? `to the end of word ${n}` : 'to the end of the word', n ? `到第 ${n} 个单词结尾` : '到单词结尾')
   const m = MOTION[k === 'g' ? k + arg : k]
   if (!m) return quote(keys.join(''))
   const ko = target ? m[0].replace(/(으로|로)$/, '까지') : m[0]
-  return n ? t(`${n}번 ${ko}`, `${m[1]} ×${n}`) : t(ko, m[1])
+  return n ? t(`${n}번 ${ko}`, `${m[1]} ×${n}`, `${m[2]} ×${n}`) : t(ko, m[1], m[2])
 }
 
 function describeEx(cmd) {
   let m
   if ((m = cmd.match(/^(%|\d*,?\d*)?s(\/.*)$/))) {
     const [, pat, rep, flags = ''] = m[2].split('/')
-    const where = m[1] === '%' ? t('파일 전체에서 ', 'everywhere: ') : t('현재 줄에서 ', 'on this line: ')
-    return where + t(`${quote(pat)} → ${quote(rep ?? '')} 치환${flags.includes('g') ? ' (줄마다 전부)' : ''}`, `replace ${quote(pat)} with ${quote(rep ?? '')}${flags.includes('g') ? ' (all per line)' : ''}`)
+    const where = m[1] === '%' ? t('파일 전체에서 ', 'everywhere: ', '整个文件：') : t('현재 줄에서 ', 'on this line: ', '当前行：')
+    return where + t(`${quote(pat)} → ${quote(rep ?? '')} 치환${flags.includes('g') ? ' (줄마다 전부)' : ''}`, `replace ${quote(pat)} with ${quote(rep ?? '')}${flags.includes('g') ? ' (all per line)' : ''}`, `把 ${quote(pat)} 替换为 ${quote(rep ?? '')}${flags.includes('g') ? '（每行全部）' : ''}`)
   }
   if ((m = cmd.match(/^(g|v|g!)\/(.*?)\/(.*)$/))) {
     const inv = m[1] !== 'g'
     const keys = quote(m[3].replace(/^norm(al)?!? ?/, ''))
-    const what = m[3] === 'd' ? t(' 삭제', 'delete') : m[3].startsWith('norm') ? t(`마다 NORMAL 키 ${keys} 실행`, `run NORMAL keys ${keys}`) : t(`마다 ${quote(m[3])}`, quote(m[3]))
-    return t(`${quote(m[2])} 가 ${inv ? '없는' : '있는'} 줄${what}`, `on lines ${inv ? 'without' : 'with'} ${quote(m[2])}: ${what}`)
+    const what = m[3] === 'd' ? t(' 삭제', 'delete', '删除') : m[3].startsWith('norm') ? t(`마다 NORMAL 키 ${keys} 실행`, `run NORMAL keys ${keys}`, `执行 NORMAL 键 ${keys}`) : t(`마다 ${quote(m[3])}`, quote(m[3]))
+    return t(`${quote(m[2])} 가 ${inv ? '없는' : '있는'} 줄${what}`, `on lines ${inv ? 'without' : 'with'} ${quote(m[2])}: ${what}`, `在${inv ? '不含' : '含有'} ${quote(m[2])} 的行上：${what}`)
   }
-  if ((m = cmd.match(/^sor(t)? ?(u)?$/))) return m[2] ? t('줄 정렬 + 중복 삭제', 'sort lines and drop duplicates') : t('줄 정렬', 'sort lines')
-  if (/^\d+$/.test(cmd)) return t(`${cmd}번째 줄로`, `to line ${cmd}`)
-  return t(`Ex 명령 ${quote(cmd)} 실행`, `run the Ex command ${quote(cmd)}`)
+  if ((m = cmd.match(/^sor(t)? ?(u)?$/))) return m[2] ? t('줄 정렬 + 중복 삭제', 'sort lines and drop duplicates', '排序并去重') : t('줄 정렬', 'sort lines', '排序')
+  if (/^\d+$/.test(cmd)) return t(`${cmd}번째 줄로`, `to line ${cmd}`, `到第 ${cmd} 行`)
+  return t(`Ex 명령 ${quote(cmd)} 실행`, `run the Ex command ${quote(cmd)}`, `执行 Ex 命令 ${quote(cmd)}`)
 }
 
 // 명령 하나의 뜻 (HTML)
@@ -171,19 +174,19 @@ export function describe({ keys, kind }) {
   const rest = keys.slice(e)
   const k = rest[0]
   const times = (x) => (n ? t(`${x} ×${n}`, `${x} ×${n}`) : x)
-  const withReg = (x) => (reg ? t(`${x} (레지스터 ${quote(reg)})`, `${x} (register ${quote(reg)})`) : x)
+  const withReg = (x) => (reg ? t(`${x} (레지스터 ${quote(reg)})`, `${x} (register ${quote(reg)})`, `${x}（寄存器 ${quote(reg)}）`) : x)
   switch (kind) {
     case 'ex': return describeEx(typed(keys).slice(1).replace(/⏎$/, ''))
-    case 'record': return t(`매크로 녹화 시작 (레지스터 ${quote(rest[1])})`, `start recording a macro into ${quote(rest[1])}`)
+    case 'record': return t(`매크로 녹화 시작 (레지스터 ${quote(rest[1])})`, `start recording a macro into ${quote(rest[1])}`, `开始录制宏（寄存器 ${quote(rest[1])}）`)
     case 'insert': {
       const text = typed(rest.slice(1))
-      return t(`${tr(INSERT[k])}: ${quote(text)} 입력 후 Esc`, `${tr(INSERT[k])}: type ${quote(text)}, then Esc`)
+      return t(`${tr(INSERT[k])}: ${quote(text)} 입력 후 Esc`, `${tr(INSERT[k])}: type ${quote(text)}, then Esc`, `${tr(INSERT[k])}：输入 ${quote(text)} 后按 Esc`)
     }
     case 'visual': {
       const end = rest.findIndex((x, idx) => idx > 0 && VISUAL_END.has(x))
       const moves = splitCommands(rest.slice(1, end < 0 ? undefined : end)).map((c) => describeMotion(c.keys)).join(', ')
       const op = end < 0 ? '' : rest[end]
-      const after = op === 'I' || op === 'A' ? t(`${op === 'I' ? '앞' : '뒤'}에 ${quote(typed(rest.slice(end + 1)))} 입력 (모든 줄)`, `${op === 'I' ? 'insert' : 'append'} ${quote(typed(rest.slice(end + 1)))} on every line`)
+      const after = op === 'I' || op === 'A' ? t(`${op === 'I' ? '앞' : '뒤'}에 ${quote(typed(rest.slice(end + 1)))} 입력 (모든 줄)`, `${op === 'I' ? 'insert' : 'append'} ${quote(typed(rest.slice(end + 1)))} on every line`, `在每一行${op === 'I' ? '前面' : '后面'}输入 ${quote(typed(rest.slice(end + 1)))}`)
         : op === ':' ? describeEx(typed(rest.slice(end + 1)).replace(/^'<,'>/, '').replace(/⏎$/, ''))
         : OPERATOR[op] ? tr(OPERATOR[op]) : ACTION[op] ? tr(ACTION[op]) : op ? quote(op) : ''
       return `${tr(VISUAL[k])}${moves ? ` → ${moves}` : ''}${after ? ` → ${after}` : ''}`
@@ -195,15 +198,15 @@ export function describe({ keys, kind }) {
       const lineLen = tail.slice(0, op.length).join('') === op ? op.length : op.length === 2 && tail[0] === op[1] ? 1 : 0
       const len = lineLen || motionLength(tail)
       const target = lineLen ? null : describeMotion(tail.slice(0, len), true, op)
-      const base = lineLen ? (LINEWISE[op + op] ? tr(LINEWISE[op + op]) : t(`줄 ${tr(OPERATOR[op])}`, `${tr(OPERATOR[op])} the line`))
-        : t(`${target} ${tr(OPERATOR[op])}`, `${tr(OPERATOR[op])} ${target}`)
-      return withReg(times(base)) + (op === 'c' ? t(` → ${quote(typed(tail.slice(len)))} 입력`, ` → type ${quote(typed(tail.slice(len)))}`) : '')
+      const base = lineLen ? (LINEWISE[op + op] ? tr(LINEWISE[op + op]) : t(`줄 ${tr(OPERATOR[op])}`, `${tr(OPERATOR[op])} the line`, `整行${tr(OPERATOR[op])}`))
+        : t(`${target} ${tr(OPERATOR[op])}`, `${tr(OPERATOR[op])} ${target}`, `${tr(OPERATOR[op])}：${target}`)
+      return withReg(times(base)) + (op === 'c' ? t(` → ${quote(typed(tail.slice(len)))} 입력`, ` → type ${quote(typed(tail.slice(len)))}`, ` → 输入 ${quote(typed(tail.slice(len)))}`) : '')
     }
     case 'motion': return describeMotion(keys)
     default: {
-      if (k === '@') return times(t(`매크로 ${quote(rest[1])} 실행`, `replay macro ${quote(rest[1])}`))
-      if (k === 'r') return t(`글자를 ${quote(rest[1])} 로 바꾸기`, `replace the character with ${quote(rest[1])}`)
-      if (k === 'm') return t(`위치를 ${quote(rest[1])} 로 표시`, `set mark ${quote(rest[1])}`)
+      if (k === '@') return times(t(`매크로 ${quote(rest[1])} 실행`, `replay macro ${quote(rest[1])}`, `重放宏 ${quote(rest[1])}`))
+      if (k === 'r') return t(`글자를 ${quote(rest[1])} 로 바꾸기`, `replace the character with ${quote(rest[1])}`, `把字符替换为 ${quote(rest[1])}`)
+      if (k === 'm') return t(`위치를 ${quote(rest[1])} 로 표시`, `set mark ${quote(rest[1])}`, `设置标记 ${quote(rest[1])}`)
       const two = rest.slice(0, 2).join('')
       const a = ACTION[two] ?? ACTION[k]
       return a ? withReg(times(tr(a))) : quote(keys.join(''))

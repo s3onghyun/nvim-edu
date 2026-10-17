@@ -1,6 +1,6 @@
 # nvim-edu
 
-[English](README.md) · **한국어**
+[English](README.md) · [简体中文](README.zh-CN.md) · **한국어**
 
 브라우저에서 바로 하는 Vim / Neovim 단축키 연습장.
 [LearnGitBranching](https://learngitbranching.js.org/) 처럼 **목표 상태를 보고 그 차이를 키보드로 메우는** 방식입니다.
@@ -29,9 +29,11 @@ Neovim 같은 화면: neo-tree 사이드바, bufferline, lualine, cmdline 메시
 
 습관 교정: 1장(이동)·이동 미션에선 방향키 차단, 마우스 차단, NORMAL 모드에서 한글 IME 로 입력하면 "한/영 전환" 안내.
 
+언어: 한국어, 영어, 간체 중국어. `?lang=ko|en|zh-CN`(`zh` 도 됨) → 저장한 선택 → 브라우저 언어 순으로 정합니다 (`zh-TW`/`zh-HK` 를 포함한 모든 `zh*` 브라우저는 간체 중국어).
+
 ## 개인정보·분석
 
-이 사이트는 쿠키 없는 [GoatCounter](https://www.goatcounter.com/) 분석을 사용합니다. 페이지 조회와 레벨·미션 완료, 진짜 Vim 모드 열기, 한국어/영어 언어 변경 같은 집계 이벤트만 기록하며, 입력한 키·풀이·그 밖의 텍스트는 전송하지 않습니다. Do Not Track 또는 Global Privacy Control을 켜면 분석을 보내지 않습니다.
+이 사이트는 쿠키 없는 [GoatCounter](https://www.goatcounter.com/) 분석을 사용합니다. 페이지 조회와 레벨·미션 완료, 진짜 Vim 모드 열기, 한국어/영어/중국어 언어 변경 같은 집계 이벤트만 기록하며, 입력한 키·풀이·그 밖의 텍스트는 전송하지 않습니다. Do Not Track 또는 Global Privacy Control을 켜면 분석을 보내지 않습니다.
 
 ## 개발
 
@@ -40,6 +42,7 @@ npm install
 npm run dev      # http://localhost:5173
 npm test         # 빌드 후 모든 레벨/미션을 실제 Chromium 으로 풀어서 검증
 npm run test:en  # 영어 화면: 모든 레벨 + 화면에 한글이 남지 않았는지
+npm run test:zh  # 간체 중국어 화면: 위와 같은 검사 + undefined · data-* 원문이 새지 않았는지
 ```
 
 `npm test` 는 Playwright 브라우저가 필요합니다: `npx playwright-core install chromium`
@@ -60,7 +63,8 @@ npm run test:nvim   # nvim 이 PATH 에 있어야 함
 
 | 파일 | 역할 |
 |------|------|
-| `src/i18n.js`, `src/levels.en.js` | 한국어/영어. `?lang=en` 또는 브라우저 언어(한국어가 아니면 영어) |
+| `src/i18n.js`, `src/levels.en.js` | 한국어/영어/간체 중국어 선택과 언어 메뉴. `t('한국어', 'English', '中文')` (중국어가 없으면 영어) |
+| `src/levels.zh-CN.js` | 레벨의 간체 중국어 문구 (같은 id, 영어 문구 위에 덮어씀) |
 | `src/levels/vim-levels.json` | Vim 레벨 데이터 (스키마는 `src/levels/schema.js`, `npm test` 가 검사). `solution` 이 모범 답안이자 par(기준 타수) |
 | `src/levels.js` | Vim 레벨 불러오기, tmux 레벨, 챕터 |
 | `src/tmux.js` | tmux 시뮬레이터 (순수 상태 머신: 세션/윈도우/pane 트리, prefix 키, vi copy mode, 미니 쉘) |
@@ -81,7 +85,7 @@ npm run test:nvim   # nvim 이 PATH 에 있어야 함
 
 ## 레벨 추가하기
 
-`src/levels/vim-levels.json` 에 객체 하나를 추가하면 됩니다 (영어 문구는 `src/levels.en.js`).
+`src/levels/vim-levels.json` 에 객체 하나를 추가하면 됩니다 (영어 문구는 `src/levels.en.js`, 중국어 문구는 `src/levels.zh-CN.js`).
 
 ```json
 {

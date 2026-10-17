@@ -37,6 +37,10 @@ jobs:
       - run: npm run test:en
         env:
           BROWSER: ${{ matrix.browser }}
+      # 간체 중국어 화면: 위와 같은 검사 + undefined · data-* 원문이 새지 않았는지
+      - run: npm run test:zh
+        env:
+          BROWSER: ${{ matrix.browser }}
       - uses: actions/upload-pages-artifact@fc324d3547104276b827a68afc52ff2a11cc49c9 # v5.0.0
         if: github.event_name == 'push' && github.ref == 'refs/heads/main' && matrix.browser == 'chromium'
         with:

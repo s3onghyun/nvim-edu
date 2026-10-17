@@ -24,7 +24,8 @@ say why and include the failure if an environment prerequisite is missing.
 
 - Vim levels are data: add the Korean definition to `src/levels/vim-levels.json`
   (field rules at the top of `src/levels/schema.js`) and the English text under the
-  same `id` in `EN.levels` in `src/levels.en.js`. tmux levels stay in `src/levels.js`
+  same `id` in `EN.levels` in `src/levels.en.js` and the Simplified Chinese text in
+  `ZH_CN.levels` in `src/levels.zh-CN.js`. tmux levels stay in `src/levels.js`
   (`tmuxLevels`).
 - Keep ids unique, lowercase kebab-case, and translations paired. Preserve the
   existing object shape and the canonical, minimal `solution` notation.

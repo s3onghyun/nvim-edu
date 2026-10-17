@@ -8,7 +8,7 @@ import { chapters, levels, tokenize, stars, difficultyLabel, difficultyText } fr
 import { missions, createSession, streak, ymd, rngFrom } from './drill.js'
 import { createTmux, press as tmuxPress, tmuxTask, AGENT_LOG } from './tmux.js'
 import { renderTmux, tmuxMode, tmuxTarget } from './tmux-view.js'
-import { lang, t as tr, setLang, translateDom } from './i18n.js'
+import { t as tr, translateDom, mountLangMenu } from './i18n.js'
 import { initializeAnalytics, trackEvent, trackPageView } from './analytics.js'
 import { replay } from './explain.js'
 import './style.css'
@@ -21,16 +21,16 @@ const LANGS = {
 }
 const language = new Compartment()
 const SANDBOX = {
-  id: 'sandbox', title: tr('자유 연습장', 'Free practice'), keys: [], file: 'scratch.js',
-  desc: tr('목표 없이 마음껏 연습하세요. <code>:s</code>, 매크로, 텍스트 오브젝트 무엇이든.', 'No goal: practice anything. <code>:s</code>, macros, text objects…'), lang: 'js',
-  start: tr('// 자유 연습장', '// free practice') + '\nfunction greet(name) {\n  const msg = "Hello, " + name;\n  console.log(msg);\n  return msg;\n}\n\ngreet("vim");',
+  id: 'sandbox', title: tr('자유 연습장', 'Free practice', '自由练习'), keys: [], file: 'scratch.js',
+  desc: tr('목표 없이 마음껏 연습하세요. <code>:s</code>, 매크로, 텍스트 오브젝트 무엇이든.', 'No goal: practice anything. <code>:s</code>, macros, text objects…', '没有目标，想练什么就练什么。<code>:s</code>、宏、文本对象……都行。'), lang: 'js',
+  start: tr('// 자유 연습장', '// free practice', '// 自由练习') + '\nfunction greet(name) {\n  const msg = "Hello, " + name;\n  console.log(msg);\n  return msg;\n}\n\ngreet("vim");',
   cursor: [0, 0],
 }
 const SCHEMES = ['tokyonight', 'catppuccin', 'gruvbox', 'tokyonight-day']
 const MODIFIERS = new Set(['Shift', 'Control', 'Alt', 'Meta', 'CapsLock'])
 const HANGUL = /[ㄱ-ㅎㅏ-ㅣ가-힣]/
-const IME_MSG = tr('한/영 키로 영문 전환! NORMAL 모드 명령은 영문으로만 동작해요', 'Switch your input method to English: NORMAL-mode commands only work with Latin letters')
-const KEYS_UNIT = tr('타', ' keys')
+const IME_MSG = tr('한/영 키로 영문 전환! NORMAL 모드 명령은 영문으로만 동작해요', 'Switch your input method to English: NORMAL-mode commands only work with Latin letters', '请把输入法切换到英文：NORMAL 模式的命令只认拉丁字母')
+const KEYS_UNIT = tr('타', ' keys', ' 键')
 const $ = (s) => document.querySelector(s)
 
 // 구문 색은 CSS 변수를 참조 → 컬러스킴을 바꿔도 에디터 재구성 불필요
@@ -63,7 +63,7 @@ const relNumbers = new Compartment()
 
 // ── 컬러스킴 ──
 function setScheme(name) {
-  if (!SCHEMES.includes(name)) return msg(tr(`E185: 컬러스킴 '${name}' 을(를) 찾을 수 없습니다. 사용 가능: ${SCHEMES.join(', ')}`, `E185: Cannot find color scheme '${name}'. Available: ${SCHEMES.join(', ')}`), 'error')
+  if (!SCHEMES.includes(name)) return msg(tr(`E185: 컬러스킴 '${name}' 을(를) 찾을 수 없습니다. 사용 가능: ${SCHEMES.join(', ')}`, `E185: Cannot find color scheme '${name}'. Available: ${SCHEMES.join(', ')}`, `E185: 找不到配色方案 '${name}'。可用：${SCHEMES.join(', ')}`), 'error')
   document.documentElement.dataset.scheme = name
   $('#scheme').value = name
   store.set('scheme', name)
@@ -127,8 +127,8 @@ function moveOrCopy(cm, p, copy) {
   const a = p.line ?? cm.getCursor().line
   const b = p.lineEnd ?? a
   let t = exAddress(cm, p.argString ?? '')
-  if (t === null) return msg(tr(`E14: 잘못된 주소: ${p.argString}`, `E14: Invalid address: ${p.argString}`), 'error')
-  if (!copy && t >= a && t < b) return msg(tr('E134: 범위 안으로는 옮길 수 없습니다', 'E134: Cannot move a range of lines into itself'), 'error')
+  if (t === null) return msg(tr(`E14: 잘못된 주소: ${p.argString}`, `E14: Invalid address: ${p.argString}`, `E14: 无效的地址：${p.argString}`), 'error')
+  if (!copy && t >= a && t < b) return msg(tr('E134: 범위 안으로는 옮길 수 없습니다', 'E134: Cannot move a range of lines into itself', 'E134: 不能把行范围移到它自己里面'), 'error')
   const lines = []
   for (let i = a; i <= b; i++) lines.push(cm.getLine(i))
   const len = (l) => cm.getLine(l).length
@@ -157,9 +157,9 @@ Vim.defineAction('repeatSubstitute', (cm) => {
 })
 Vim.mapCommand('&', 'action', 'repeatSubstitute', {}, { context: 'normal' })
 
-Vim.defineEx('colorscheme', 'colo', (_cm, p) => (p.args?.[0] ? setScheme(p.args[0]) : msg(`${$('#scheme').value} — ${tr('사용 가능', 'available')}: ${SCHEMES.join(' ')}`)))
-Vim.defineEx('quit', 'q', () => msg(tr('E37: 여기선 :q 로 탈출할 수 없습니다. 계속 연습하세요 :)', 'E37: No escaping with :q here. Keep practicing :)'), 'error'))
-Vim.defineEx('write', 'w', () => msg(tr(`"${fileName()}" 저장할 필요 없어요. 진행 상황은 자동 저장됩니다`, `"${fileName()}" no need to save. Progress is saved automatically`), 'ok'))
+Vim.defineEx('colorscheme', 'colo', (_cm, p) => (p.args?.[0] ? setScheme(p.args[0]) : msg(`${$('#scheme').value} — ${tr('사용 가능', 'available', '可用')}: ${SCHEMES.join(' ')}`)))
+Vim.defineEx('quit', 'q', () => msg(tr('E37: 여기선 :q 로 탈출할 수 없습니다. 계속 연습하세요 :)', 'E37: No escaping with :q here. Keep practicing :)', 'E37: 这里可没法用 :q 溜走。继续练吧 :)'), 'error'))
+Vim.defineEx('write', 'w', () => msg(tr(`"${fileName()}" 저장할 필요 없어요. 진행 상황은 자동 저장됩니다`, `"${fileName()}" no need to save. Progress is saved automatically`, `"${fileName()}" 不用保存，进度会自动保存`), 'ok'))
 
 // ── cmdline 메시지 영역 (nvim 의 echo area) ──
 function msg(text, kind = '') {
@@ -215,7 +215,7 @@ function renderNav() {
         cls: progress[l.id] ? 'cleared' : '', ico: progress[l.id] ? '●' : '○', meta: '★'.repeat(progress[l.id] ?? 0),
       })).join('')).join('') +
     `<div class="dir">playground/</div>` + file('sandbox', SANDBOX.title, { ico: '∞' })
-  $('#dash-stats').textContent = tr(`${s ? `🔥 ${s}일 연속 · ` : ''}레벨 ${cleared} / ${levels.length} 클리어`, `${s ? `🔥 ${s}-day streak · ` : ''}${cleared} / ${levels.length} levels cleared`)
+  $('#dash-stats').textContent = tr(`${s ? `🔥 ${s}일 연속 · ` : ''}레벨 ${cleared} / ${levels.length} 클리어`, `${s ? `🔥 ${s}-day streak · ` : ''}${cleared} / ${levels.length} levels cleared`, `${s ? `🔥 连续 ${s} 天 · ` : ''}已通关 ${cleared} / ${levels.length} 关`)
 }
 
 // ── bufferline / winbar / lualine ──
@@ -240,9 +240,9 @@ const numbersFor = (cur) => lineNumbers({ formatNumber: (n) => String(n === cur 
 
 function renderGoal() {
   const g = level.goal
-  if (!g) return ($('#goal').innerHTML = `<p class="dim">${tr('목표 없음. 자유롭게 연습하세요', 'No goal. Practice freely')}</p>`)
+  if (!g) return ($('#goal').innerHTML = `<p class="dim">${tr('목표 없음. 자유롭게 연습하세요', 'No goal. Practice freely', '没有目标，自由练习吧')}</p>`)
   if (g.cursor != null) {
-    return ($('#goal').innerHTML = tr(`<p>커서를 에디터의 <span class="target-sample">초록 칸</span>으로 옮기세요.</p><p class="dim">이동 과제에서는 텍스트가 바뀌지 않습니다. 왼쪽 상대 줄 번호를 보고 <b>{n}j</b> 를 써보세요.</p>`, `<p>Move the cursor to the <span class="target-sample">green cell</span> in the editor.</p><p class="dim">Text cannot change in motion tasks. Read the relative line numbers on the left and try <b>{n}j</b>.</p>`))
+    return ($('#goal').innerHTML = tr(`<p>커서를 에디터의 <span class="target-sample">초록 칸</span>으로 옮기세요.</p><p class="dim">이동 과제에서는 텍스트가 바뀌지 않습니다. 왼쪽 상대 줄 번호를 보고 <b>{n}j</b> 를 써보세요.</p>`, `<p>Move the cursor to the <span class="target-sample">green cell</span> in the editor.</p><p class="dim">Text cannot change in motion tasks. Read the relative line numbers on the left and try <b>{n}j</b>.</p>`, `<p>把光标移到编辑器里的<span class="target-sample">绿色格子</span>。</p><p class="dim">移动类任务里文本不能修改。看看左边的相对行号，试试 <b>{n}j</b>。</p>`))
   }
   const cur = view.state.doc.toString().split('\n')
   $('#goal').innerHTML = '<pre>' + goalTexts(g)[0].split('\n').map((line, i) =>
@@ -300,7 +300,7 @@ function resultHtml(text, [line, col], prevText) {
   const chars = [...(lines[line] ?? '')]
   const cur = chars.map((c, i) => (i === col ? `<span class="ex-cur">${escapeHtml(c)}</span>` : escapeHtml(c))).join('') + (col >= chars.length ? '<span class="ex-cur"> </span>' : '')
   const n = prevText.split('\n').length
-  const delta = lines.length !== n ? ` <span class="dim">${tr(`${n}줄 → ${lines.length}줄`, `${n} → ${lines.length} lines`)}</span>` : ''
+  const delta = lines.length !== n ? ` <span class="dim">${tr(`${n}줄 → ${lines.length}줄`, `${n} → ${lines.length} lines`, `${n} → ${lines.length} 行`)}</span>` : ''
   return `<span class="dim">${line + 1}:</span> ${cur}${delta}`
 }
 
@@ -315,7 +315,7 @@ function explainHtml(title, tokens, open) {
     return row
   }).join('')
   return `<details class="explain"${open ? ' open' : ''}><summary>${title}</summary><div class="ex-scroll"><table>
-    <thead><tr><th>#</th><th>${tr('키', 'Keys')}</th><th>${tr('뜻', 'Meaning')}</th><th>${tr('결과 (커서 줄)', 'Result (cursor line)')}</th></tr></thead><tbody>${rows}</tbody></table></div></details>`
+    <thead><tr><th>#</th><th>${tr('키', 'Keys', '按键')}</th><th>${tr('뜻', 'Meaning', '含义')}</th><th>${tr('결과 (커서 줄)', 'Result (cursor line)', '结果（光标所在行）')}</th></tr></thead><tbody>${rows}</tbody></table></div></details>`
 }
 
 function levelCleared() {
@@ -326,16 +326,16 @@ function levelCleared() {
   store.set('progress', progress)
   renderNav()
   const next = levels[levels.indexOf(level) + 1]
-  msg(tr(`"${fileName()}" 클리어 — ${count}타 (기준 ${par}타)`, `"${fileName()}" cleared — ${count} keys (par ${par})`), 'ok')
+  msg(tr(`"${fileName()}" 클리어 — ${count}타 (기준 ${par}타)`, `"${fileName()}" cleared — ${count} keys (par ${par})`, `"${fileName()}" 通关 — ${count} 键（标准 ${par} 键）`), 'ok')
   // 해설은 Vim 레벨만 (tmux 는 키 의미가 달라 제외)
   const explain = !level.kind
-  if (explain) $('#explain').innerHTML = explainHtml(tr(`내 풀이 (${count}타)`, `Your keys (${count})`), keyTokens, false) +
-    explainHtml(tr(`모범 답안 (${par}타)`, `Solution (${par} keys)`), tokenize(level.solution), false)
-  showBanner(tr('✔ 클리어', '✔ Cleared'), `
+  if (explain) $('#explain').innerHTML = explainHtml(tr(`내 풀이 (${count}타)`, `Your keys (${count})`, `我的解法（${count} 键）`), keyTokens, false) +
+    explainHtml(tr(`모범 답안 (${par}타)`, `Solution (${par} keys)`, `参考答案（${par} 键）`), tokenize(level.solution), false)
+  showBanner(tr('✔ 클리어', '✔ Cleared', '✔ 通关'), `
     <div class="stars">${'★'.repeat(s)}${'☆'.repeat(3 - s)}</div>
-    <div>${tr(`<b>${count}</b>타 · 기준 ${par}타`, `<b>${count}</b> keys · par ${par}`)}${s < 3 ? `<br><span class="dim">${tr('모범 답안', 'Solution')}</span> <code>${escapeHtml(level.solution)}</code>` : ''}</div>
-    <div class="banner-actions">${explain ? `<button id="explain-btn" class="ghost">${tr('📖 풀이 해설', '📖 Step by step')}</button>` : ''}
-    <button id="next">${next ? `${tr('다음', 'Next')}: ${next.title} ⏎` : tr('미션 하러 가기 ⏎', 'Try the drills ⏎')}</button></div>`,
+    <div>${tr(`<b>${count}</b>타 · 기준 ${par}타`, `<b>${count}</b> keys · par ${par}`, `<b>${count}</b> 键 · 标准 ${par} 键`)}${s < 3 ? `<br><span class="dim">${tr('모범 답안', 'Solution', '参考答案')}</span> <code>${escapeHtml(level.solution)}</code>` : ''}</div>
+    <div class="banner-actions">${explain ? `<button id="explain-btn" class="ghost">${tr('📖 풀이 해설', '📖 Step by step', '📖 逐步讲解')}</button>` : ''}
+    <button id="next">${next ? `${tr('다음', 'Next', '下一关')}: ${next.title} ⏎` : tr('미션 하러 가기 ⏎', 'Try the drills ⏎', '去做练习 ⏎')}</button></div>`,
   () => { location.hash = next ? next.id : missions[0].id })
 }
 
@@ -360,11 +360,11 @@ function roundCleared() {
   clearInterval(session.timer)
   trackEvent(`drill-finished/${id}`)
   renderNav()
-  msg(`${session.mission.title} ${tr('완료', 'done')} — ${time.toFixed(1)}s, ${session.keys}${KEYS_UNIT}`, 'ok')
-  showBanner(isBest ? tr('🏆 최고 기록', '🏆 New best') : tr('✔ 미션 완료', '✔ Drill complete'), `
-    <div><b>${session.mission.title}</b> ${time.toFixed(1)}s · ${session.keys}${KEYS_UNIT} <span class="dim">(${tr('라운드당', 'per round')} ${(session.keys / session.total).toFixed(1)}${KEYS_UNIT})</span></div>
-    <div class="dim">${isBest ? tr('최고 기록 갱신!', 'New personal best!') : `${tr('최고 기록', 'Best')} ${best.time.toFixed(1)}s`} · 🔥 ${tr(`${streak(days)}일 연속`, `${streak(days)}-day streak`)}</div>
-    <button id="next">${tr('한 번 더 ⏎', 'Again ⏎')}</button>`,
+  msg(`${session.mission.title} ${tr('완료', 'done', '完成')} — ${time.toFixed(1)}s, ${session.keys}${KEYS_UNIT}`, 'ok')
+  showBanner(isBest ? tr('🏆 최고 기록', '🏆 New best', '🏆 新纪录') : tr('✔ 미션 완료', '✔ Drill complete', '✔ 练习完成'), `
+    <div><b>${session.mission.title}</b> ${time.toFixed(1)}s · ${session.keys}${KEYS_UNIT} <span class="dim">(${tr('라운드당', 'per round', '每轮')} ${(session.keys / session.total).toFixed(1)}${KEYS_UNIT})</span></div>
+    <div class="dim">${isBest ? tr('최고 기록 갱신!', 'New personal best!', '刷新个人纪录！') : `${tr('최고 기록', 'Best', '最佳')} ${best.time.toFixed(1)}s`} · 🔥 ${tr(`${streak(days)}일 연속`, `${streak(days)}-day streak`, `连续 ${streak(days)} 天`)}</div>
+    <button id="next">${tr('한 번 더 ⏎', 'Again ⏎', '再来一次 ⏎')}</button>`,
   () => startMission(session.mission))
 }
 
@@ -432,7 +432,7 @@ function mount(lvl) {
     const noArrows = session ? session.mission.id === 'mission-move' : lvl.chapter === 'move'
     if (inEditor && noArrows && e.key.startsWith('Arrow')) {
       e.preventDefault(); e.stopPropagation()
-      return msg(tr('방향키 대신 h j k l 을 쓰세요', 'Use h j k l instead of the arrow keys'), 'error')
+      return msg(tr('방향키 대신 h j k l 을 쓰세요', 'Use h j k l instead of the arrow keys', '别用方向键，用 h j k l'), 'error')
     }
     if (inEditor && !getCM(view).state.vim.insertMode && (e.isComposing || e.keyCode === 229 || HANGUL.test(e.key))) {
       e.preventDefault(); e.stopPropagation()
@@ -445,7 +445,7 @@ function mount(lvl) {
     if (tok) keyTokens.push(tok)
     queueMicrotask(() => renderStatus(getCM(view).state.vim.insertMode ? 'insert' : undefined))
   }, true)
-  view.contentDOM.addEventListener('mousedown', (e) => { e.preventDefault(); view.focus(); msg(tr('마우스 대신 키보드로 이동하세요', 'Move with the keyboard, not the mouse'), 'error') })
+  view.contentDOM.addEventListener('mousedown', (e) => { e.preventDefault(); view.focus(); msg(tr('마우스 대신 키보드로 이동하세요', 'Move with the keyboard, not the mouse', '用键盘移动，别用鼠标'), 'error') })
   getCM(view).on('vim-mode-change', (e) => { renderStatus(e.subMode ? `${e.mode} ${e.subMode}` : e.mode); check() })
 
   $('#desc').innerHTML = lvl.desc
@@ -466,7 +466,7 @@ function startMission(mission) {
   clearInterval(session?.timer)
   session = createSession(mission)
   session.timer = setInterval(() => session.t0 && !done && renderStatus(), 100)
-  $('#chapter').textContent = tr('missions · 10라운드 연속, 빠르고 적은 타수로', 'drills · 10 rounds in a row, fast and with few keys')
+  $('#chapter').textContent = tr('missions · 10라운드 연속, 빠르고 적은 타수로', 'drills · 10 rounds in a row, fast and with few keys', 'drills · 连续 10 轮，越快越好、按键越少越好')
   $('#title').textContent = mission.title + (mission.daily ? ` (${ymd(new Date())})` : '')
   $('#keychips').innerHTML = mission.keys.map((k) => `<kbd>${escapeHtml(k)}</kbd>`).join('')
   startRound()
@@ -513,7 +513,7 @@ function startTmuxMission(mission) {
   session = { mission, total: 10, round: 0, keys: 0, t0: null, tmux: true, rng: rngFrom(Date.now()) }
   session.timer = setInterval(() => session.t0 && !done && renderStatus(), 100)
   tm = createTmux({ attached: 'drill', sessions: [{ name: 'drill', windows: [{ panes: [{ program: 'claude', lines: AGENT_LOG }] }] }] })
-  $('#chapter').textContent = tr('missions · 10라운드 연속, 빠르고 적은 타수로', 'drills · 10 rounds in a row, fast and with few keys')
+  $('#chapter').textContent = tr('missions · 10라운드 연속, 빠르고 적은 타수로', 'drills · 10 rounds in a row, fast and with few keys', 'drills · 连续 10 轮，越快越好、按键越少越好')
   $('#title').textContent = mission.title
   nextTmuxRound()
 }
@@ -532,7 +532,7 @@ $('#term').addEventListener('keydown', (e) => {
   if (!tm || done || e.metaKey || e.altKey || MODIFIERS.has(e.key)) return
   if (e.isComposing || e.keyCode === 229 || HANGUL.test(e.key)) {
     e.preventDefault()
-    return msg(tr('한/영 키로 영문 전환! 터미널 키는 영문으로만 동작해요', 'Switch your input method to English: terminal keys only work with Latin letters'), 'error')
+    return msg(tr('한/영 키로 영문 전환! 터미널 키는 영문으로만 동작해요', 'Switch your input method to English: terminal keys only work with Latin letters', '请把输入法切换到英文：终端按键只认拉丁字母'), 'error')
   }
   const k = e.ctrlKey ? (e.key.length === 1 ? `C-${e.key.toLowerCase()}` : null) : TKEYS[e.key] ?? (e.key.length === 1 ? e.key : null)
   if (!k) return
@@ -574,7 +574,7 @@ function load(id) {
   if (!known) id = levels[0].id
   if (!buffers.includes(id)) buffers.push(id)
   if (buffers.length > 4) buffers.shift()
-  msg(`"${fileFor(id)}" — ${tr(':colo <이름> 으로 테마 변경', ':colo <name> changes the theme')}`)
+  msg(`"${fileFor(id)}" — ${tr(':colo <이름> 으로 테마 변경', ':colo <name> changes the theme', ':colo <名称> 切换主题')}`)
 
   const mission = missions.find((m) => m.id === id)
   if (mission) { startMission(mission); renderNav(); return id }
@@ -622,16 +622,13 @@ $('#dash-scheme').onclick = (e) => { e.preventDefault(); cycleScheme() }
 $('#reset').onclick = () => (session ? startMission(session.mission) : load(level.id))
 $('#hint').onclick = () => {
   $('#hint-text').hidden = false
-  if (!level.kind && level.solution) $('#explain').innerHTML = explainHtml(tr('모범 답안 단계별', 'Solution, step by step'), tokenize(level.solution), true)
+  if (!level.kind && level.solution) $('#explain').innerHTML = explainHtml(tr('모범 답안 단계별', 'Solution, step by step', '参考答案，逐步讲解'), tokenize(level.solution), true)
   focusMain()
 }
 $('#menu').onclick = () => document.body.classList.toggle('nav-open')
 $('#nav').onclick = (e) => { if (e.target.closest('a')) document.body.classList.remove('nav-open') }
 translateDom()
-const langText = lang === 'en' ? '한국어' : 'EN'
-$('#lang').append(langText)
-$('#lang').setAttribute('aria-label', `${langText} ${$('#lang').getAttribute('aria-label')}`)
-$('#lang').onclick = () => setLang(lang === 'en' ? 'ko' : 'en')
+mountLangMenu($('#lang'))
 const route = () => trackPageView(`/main/${load(location.hash.slice(1))}`)
 window.addEventListener('hashchange', route)
 initializeAnalytics()

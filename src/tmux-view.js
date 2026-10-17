@@ -70,7 +70,7 @@ export function renderTmux(s, el, opts = {}) {
       ? `<div class="t-chooser">${s.chooser.items.map((name, i) => {
           const x = s.sessions.find((y) => y.name === name)
           return `<div class="${i === s.chooser.index ? 't-row-sel' : ''}">(${i}) + ${esc(name)}: ${x.windows.length} windows${name === s.attached ? ' (attached)' : ''}</div>`
-        }).join('')}<div class="t-hint">${t('j/k 이동 · Enter 선택 · q 닫기', 'j/k move · Enter select · q close')}</div></div>`
+        }).join('')}<div class="t-hint">${t('j/k 이동 · Enter 선택 · q 닫기', 'j/k move · Enter select · q close', 'j/k 移动 · Enter 选择 · q 关闭')}</div></div>`
       : ''
     el.innerHTML = `<div class="t-panes">${panes}${chooser}</div><div class="t-status">${statusHtml(s)}</div>`
   }

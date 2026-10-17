@@ -4,6 +4,7 @@
 import { AGENT_LOG, win, pane, session, shape, paneIds } from './tmux.js'
 import { lang, t } from './i18n.js'
 import { EN } from './levels.en.js'
+import { ZH_CN } from './levels.zh-CN.js'
 import vimLevels from './levels/vim-levels.json' with { type: 'json' }
 
 export const chapters = [
@@ -17,19 +18,19 @@ export const chapters = [
 ]
 
 const DIFFICULTIES = {
-  beginner: ['초보', 'Beginner'],
-  intermediate: ['중급', 'Intermediate'],
-  advanced: ['고급', 'Advanced'],
-  guru: ['구루', 'Guru'],
+  beginner: ['초보', 'Beginner', '入门'],
+  intermediate: ['중급', 'Intermediate', '中级'],
+  advanced: ['고급', 'Advanced', '高级'],
+  guru: ['구루', 'Guru', '大师'],
 }
 
 export function difficultyLabel(difficulty) {
-  const [ko, en] = DIFFICULTIES[difficulty]
-  return t(ko, en)
+  const [ko, en, zh] = DIFFICULTIES[difficulty]
+  return t(ko, en, zh)
 }
 
 export function difficultyText(difficulty) {
-  return t(`난이도: ${difficultyLabel(difficulty)}`, `Difficulty: ${difficultyLabel(difficulty)}`)
+  return t(`난이도: ${difficultyLabel(difficulty)}`, `Difficulty: ${difficultyLabel(difficulty)}`, `难度：${difficultyLabel(difficulty)}`)
 }
 
 // Vim 레벨은 데이터 파일(src/levels/vim-levels.json, 스키마: src/levels/schema.js). 여기는 tmux 레벨만
@@ -39,7 +40,7 @@ const tmuxLevels = [
     id: 'tmux-new', chapter: 'tmux', kind: 'tmux', title: '세션 만들기 tmux new',
     desc: 'AI 에이전트는 오래 돕니다. 터미널 창이 닫혀도 살아 있게 <b>tmux 세션</b> 안에서 돌리세요. <code>tmux new -s agent</code> 를 입력하고 Enter.',
     keys: ['tmux new -s 이름', 'tmux ls'],
-    init: () => ({ outer: [t('# 에이전트를 돌릴 세션을 만들어 봅시다', '# Create a session to run your agent in')] }),
+    init: () => ({ outer: [t('# 에이전트를 돌릴 세션을 만들어 봅시다', '# Create a session to run your agent in', '# 来建一个运行代理的会话吧')] }),
     checks: [{ label: '<code>agent</code> 세션에 들어가기', test: (s) => s.attached === 'agent' }],
     solution: 'tmux new -s agent<CR>',
   },
@@ -146,7 +147,7 @@ const tmuxLevels = [
     id: 'tmux-boss', chapter: 'tmux', kind: 'tmux', title: '보스: 에이전트 작업판 세팅',
     desc: '처음부터 혼자: <code>work</code> 세션을 만들고, 거기서 에이전트를 실행(<code>claude</code>)한 뒤, 오른쪽에 쉘 pane 을 띄워 그쪽에 커서를 두세요.',
     keys: ['tmux new -s', 'claude', 'C-b %'],
-    init: () => ({ outer: [t('# 출근했습니다. 작업판을 세팅하세요', '# Morning! Set up your workspace')] }),
+    init: () => ({ outer: [t('# 출근했습니다. 작업판을 세팅하세요', '# Morning! Set up your workspace', '# 上班啦！先把工作台搭好')] }),
     checks: [
       { label: '<code>work</code> 세션', test: (s) => s.attached === 'work' },
       { label: '왼쪽 pane 에서 에이전트 실행 중', test: (s) => s.attached === 'work' && shape(win(s).layout) === 'h(p,p)' && s.panes[paneIds(win(s).layout)[0]].program === 'claude' },
@@ -161,11 +162,13 @@ const chapterOrder = chapters.map((c) => c.id)
 export const levels = [...vimLevels, ...tmuxLevels].sort((a, b) => chapterOrder.indexOf(a.chapter) - chapterOrder.indexOf(b.chapter))
 
 
-// 영어: 같은 id 의 필드를 levels.en.js 값으로 바꿈 (checks 는 라벨만)
-if (lang === 'en') {
-  for (const c of chapters) c.title = EN.chapters[c.id] ?? c.title
+// 영어 · 중국어: 같은 id 의 필드를 번역 파일 값으로 차례로 바꿈 (checks 는 라벨만).
+// 중국어는 영어 위에 덮어써서, 중국어에 없는 필드(연습 텍스트 start/goal 등)는 영어 것을 씀
+const OVERRIDES = { ko: [], en: [EN], 'zh-CN': [EN, ZH_CN] }
+for (const tr of OVERRIDES[lang]) {
+  for (const c of chapters) c.title = tr.chapters[c.id] ?? c.title
   for (const l of levels) {
-    const { checks, ...rest } = EN.levels[l.id] ?? {}
+    const { checks, ...rest } = tr.levels[l.id] ?? {}
     Object.assign(l, rest)
     if (checks) l.checks = l.checks.map((c, i) => ({ ...c, label: checks[i] ?? c.label }))
   }

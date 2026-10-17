@@ -51,6 +51,8 @@ Vim 레벨은 코드가 아니라 데이터 파일 **`src/levels/vim-levels.json
      desc: 'Description in English',
    }
    ```
+   간체 중국어도 `src/levels.zh-CN.js` 의 `ZH_CN.levels` 에 같은 `id` 로 `title`, `desc` 를 등록합니다
+   (`npm test` 의 `tests/i18n.test.mjs` 가 영어 항목마다 중국어 항목이 있는지 검사). 중국어를 쓰기 어렵다면 PR 에 적어 주세요.
 
 3. **Par(기준 타수) 규칙:**
    - 레벨의 기준 타수(`par`)는 모범 답안 `solution`의 키 수로 자동 계산됩니다.
@@ -109,7 +111,9 @@ Vim levels live in a data file, **`src/levels/vim-levels.json`**, not in code. T
 
    > **Note on tmux levels:** Levels in the `tmux` chapter use a terminal simulator rather than a Vim buffer, so they stay in `src/levels.js` (`tmuxLevels`) with `kind: 'tmux'`, `init()`, and `checks: [...]` (see `tmux-new`).
 2. **Add English translation in `src/levels.en.js`:**
-   Add the matching `id` under `EN.levels` with English `title` and `desc`.
+   Add the matching `id` under `EN.levels` with English `title` and `desc`, and the same under `ZH_CN.levels` in
+   `src/levels.zh-CN.js` in Simplified Chinese (`tests/i18n.test.mjs` in `npm test` checks every English entry has one).
+   If you cannot write Chinese, say so in the pull request.
 3. **Par rules:**
    The level's par is the number of keys in `solution`. Make it the canonical, optimal key sequence for Neovim 0.11 and Vim.
 4. **Automated Verification:**

@@ -85,7 +85,7 @@ const ROUNDS = {
     const spots = matches(text, /\S/g).filter((m) => m.from !== cursor)
     const t = pick(rng, spots)
     return {
-      desc: tr('초록 칸으로 이동하세요. <b>w b e</b> · <b>f t</b> · <b>gg G</b> · <b>{n}j</b> · <b>/검색</b> 무엇이든.', 'Move to the green cell. <b>w b e</b> · <b>f t</b> · <b>gg G</b> · <b>{n}j</b> · <b>/search</b>, anything goes.'),
+      desc: tr('초록 칸으로 이동하세요. <b>w b e</b> · <b>f t</b> · <b>gg G</b> · <b>{n}j</b> · <b>/검색</b> 무엇이든.', 'Move to the green cell. <b>w b e</b> · <b>f t</b> · <b>gg G</b> · <b>{n}j</b> · <b>/search</b>, anything goes.', '移到绿色格子。<b>w b e</b> · <b>f t</b> · <b>gg G</b> · <b>{n}j</b> · <b>/搜索</b>，怎么走都行。'),
       goal: { cursor: t.from }, marks: [{ from: t.from, to: t.to, cls: 'cm-target' }],
       solution: goTo(text, t.from),
     }
@@ -95,7 +95,7 @@ const ROUNDS = {
     const i = pick(rng, lines.map((l, i) => (l.trim() ? i : -1)).filter((i) => i >= 0))
     const from = lines.slice(0, i).join('\n').length + (i ? 1 : 0)
     return {
-      desc: tr('빨간 줄을 지우세요. <b>{n}j</b> / <b>{n}k</b> 로 가서 <b>dd</b>.', 'Delete the red line. Get there with <b>{n}j</b> / <b>{n}k</b>, then <b>dd</b>.'),
+      desc: tr('빨간 줄을 지우세요. <b>{n}j</b> / <b>{n}k</b> 로 가서 <b>dd</b>.', 'Delete the red line. Get there with <b>{n}j</b> / <b>{n}k</b>, then <b>dd</b>.', '删掉红色的那一行。用 <b>{n}j</b> / <b>{n}k</b> 过去，再按 <b>dd</b>。'),
       goal: { text: lines.filter((_, j) => j !== i).join('\n') },
       marks: [{ from, to: from + lines[i].length, cls: 'cm-del' }],
       solution: `:${i + 1}<CR>dd`,
@@ -105,7 +105,7 @@ const ROUNDS = {
     const w = pick(rng, matches(text, /\b[A-Za-z_]\w{2,}\b/g))
     const rest = text.slice(w.to)
     return {
-      desc: tr('빨간 단어를 지우세요. <b>diw</b> 또는 <b>dw</b>.', 'Delete the red word. <b>diw</b> or <b>dw</b>.'),
+      desc: tr('빨간 단어를 지우세요. <b>diw</b> 또는 <b>dw</b>.', 'Delete the red word. <b>diw</b> or <b>dw</b>.', '删掉红色的单词。<b>diw</b> 或 <b>dw</b>。'),
       // dw 는 뒤 공백까지 지우므로 둘 다 인정
       goal: { text: [text.slice(0, w.from) + rest, text.slice(0, w.from) + rest.replace(/^[ \t]+/, '')] },
       marks: [{ from: w.from, to: w.to, cls: 'cm-del' }],
@@ -116,7 +116,7 @@ const ROUNDS = {
     const w = pick(rng, matches(text, /\b[A-Za-z_]\w{2,}\b/g))
     const next = pick(rng, NEW_WORDS.filter((n) => n !== w.str))
     return {
-      desc: tr(`노란 단어 <code>${w.str}</code> 를 <code>${next}</code> 로 바꾸세요. <b>ciw</b> 또는 <b>cw</b> → 입력 → <b>Esc</b>.`, `Change the yellow word <code>${w.str}</code> to <code>${next}</code>. <b>ciw</b> or <b>cw</b> → type → <b>Esc</b>.`),
+      desc: tr(`노란 단어 <code>${w.str}</code> 를 <code>${next}</code> 로 바꾸세요. <b>ciw</b> 또는 <b>cw</b> → 입력 → <b>Esc</b>.`, `Change the yellow word <code>${w.str}</code> to <code>${next}</code>. <b>ciw</b> or <b>cw</b> → type → <b>Esc</b>.`, `把黄色单词 <code>${w.str}</code> 改成 <code>${next}</code>。<b>ciw</b> 或 <b>cw</b> → 输入 → <b>Esc</b>。`),
       goal: { text: text.slice(0, w.from) + next + text.slice(w.to) },
       marks: [{ from: w.from, to: w.to, cls: 'cm-change' }],
       solution: goTo(text, w.from) + `ciw${next}<Esc>`,
@@ -126,7 +126,7 @@ const ROUNDS = {
     const m = pick(rng, [...matches(text, /"[^"\n]+"/g), ...matches(text, /\([^()\n]+\)/g)])
     const open = m.str[0]
     return {
-      desc: tr(`${open === '"' ? '따옴표' : '괄호'} 안을 비우세요. <b>di${open}</b> (커서가 안쪽이나 여는 기호 위에 있어야 함).`, `Empty the ${open === '"' ? 'quotes' : 'parentheses'}. <b>di${open}</b> (cursor inside or on the opening character).`),
+      desc: tr(`${open === '"' ? '따옴표' : '괄호'} 안을 비우세요. <b>di${open}</b> (커서가 안쪽이나 여는 기호 위에 있어야 함).`, `Empty the ${open === '"' ? 'quotes' : 'parentheses'}. <b>di${open}</b> (cursor inside or on the opening character).`, `清空${open === '"' ? '引号' : '括号'}里的内容。<b>di${open}</b>（光标要在里面，或在开头的符号上）。`),
       goal: { text: text.slice(0, m.from + 1) + text.slice(m.to - 1) },
       marks: [{ from: m.from + 1, to: m.to - 1, cls: 'cm-del' }],
       solution: goTo(text, m.from) + `di${open}`,
@@ -135,11 +135,11 @@ const ROUNDS = {
 }
 
 export const missions = [
-  { id: 'mission-move', title: tr('이동 미션', 'Motion drill'), kinds: ['move'], keys: ['w', 'b', 'e', 'f', 't', 'gg', 'G', '/'] },
-  { id: 'mission-delete', title: tr('삭제 미션', 'Delete drill'), kinds: ['deleteLine', 'deleteWord', 'deleteInside'], keys: ['dd', 'diw', 'dw', 'di"', 'di('] },
-  { id: 'mission-change', title: tr('변경 미션', 'Change drill'), kinds: ['changeWord'], keys: ['ciw', 'cw', 'Esc'] },
-  { id: 'mission-tmux', title: tr('tmux 미션', 'tmux drill'), tmux: true, kinds: [], keys: ['C-b %', 'C-b "', 'C-b ←↑↓→', 'C-b z', 'C-b c', 'C-b 0~9'] },
-  { id: 'mission-daily', title: tr('오늘의 미션', 'Daily challenge'), kinds: Object.keys(ROUNDS), keys: [tr('전부', 'everything')], daily: true },
+  { id: 'mission-move', title: tr('이동 미션', 'Motion drill', '移动练习'), kinds: ['move'], keys: ['w', 'b', 'e', 'f', 't', 'gg', 'G', '/'] },
+  { id: 'mission-delete', title: tr('삭제 미션', 'Delete drill', '删除练习'), kinds: ['deleteLine', 'deleteWord', 'deleteInside'], keys: ['dd', 'diw', 'dw', 'di"', 'di('] },
+  { id: 'mission-change', title: tr('변경 미션', 'Change drill', '修改练习'), kinds: ['changeWord'], keys: ['ciw', 'cw', 'Esc'] },
+  { id: 'mission-tmux', title: tr('tmux 미션', 'tmux drill', 'tmux 练习'), tmux: true, kinds: [], keys: ['C-b %', 'C-b "', 'C-b ←↑↓→', 'C-b z', 'C-b c', 'C-b 0~9'] },
+  { id: 'mission-daily', title: tr('오늘의 미션', 'Daily challenge', '每日挑战'), kinds: Object.keys(ROUNDS), keys: [tr('전부', 'everything', '全部')], daily: true },
 ]
 
 export function createSession(mission, today = new Date()) {
