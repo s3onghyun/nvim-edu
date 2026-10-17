@@ -93,6 +93,6 @@ export function mountLangMenu(button) {
     else return
     e.preventDefault()
   })
-  menu.addEventListener('focusout', (e) => { if (!menu.contains(e.relatedTarget) && e.relatedTarget !== button) close(false) })
+  menu.addEventListener('focusout', (e) => { if (e.relatedTarget && !menu.contains(e.relatedTarget) && e.relatedTarget !== button) close(false) })
   document.addEventListener('mousedown', (e) => { if (!menu.hidden && !menu.contains(e.target) && !button.contains(e.target)) close(false) })
 }
