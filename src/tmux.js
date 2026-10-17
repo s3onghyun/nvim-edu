@@ -7,9 +7,9 @@ import { t as tr } from './i18n.js'
 export const AGENT_LOG = [
   '✻ AI agent (simulated) — /help for commands',
   '',
-  tr('> 테스트가 깨졌어. 원인 찾아서 고쳐줘', '> The tests are broken. Find the cause and fix it'),
+  tr('> 테스트가 깨졌어. 원인 찾아서 고쳐줘', '> The tests are broken. Find the cause and fix it', '> 测试挂了。找到原因修好它'),
   '',
-  tr('● Plan: 1) 테스트 실행 2) 원인 분석 3) 수정 4) 재실행', '● Plan: 1) run tests 2) find the cause 3) fix 4) re-run'),
+  tr('● Plan: 1) 테스트 실행 2) 원인 분석 3) 수정 4) 재실행', '● Plan: 1) run tests 2) find the cause 3) fix 4) re-run', '● Plan: 1) 运行测试 2) 分析原因 3) 修复 4) 重新运行'),
   '',
   '● Bash(npm test)',
   '  ⎿  > app@1.0.0 test',
@@ -20,15 +20,15 @@ export const AGENT_LOG = [
   '  ⎿    at src/config.ts:1:1',
   '  ⎿  Tests  1 failed | 4 passed (5)',
   '',
-  tr('● 의존성이 빠져 있습니다. package.json 에 zod 가 없어요.', '● A dependency is missing: zod is not in package.json.'),
+  tr('● 의존성이 빠져 있습니다. package.json 에 zod 가 없어요.', '● A dependency is missing: zod is not in package.json.', '● 缺少一个依赖：package.json 里没有 zod。'),
   '',
-  tr('● 다음 명령을 실행해도 될까요?', '● May I run the following command?'),
+  tr('● 다음 명령을 실행해도 될까요?', '● May I run the following command?', '● 可以运行下面的命令吗？'),
   '  npm install zod',
   '',
   '  1. Yes',
   '  2. No, tell the agent what to do differently',
   '',
-  tr('● 사용자 확인을 기다리는 중…', '● Waiting for your confirmation…'),
+  tr('● 사용자 확인을 기다리는 중…', '● Waiting for your confirmation…', '● 正在等待你的确认…'),
 ]
 
 const SHELL_OUT = {
@@ -190,7 +190,7 @@ function run(s, term, cmd) {
   if (c0 === 'claude' || c0 === 'agent') { term.program = 'claude'; term.lines.push(...AGENT_LOG); return }
   if (c0 === 'exit') {
     if (inside) return killPane(s, term.id)
-    term.lines.push(tr('이 연습용 터미널은 닫을 수 없어요 :)', 'This practice terminal cannot be closed :)'))
+    term.lines.push(tr('이 연습용 터미널은 닫을 수 없어요 :)', 'This practice terminal cannot be closed :)', '这个练习用的终端关不掉哦 :)'))
     return
   }
   if (c0 === 'tmux') return tmuxCli(s, term, args, inside)
@@ -318,7 +318,7 @@ function copyKey(s, term, k) {
     case 'b': word(-1); break
     case '/': case '?': {
       const dir = k === '/' ? 1 : -1
-      s.prompt = { label: k === '/' ? '(search down)' : '(search up)', value: '', submit: (v) => { c.search = { needle: v, dir }; if (!search(term, v, dir)) s.message = tr(`"${v}" 을(를) 찾지 못했습니다`, `Pattern not found: ${v}`) } }
+      s.prompt = { label: k === '/' ? '(search down)' : '(search up)', value: '', submit: (v) => { c.search = { needle: v, dir }; if (!search(term, v, dir)) s.message = tr(`"${v}" 을(를) 찾지 못했습니다`, `Pattern not found: ${v}`, `找不到：${v}`) } }
       break
     }
     case 'n': case 'N': if (c.search) search(term, c.search.needle, k === 'n' ? c.search.dir : -c.search.dir); break
@@ -362,7 +362,7 @@ export function press(s, k) {
   if (k === 'Enter') {
     const cmd = term.input
     term.input = ''
-    if (term.program === 'claude') { term.lines.push(`> ${cmd}`, tr('● 알겠습니다. 작업을 이어갈게요…', '● Got it. Continuing…')); return }
+    if (term.program === 'claude') { term.lines.push(`> ${cmd}`, tr('● 알겠습니다. 작업을 이어갈게요…', '● Got it. Continuing…', '● 好的，继续干活…')); return }
     return run(s, term, cmd)
   }
   if (k === 'Backspace') { term.input = term.input.slice(0, -1); return }
@@ -427,7 +427,7 @@ function prefixKey(s, k) {
     }
     case '[': { const t = pane(s); const n = copyLines(t).length; t.copy = { line: n - 1, col: 0, sel: null }; s.lastAction = 'copy-mode'; return }
     case ']': { const t = pane(s); t.input += s.buffer.replace(/\n/g, ' '); s.lastAction = 'paste'; return }
-    case '?': s.message = tr('키 목록은 위 도움말을 보세요 (C-b 를 누른 뒤 다음 키)', 'See the help above for keys (press C-b, then the key)'); return
+    case '?': s.message = tr('키 목록은 위 도움말을 보세요 (C-b 를 누른 뒤 다음 키)', 'See the help above for keys (press C-b, then the key)', '按键列表见上方帮助（先按 C-b，再按对应的键）'); return
     default:
       if (/^\d$/.test(k) && sess.windows[+k]) { sess.active = +k; s.lastAction = 'select-window' }
   }
@@ -440,23 +440,23 @@ export function tmuxTask(rng, s) {
   const sess = session(s)
   const ids = paneIds(w.layout)
   const tasks = []
-  if (w.zoomed) tasks.push({ desc: tr('zoom 을 해제하세요', 'Unzoom the pane'), keys: ['C-b z'], solution: '<C-b>z', test: (t) => t.lastAction === 'unzoom' })
+  if (w.zoomed) tasks.push({ desc: tr('zoom 을 해제하세요', 'Unzoom the pane', '取消 pane 的放大'), keys: ['C-b z'], solution: '<C-b>z', test: (t) => t.lastAction === 'unzoom' })
   else {
     if (ids.length < 4) {
-      tasks.push({ desc: tr('현재 pane 을 <b>좌우</b>로 나누세요', 'Split the current pane <b>left/right</b>'), keys: ['C-b %'], solution: '<C-b>%', test: (t) => t.lastAction === 'split-h' })
-      tasks.push({ desc: tr('현재 pane 을 <b>위아래</b>로 나누세요', 'Split the current pane <b>top/bottom</b>'), keys: ['C-b "'], solution: '<C-b>"', test: (t) => t.lastAction === 'split-v' })
+      tasks.push({ desc: tr('현재 pane 을 <b>좌우</b>로 나누세요', 'Split the current pane <b>left/right</b>', '把当前 pane <b>左右</b>分屏'), keys: ['C-b %'], solution: '<C-b>%', test: (t) => t.lastAction === 'split-h' })
+      tasks.push({ desc: tr('현재 pane 을 <b>위아래</b>로 나누세요', 'Split the current pane <b>top/bottom</b>', '把当前 pane <b>上下</b>分屏'), keys: ['C-b "'], solution: '<C-b>"', test: (t) => t.lastAction === 'split-v' })
     }
     if (ids.length > 1) {
       const target = pick(ids.filter((id) => id !== w.active))
       const idx = ids.indexOf(target)
-      tasks.push({ desc: tr('<span class="target-sample">표시된 pane</span> 으로 이동하세요 (방향키 · o · q+번호)', 'Move to the <span class="target-sample">marked pane</span> (arrows · o · q + number)'), keys: ['C-b ←↑↓→', 'C-b o', 'C-b q'], solution: `<C-b>q${idx}`, target, test: (t) => win(t)?.active === target })
-      tasks.push({ desc: tr('현재 pane 을 <b>zoom</b> 하세요', '<b>Zoom</b> the current pane'), keys: ['C-b z'], solution: '<C-b>z', test: (t) => t.lastAction === 'zoom' })
-      if (ids.length > 2) tasks.push({ desc: tr('현재 pane 을 <b>닫으세요</b>', '<b>Close</b> the current pane'), keys: ['C-b x', 'y'], solution: '<C-b>xy', test: (t) => t.lastAction === 'kill-pane' })
+      tasks.push({ desc: tr('<span class="target-sample">표시된 pane</span> 으로 이동하세요 (방향키 · o · q+번호)', 'Move to the <span class="target-sample">marked pane</span> (arrows · o · q + number)', '移到<span class="target-sample">标记的 pane</span>（方向键 · o · q + 编号）'), keys: ['C-b ←↑↓→', 'C-b o', 'C-b q'], solution: `<C-b>q${idx}`, target, test: (t) => win(t)?.active === target })
+      tasks.push({ desc: tr('현재 pane 을 <b>zoom</b> 하세요', '<b>Zoom</b> the current pane', '<b>放大</b>当前 pane'), keys: ['C-b z'], solution: '<C-b>z', test: (t) => t.lastAction === 'zoom' })
+      if (ids.length > 2) tasks.push({ desc: tr('현재 pane 을 <b>닫으세요</b>', '<b>Close</b> the current pane', '<b>关闭</b>当前 pane'), keys: ['C-b x', 'y'], solution: '<C-b>xy', test: (t) => t.lastAction === 'kill-pane' })
     }
-    if (sess.windows.length < 3) tasks.push({ desc: tr('<b>새 윈도우</b>를 만드세요', 'Create a <b>new window</b>'), keys: ['C-b c'], solution: '<C-b>c', test: (t) => t.lastAction === 'new-window' })
+    if (sess.windows.length < 3) tasks.push({ desc: tr('<b>새 윈도우</b>를 만드세요', 'Create a <b>new window</b>', '新建一个<b>窗口</b>'), keys: ['C-b c'], solution: '<C-b>c', test: (t) => t.lastAction === 'new-window' })
     if (sess.windows.length > 1) {
       const i = pick(sess.windows.map((_, j) => j).filter((j) => j !== sess.active))
-      tasks.push({ desc: tr(`<b>${i}번 윈도우</b>로 가세요`, `Go to <b>window ${i}</b>`), keys: [tr('C-b 숫자', 'C-b number'), 'C-b n', 'C-b p'], solution: `<C-b>${i}`, test: (t) => session(t)?.active === i })
+      tasks.push({ desc: tr(`<b>${i}번 윈도우</b>로 가세요`, `Go to <b>window ${i}</b>`, `切到 <b>${i} 号窗口</b>`), keys: [tr('C-b 숫자', 'C-b number', 'C-b 数字'), 'C-b n', 'C-b p'], solution: `<C-b>${i}`, test: (t) => session(t)?.active === i })
     }
   }
   return pick(tasks)

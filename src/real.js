@@ -23,9 +23,9 @@ const msg = (text, kind = '') => { $('#cmdline').textContent = text; $('#cmdline
 
 const vimLevels = levels.filter((l) => !l.kind)
 const SANDBOX = {
-  id: 'sandbox', title: tr('자유 연습장', 'Free practice'), keys: [], lang: 'js', cursor: [0, 0],
-  desc: tr('목표 없이 진짜 Vim 을 마음껏 써 보세요. <code>:help</code> 도 됩니다.', 'No goal: use real Vim freely. <code>:help</code> works too.'),
-  start: tr('// 자유 연습장', '// free practice') + '\nfunction greet(name) {\n  const msg = "Hello, " + name;\n  console.log(msg);\n  return msg;\n}\n\ngreet("vim");',
+  id: 'sandbox', title: tr('자유 연습장', 'Free practice', '自由练习'), keys: [], lang: 'js', cursor: [0, 0],
+  desc: tr('목표 없이 진짜 Vim 을 마음껏 써 보세요. <code>:help</code> 도 됩니다.', 'No goal: use real Vim freely. <code>:help</code> works too.', '没有目标：尽情使用真正的 Vim。<code>:help</code> 也能用。'),
+  start: tr('// 자유 연습장', '// free practice', '// 自由练习') + '\nfunction greet(name) {\n  const msg = "Hello, " + name;\n  console.log(msg);\n  return msg;\n}\n\ngreet("vim");',
 }
 const level = vimLevels.find((l) => l.id === location.hash.slice(1)) ?? (location.hash === '#sandbox' ? SANDBOX : vimLevels[0])
 window.addEventListener('hashchange', () => location.reload()) // Vim 을 새 파일로 다시 띄움
@@ -33,7 +33,7 @@ window.addEventListener('hashchange', () => location.reload()) // Vim 을 새 �
 // ── 화면 ──
 $('#level').innerHTML = chapters.filter((c) => vimLevels.some((l) => l.chapter === c.id)).map((c) =>
   `<optgroup label="${c.title}">${vimLevels.filter((l) => l.chapter === c.id).map((l) => `<option value="${l.id}">${escapeHtml(l.title)}</option>`).join('')}</optgroup>`).join('') +
-  `<option value="sandbox">${tr('자유 연습장', 'Free practice')}</option>`
+  `<option value="sandbox">${tr('자유 연습장', 'Free practice', '自由练习')}</option>`
 $('#level').value = level.id
 $('#level').onchange = (e) => { location.hash = e.target.value }
 $('#back').href = `../#${level.id}`
@@ -58,9 +58,9 @@ const keyLog = []
 
 function renderGoal(lines) {
   const g = level.goal
-  if (!g) return ($('#goal').innerHTML = `<p class="dim">${tr('목표 없음. 자유롭게 연습하세요', 'No goal. Practice freely')}</p>`)
+  if (!g) return ($('#goal').innerHTML = `<p class="dim">${tr('목표 없음. 자유롭게 연습하세요', 'No goal. Practice freely', '没有目标，自由练习吧')}</p>`)
   if (g.cursor) {
-    return ($('#goal').innerHTML = tr(`<p>커서를 <span class="target-sample">초록 칸</span>(${g.cursor[0] + 1}행 ${g.cursor[1] + 1}열)으로 옮기세요.</p><p class="dim">이동 과제라 텍스트는 바뀌지 않습니다 (nomodifiable).</p>`, `<p>Move the cursor to the <span class="target-sample">green cell</span> (line ${g.cursor[0] + 1}, column ${g.cursor[1] + 1}).</p><p class="dim">Text cannot change in motion tasks (nomodifiable).</p>`))
+    return ($('#goal').innerHTML = tr(`<p>커서를 <span class="target-sample">초록 칸</span>(${g.cursor[0] + 1}행 ${g.cursor[1] + 1}열)으로 옮기세요.</p><p class="dim">이동 과제라 텍스트는 바뀌지 않습니다 (nomodifiable).</p>`, `<p>Move the cursor to the <span class="target-sample">green cell</span> (line ${g.cursor[0] + 1}, column ${g.cursor[1] + 1}).</p><p class="dim">Text cannot change in motion tasks (nomodifiable).</p>`, `<p>把光标移到<span class="target-sample">绿色格子</span>（第 ${g.cursor[0] + 1} 行，第 ${g.cursor[1] + 1} 列）。</p><p class="dim">移动类任务里文本不能修改（nomodifiable）。</p>`))
   }
   $('#goal').innerHTML = '<pre>' + goalTexts[0].split('\n').map((line, i) =>
     `<div class="${lines?.[i] === line ? 'ok' : 'diff'}">${escapeHtml(line) || ' '}</div>`).join('') + '</pre>'
@@ -72,7 +72,7 @@ function renderStatus() {
   $('#mode').textContent = mode.toUpperCase()
   $('#mode').dataset.mode = mode
   $('#keys').innerHTML = keyLog.slice(-40).map((k) => `<kbd>${escapeHtml(k)}</kbd>`).join('')
-  $('#count').textContent = par ? `${count}/${par}${tr('타', ' keys')}` : `${count}${tr('타', ' keys')}`
+  $('#count').textContent = par ? `${count}/${par}${tr('타', ' keys', ' 键')}` : `${count}${tr('타', ' keys', ' 键')}`
   if (state) $('#pos').textContent = `${state.line + 1}:${state.col + 1}`
 }
 
@@ -90,11 +90,11 @@ function onState(st) {
   progress[level.id] = Math.max(progress[level.id] ?? 0, s)
   store.set('progress', progress)
   const next = vimLevels[vimLevels.indexOf(level) + 1]
-  msg(tr(`"${level.id}" 클리어 — 진짜 Vim 에서 ${count}타 (기준 ${par}타)`, `"${level.id}" cleared in real Vim — ${count} keys (par ${par})`), 'ok')
-  $('#banner').innerHTML = `<span class="float-title">${tr('✔ 클리어 (진짜 Vim)', '✔ Cleared (real Vim)')}</span>
+  msg(tr(`"${level.id}" 클리어 — 진짜 Vim 에서 ${count}타 (기준 ${par}타)`, `"${level.id}" cleared in real Vim — ${count} keys (par ${par})`, `"${level.id}" 通关 — 在真正的 Vim 里用了 ${count} 键（标准 ${par} 键）`), 'ok')
+  $('#banner').innerHTML = `<span class="float-title">${tr('✔ 클리어 (진짜 Vim)', '✔ Cleared (real Vim)', '✔ 通关（真 Vim）')}</span>
     <div class="stars">${'★'.repeat(s)}${'☆'.repeat(3 - s)}</div>
-    <div>${tr(`<b>${count}</b>타 · 기준 ${par}타`, `<b>${count}</b> keys · par ${par}`)}${s < 3 ? `<br><span class="dim">${tr('모범 답안', 'Solution')}</span> <code>${escapeHtml(level.solution)}</code>` : ''}</div>
-    <button id="next">${next ? `${tr('다음', 'Next')}: ${escapeHtml(next.title)} ⏎` : tr('자유 연습장 ⏎', 'Free practice ⏎')}</button>`
+    <div>${tr(`<b>${count}</b>타 · 기준 ${par}타`, `<b>${count}</b> keys · par ${par}`, `<b>${count}</b> 键 · 标准 ${par} 键`)}${s < 3 ? `<br><span class="dim">${tr('모범 답안', 'Solution', '参考答案')}</span> <code>${escapeHtml(level.solution)}</code>` : ''}</div>
+    <button id="next">${next ? `${tr('다음', 'Next', '下一关')}: ${escapeHtml(next.title)} ⏎` : tr('자유 연습장 ⏎', 'Free practice ⏎', '自由练习 ⏎')}</button>`
   $('#banner').hidden = false
   $('#next').onclick = () => { location.hash = next ? next.id : 'sandbox' }
   $('#next').focus()
@@ -141,24 +141,24 @@ const MODIFIERS = new Set(['Shift', 'Control', 'Alt', 'Meta', 'CapsLock'])
 const LABEL = { Escape: 'Esc', Enter: '⏎', ' ': '␣', Backspace: '⌫' }
 $('#vim-input').addEventListener('keydown', (e) => {
   if (MODIFIERS.has(e.key) || done) return
-  if (e.isComposing || e.keyCode === 229 || /[ㄱ-ㅎㅏ-ㅣ가-힣]/.test(e.key)) return msg(tr('한/영 키로 영문 전환! Vim 명령은 영문으로만 동작해요', 'Switch your input method to English: Vim commands only work with Latin letters'), 'error')
+  if (e.isComposing || e.keyCode === 229 || /[ㄱ-ㅎㅏ-ㅣ가-힣]/.test(e.key)) return msg(tr('한/영 키로 영문 전환! Vim 명령은 영문으로만 동작해요', 'Switch your input method to English: Vim commands only work with Latin letters', '请把输入法切换到英文：Vim 命令只认拉丁字母'), 'error')
   count++
   keyLog.push(e.ctrlKey ? `C-${e.key}` : LABEL[e.key] ?? e.key)
   renderStatus()
 }, true)
 
 function start() {
-  const why = window.crossOriginIsolated ? checkBrowserCompatibility() : tr('SharedArrayBuffer 를 쓸 수 없음 (교차 출처 격리 실패)', 'SharedArrayBuffer unavailable (cross-origin isolation failed)')
+  const why = window.crossOriginIsolated ? checkBrowserCompatibility() : tr('SharedArrayBuffer 를 쓸 수 없음 (교차 출처 격리 실패)', 'SharedArrayBuffer unavailable (cross-origin isolation failed)', '无法使用 SharedArrayBuffer（跨源隔离失败）')
   if (why) {
     // shortcut: GitHub Pages 는 헤더를 못 붙여 서비스 워커로 우회 중. Safari 는 이 우회가 첫 방문에만 먹힘(실측) → 헤더를 붙일 수 있는 호스팅으로 옮기면 해결
     const safari = /Safari/.test(navigator.userAgent) && !/Chrome|Chromium|Edg/.test(navigator.userAgent)
-    $('#vim-loading').innerHTML = `<div class="fallback">${safari ? tr('Safari 에서는 아직 진짜 Vim 모드를 쓸 수 없어요.', 'Real Vim mode does not work in Safari yet.') : tr('이 브라우저에서는 진짜 Vim 을 실행할 수 없어요.', 'Real Vim cannot run in this browser.')}<br>
-      <span class="dim">${escapeHtml(why)}</span><br>${tr('크롬 · 파이어폭스 · 엣지에서 열거나', 'Open it in Chrome, Firefox or Edge, or')} <a href="../#${level.id}">${tr('에뮬레이터로 연습하기 →', 'practice with the emulator →')}</a></div>`
+    $('#vim-loading').innerHTML = `<div class="fallback">${safari ? tr('Safari 에서는 아직 진짜 Vim 모드를 쓸 수 없어요.', 'Real Vim mode does not work in Safari yet.', 'Safari 暂时还用不了真 Vim 模式。') : tr('이 브라우저에서는 진짜 Vim 을 실행할 수 없어요.', 'Real Vim cannot run in this browser.', '这个浏览器跑不了真正的 Vim。')}<br>
+      <span class="dim">${escapeHtml(why)}</span><br>${tr('크롬 · 파이어폭스 · 엣지에서 열거나', 'Open it in Chrome, Firefox or Edge, or', '请用 Chrome、Firefox 或 Edge 打开，或者')} <a href="../#${level.id}">${tr('에뮬레이터로 연습하기 →', 'practice with the emulator →', '用模拟器练习 →')}</a></div>`
     return
   }
   vim = new VimWasm({ canvas: $('#vim-canvas'), input: $('#vim-input'), workerScriptPath: workerUrl })
-  vim.onVimInit = () => { $('#vim-loading').hidden = true; vim.focus(); msg(`${tr('진짜 Vim 시작', 'Real Vim started')} — ${file}`) }
-  vim.onError = (e) => msg(`${tr('Vim 오류', 'Vim error')}: ${e.message}`, 'error')
+  vim.onVimInit = () => { $('#vim-loading').hidden = true; vim.focus(); msg(`${tr('진짜 Vim 시작', 'Real Vim started', '真正的 Vim 已启动')} — ${file}`) }
+  vim.onError = (e) => msg(`${tr('Vim 오류', 'Vim error', 'Vim 错误')}: ${e.message}`, 'error')
   vim.onTitleUpdate = (t) => { try { onState(JSON.parse(t)) } catch { /* 시작 직후 기본 제목 */ } }
   vim.start({ dirs: ['/work'], files: { [file]: level.start + '\n', '/work/edu.vim': vimrc.join('\n') }, cmdArgs: ['-S', '/work/edu.vim', file] })
 }
