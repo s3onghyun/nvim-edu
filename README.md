@@ -1,6 +1,6 @@
 # nvim-edu
 
-**English** · [한국어](README.ko.md)
+**English** · [简体中文](README.zh-CN.md) · [한국어](README.ko.md)
 
 Learn Vim / Neovim **and tmux** keys right in your browser — no install, no config.
 Like [LearnGitBranching](https://learngitbranching.js.org/), you see the **goal state** and close the gap with your keyboard.
@@ -29,11 +29,11 @@ Neovim-style UI: neo-tree sidebar, bufferline, lualine, cmdline messages, relati
 
 Habit training: arrow keys are blocked in chapter 1 (motions) and the motion drill, the mouse is blocked; typing with a non-Latin input method (Korean, Japanese, Chinese IME) in NORMAL mode shows a hint.
 
-Languages: English and Korean. Picked from `?lang=en|ko`, then your saved choice, then the browser language.
+Languages: English, Korean and Simplified Chinese. Picked from `?lang=en|ko|zh-CN` (`zh` also works), then your saved choice, then the browser language (any `zh*` locale, including `zh-TW`/`zh-HK`, gets Simplified Chinese).
 
 ## Privacy and analytics
 
-This site uses cookie-free [GoatCounter](https://www.goatcounter.com/) analytics. It records page views and only aggregate product events (a level or drill finished, opening real Vim mode, and a Korean/English language change); it never sends keystrokes, solutions, or other text you enter. Analytics is disabled when Do Not Track or Global Privacy Control is enabled.
+This site uses cookie-free [GoatCounter](https://www.goatcounter.com/) analytics. It records page views and only aggregate product events (a level or drill finished, opening real Vim mode, and a Korean/English/Chinese language change); it never sends keystrokes, solutions, or other text you enter. Analytics is disabled when Do Not Track or Global Privacy Control is enabled.
 
 ## Does it behave like real Neovim?
 
@@ -53,6 +53,7 @@ npm install
 npm run dev       # http://localhost:5173
 npm test          # build, then solve every level and drill in a real Chromium
 npm run test:en   # English UI: every level, plus a scan that no Korean text is left
+npm run test:zh   # Simplified Chinese UI: the same, plus no `undefined` or raw data-* text
 ```
 
 `npm test` needs a Playwright browser: `npx playwright-core install chromium`. Run with `BROWSER=firefox` or `BROWSER=webkit` for other engines.
@@ -64,7 +65,8 @@ npm run test:en   # English UI: every level, plus a scan that no Korean text is 
 | `src/levels/vim-levels.json` | Vim level data (schema in `src/levels/schema.js`, checked by `npm test`). `solution` is both the reference answer and the par |
 | `src/levels.js` | Loads the Vim levels, tmux levels, chapters |
 | `src/levels.en.js` | English text for levels (same ids) |
-| `src/i18n.js` | Language selection; `t('한국어', 'English')` for inline strings |
+| `src/levels.zh-CN.js` | Simplified Chinese text for levels (same ids, applied on top of the English text) |
+| `src/i18n.js` | Language selection and the language menu; `t('한국어', 'English', '中文')` for inline strings (missing Chinese falls back to English) |
 | `src/drill.js` | Drill task generators |
 | `src/tmux.js` | tmux simulator (pure state machine: session/window/pane tree, prefix keys, vi copy mode, a tiny shell) |
 | `src/tmux-view.js` | tmux state → HTML |
@@ -76,7 +78,7 @@ npm run test:en   # English UI: every level, plus a scan that no Korean text is 
 
 ## Adding a level
 
-Add one object to `src/levels/vim-levels.json` (and its English text to `src/levels.en.js`):
+Add one object to `src/levels/vim-levels.json` (its English text to `src/levels.en.js` and its Chinese text to `src/levels.zh-CN.js`):
 
 ```json
 {
