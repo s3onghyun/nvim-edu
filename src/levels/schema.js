@@ -13,7 +13,7 @@
 // solution  필수  모범 답안 키 시퀀스. <Esc> <CR> <C-a> 표기. par(★★★ 기준 타수) = 답안 키 수
 
 export const VIM_CHAPTERS = ['move', 'edit', 'object', 'power', 'real', 'guru']
-const FIELDS = ['id', 'chapter', 'title', 'desc', 'keys', 'lang', 'start', 'cursor', 'goal', 'solution']
+export const FIELDS = ['id', 'chapter', 'title', 'desc', 'keys', 'lang', 'start', 'cursor', 'goal', 'solution']
 const LANGS = ['js', 'py', 'yaml']
 
 const isStr = (v) => typeof v === 'string' && v.length > 0
