@@ -2,6 +2,8 @@
 
 **English** · [简体中文](README.zh-CN.md) · [한국어](README.ko.md)
 
+> 💡 [Ideas / 문의 / 建议](https://github.com/s3onghyun/nvim-edu/discussions)
+
 Learn Vim / Neovim **and tmux** keys right in your browser — no install, no config.
 Like [LearnGitBranching](https://learngitbranching.js.org/), you see the **goal state** and close the gap with your keyboard.
 

@@ -2,6 +2,8 @@
 
 **简体中文** · [English](README.md) · [한국어](README.ko.md)
 
+> 💡 [Ideas / 문의 / 建议](https://github.com/s3onghyun/nvim-edu/discussions)
+
 直接在浏览器里练 Vim / Neovim **和 tmux** 快捷键：不用安装，不用配置。
 和 [LearnGitBranching](https://learngitbranching.js.org/) 一样，你能看到**目标状态**，再用键盘把差距补上。
 

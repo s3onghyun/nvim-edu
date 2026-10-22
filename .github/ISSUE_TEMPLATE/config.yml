@@ -1,0 +1,5 @@
+blank_issues_enabled: true
+contact_links:
+  - name: "💬 Questions & ideas / 提问与建议 / 질문·아이디어"
+    url: https://github.com/s3onghyun/nvim-edu/discussions
+    about: "Ask questions and share ideas in Discussions / 在 Discussions 中提问和分享建议 / Discussions에서 질문하고 아이디어를 나눠 주세요"
