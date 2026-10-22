@@ -2,6 +2,8 @@
 
 [English](README.md) · [简体中文](README.zh-CN.md) · **한국어**
 
+> 💡 [Ideas / 문의 / 建议](https://github.com/s3onghyun/nvim-edu/discussions)
+
 브라우저에서 바로 하는 Vim / Neovim 단축키 연습장.
 [LearnGitBranching](https://learngitbranching.js.org/) 처럼 **목표 상태를 보고 그 차이를 키보드로 메우는** 방식입니다.
 

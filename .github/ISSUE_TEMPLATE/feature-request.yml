@@ -1,0 +1,36 @@
+name: "💡 Idea / 建议 / 아이디어"
+description: "Suggest a site feature, level, or improvement / 提出功能、关卡或改进建议 / 기능·레벨·개선 아이디어 제안"
+labels: [enhancement]
+body:
+  - type: dropdown
+    id: kind
+    attributes:
+      label: "Kind / 类型 / 종류"
+      options:
+        - "Site feature / 网站功能 / 사이트 기능"
+        - "New level / 新关卡 / 새 레벨"
+        - "tmux"
+        - "Translation / 翻译 / 번역"
+        - "Other / 其他 / 기타"
+    validations:
+      required: true
+  - type: textarea
+    id: problem
+    attributes:
+      label: "What would help? / 什么会有帮助？ / 무엇이 도움이 될까요?"
+      description: "What are you trying to learn or do? / 你想学或想做什么？ / 무엇을 배우거나 하려고 하나요?"
+    validations:
+      required: true
+  - type: textarea
+    id: idea
+    attributes:
+      label: "Your idea / 你的想法 / 아이디어"
+      description: "For a full level proposal, the Level idea template has more fields. / 完整的关卡提案请用 Level idea 模板。 / 자세한 레벨 제안은 Level idea 템플릿을 써 주세요."
+    validations:
+      required: true
+  - type: checkboxes
+    id: pr
+    attributes:
+      label: "Contribution / 贡献 / 기여"
+      options:
+        - label: "I'd be willing to open a PR / 我愿意提交 PR / PR을 보낼 의향이 있어요"
