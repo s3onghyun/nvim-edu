@@ -8,6 +8,33 @@
 
 `nvim-edu`에 새로운 연습 레벨이나 기능을 제안하고 기여해주셔서 감사합니다!
 
+질문과 아이디어는 [Discussions](https://github.com/s3onghyun/nvim-edu/discussions), 버그는 이슈로 남겨 주세요.
+보안 문제는 공개 이슈 대신 [SECURITY.md](SECURITY.md) 를 따라 비공개로 알려 주세요.
+참여하는 모든 분은 [행동 강령](CODE_OF_CONDUCT.md)을 지켜 주세요.
+
+### 로컬 개발과 테스트
+
+1. Node.js 22 (CI 와 같은 버전) 에서 `npm ci` 를 실행합니다. `postinstall` 이 `patches/` 의 에뮬레이터 수정을 patch-package 로 적용합니다.
+2. `npm run dev` 로 개발 서버를 띄웁니다 (http://localhost:5173).
+3. 테스트는 `playwright-core` 로 진짜 브라우저를 띄웁니다. `playwright-core` 는 설치할 때 브라우저를 받지 않으므로 한 번 받아 둡니다:
+   ```sh
+   npx playwright-core install chromium          # firefox webkit 도 같은 방식
+   npx playwright-core install --with-deps webkit # Linux 에서 시스템 라이브러리까지 (sudo 필요)
+   ```
+   브라우저는 저장소가 아니라 사용자 캐시에 저장됩니다 (Linux `~/.cache/ms-playwright`, macOS `~/Library/Caches/ms-playwright`).
+4. 검사 명령:
+   ```sh
+   npm test                  # 단위 테스트 + 빌드 + 모든 레벨·드릴을 브라우저에서 풀이 (기본 chromium)
+   npm run test:en           # 영어 화면
+   npm run test:zh           # 간체 중국어 화면
+   BROWSER=firefox npm test  # BROWSER=chromium|firefox|webkit
+   npm run test:nvim         # 실제 Neovim 과 비교 (Neovim 0.11 이 PATH 에 있어야 함, CI 는 0.11.0)
+   ```
+
+PR 마다 CI 가 `test (chromium)`, `test (firefox)`, `test (webkit)` (각각 `npm test`, `test:en`, `test:zh`) 와
+`nvim-diff` (`test:nvim`) 를 실행하고, 네 가지가 모두 통과해야 머지합니다. 처음 기여하는 분의 PR 은
+메인테이너가 변경 내용을 확인한 뒤 CI 실행을 승인합니다. CI 구성의 이유는 [docs/MAINTAINERS.md](docs/MAINTAINERS.md) 에 있습니다.
+
 ### 새로운 레벨 추가하기
 
 Vim 레벨은 코드가 아니라 데이터 파일 **`src/levels/vim-levels.json`** 에 있습니다. 필드 규칙(스키마)은 **`src/levels/schema.js`** 맨 위 주석에 있고, `npm test` 가 이 스키마로 모든 레벨을 검사합니다.
@@ -89,6 +116,34 @@ AI 도구는 보조 수단으로 써도 됩니다. PR 하나는 한 가지 문�
 ## English
 
 Thank you for contributing new levels and improvements to `nvim-edu`!
+
+Questions and ideas go to [Discussions](https://github.com/s3onghyun/nvim-edu/discussions), bugs to issues.
+Report security problems privately as described in [SECURITY.md](SECURITY.md), not in a public issue.
+Everyone taking part is expected to follow the [Code of Conduct](CODE_OF_CONDUCT.md).
+
+### Local development and tests
+
+1. Use Node.js 22 (the version CI uses) and run `npm ci`. Its `postinstall` step applies the emulator fixes in `patches/` with patch-package.
+2. `npm run dev` starts the dev server at http://localhost:5173.
+3. The tests drive real browsers through `playwright-core`, which does not download browsers on install. Fetch them once:
+   ```sh
+   npx playwright-core install chromium          # same for firefox and webkit
+   npx playwright-core install --with-deps webkit # on Linux, also the system libraries (needs sudo)
+   ```
+   Browsers go to your user cache, not the repository (`~/.cache/ms-playwright` on Linux, `~/Library/Caches/ms-playwright` on macOS).
+4. Checks:
+   ```sh
+   npm test                  # unit tests + build + solve every level and drill in a browser (chromium by default)
+   npm run test:en           # English UI
+   npm run test:zh           # Simplified Chinese UI
+   BROWSER=firefox npm test  # BROWSER=chromium|firefox|webkit
+   npm run test:nvim         # compare with real Neovim (Neovim 0.11 on your PATH; CI uses 0.11.0)
+   ```
+
+On every pull request CI runs `test (chromium)`, `test (firefox)` and `test (webkit)` (each runs `npm test`,
+`test:en` and `test:zh`) plus `nvim-diff` (`test:nvim`); a pull request is merged when all four pass. For a
+first-time contributor, a maintainer approves the CI run after looking at the diff. Why CI is set up this way:
+[docs/MAINTAINERS.md](docs/MAINTAINERS.md).
 
 ### Adding a New Level
 
