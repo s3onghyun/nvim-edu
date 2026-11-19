@@ -1,0 +1,45 @@
+name: "🐞 Bug / 问题 / 버그"
+description: "Something on the site doesn't work as it should / 网站上有地方不正常 / 사이트가 제대로 동작하지 않아요"
+labels: [bug]
+body:
+  - type: textarea
+    id: what
+    attributes:
+      label: "What happened, and what did you expect? / 发生了什么，你期望什么？ / 무슨 일이 있었고, 무엇을 기대했나요?"
+      placeholder: "I typed the reference solution, but the level did not clear."
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: "Keys or steps to reproduce / 复现按键或步骤 / 재현 키·순서"
+      placeholder: |
+        1. Open https://s3onghyun.github.io/nvim-edu/#cw-dot
+        2. Type: wcwlength<Esc>4w.
+  - type: input
+    id: level
+    attributes:
+      label: "Level or page / 关卡或页面 / 레벨·페이지"
+      description: "The level id after # in the URL, or drill / daily / free practice / real Vim mode / 网址 # 后的关卡 id / URL 의 # 뒤 레벨 id"
+      placeholder: "cw-dot (real Vim mode)"
+    validations:
+      required: true
+  - type: input
+    id: browser
+    attributes:
+      label: "Browser and version / 浏览器及版本 / 브라우저와 버전"
+      placeholder: "Firefox 140, Safari 18.5, Chrome 141"
+    validations:
+      required: true
+  - type: input
+    id: os
+    attributes:
+      label: "OS and keyboard layout or input method / 操作系统与键盘布局或输入法 / OS 와 자판·입력기"
+      placeholder: "macOS 15, US layout; Windows 11, Korean IME"
+    validations:
+      required: true
+  - type: dropdown
+    id: lang
+    attributes:
+      label: "UI language / 界面语言 / 화면 언어"
+      options: ["English", "简体中文", "한국어"]

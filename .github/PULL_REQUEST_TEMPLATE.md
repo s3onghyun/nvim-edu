@@ -5,13 +5,13 @@
 ## Verification
 
 - [ ] I ran the relevant checks and recorded them below.
-- [ ] For a level, I updated Korean and English text with the same id and verified the solution.
+- [ ] For a level, I added Korean, English and Simplified Chinese text with the same id and verified the solution.
 - [ ] I did not change workflows, dependencies, lockfiles, or build configuration; or I explain the security impact below.
 - [ ] I have the right to contribute this work under the repository's MIT license.
 
 Checks run / result:
 
-<!-- e.g. npm test; npm run test:en; npm run test:nvim -->
+<!-- e.g. npm test; npm run test:en; npm run test:zh; npm run test:nvim -->
 
 ## AI assistance
 
