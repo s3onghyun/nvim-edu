@@ -184,6 +184,28 @@ expect('느린 기록이면 저장된 최고 기록 유지', (await stored('reco
 await open('mission-move')
 expect('새로고침 후 최고 기록 유지', [(await stored('records'))['mission-move'], await navItem('mission-move').then((n) => n.meta)], [first, `${first.time.toFixed(1)}s`])
 
+// 4-1) 저장값이 망가져도(같은 오리진의 다른 스크립트·확장 등) 화면이 뜨고, 잘못된 항목만 버려짐
+// 바로 앞이 mission-move 화면이라 새로고침 한 번으로 다시 읽힘 (goto + reload 를 겹치면 Firefox 가
+// 진행 중이던 지연 로딩 import 취소를 pageerror 로 보고하므로 open() 대신 reload)
+const pageErrors = []
+page.on('pageerror', (e) => pageErrors.push(e.message))
+const reload = async () => { await page.reload(); await page.waitForSelector('.cm-content') }
+await page.evaluate(() => {
+  localStorage.setItem('nvim-edu:progress', JSON.stringify({ x: 1e9, dd: 2, hjkl: '3', ['__proto__']: 3 }))
+  localStorage.setItem('nvim-edu:records', JSON.stringify({ 'mission-move': { time: 'slow', keys: 3 }, 'mission-daily': null }))
+  localStorage.setItem('nvim-edu:days', JSON.stringify({ a: 1 }))
+})
+await reload()
+expect('망가진 저장값으로도 레벨 목록이 그려짐', await page.locator('#nav a').count() > levels.length, true)
+expect('올바른 progress 항목은 유지, 나머지는 미클리어', [await navItem('dd'), await navItem('x'), await navItem('hjkl')],
+  [{ cleared: true, ico: '●', meta: '★★' }, { cleared: false, ico: '○', meta: '' }, { cleared: false, ico: '○', meta: '' }])
+expect('잘못된 기록은 기록 없음으로', await navItem('mission-move').then((n) => n.meta), '')
+await page.evaluate(() => localStorage.setItem('nvim-edu:days', JSON.stringify('notarray')))
+await reload()
+await finishDrill()
+expect('days 가 배열이 아니어도 미션 완주가 기록됨', [(await banner()).shown, (await stored('days')).length, typeof (await stored('records'))['mission-move'].time], [true, 1, 'number'])
+expect('망가진 저장값으로 페이지 오류 없음', pageErrors, [])
+
 // 5) 폰 폭(390px)에서 페이지가 가로로 밀리지 않음 (긴 레벨 제목·정규식 때문에 생겼던 문제). 해설 표도 펼쳐서 확인
 const phone = await browser.newPage({ viewport: { width: 390, height: 844 } })
 const wide = []
