@@ -4,7 +4,7 @@ import * as pw from 'playwright-core'
 import { levels } from '../src/levels.js'
 
 const BASE = process.env.BASE_URL ?? 'http://localhost:4178/'
-const server = process.env.BASE_URL ? null : await preview({ preview: { port: 4178 } })
+const server = process.env.BASE_URL ? null : await preview({ preview: { port: 4178, strictPort: true } })
 const name = process.env.BROWSER ?? 'chromium'
 const browser = await pw[name].launch()
 const page = await browser.newPage()

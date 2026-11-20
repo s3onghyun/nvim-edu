@@ -204,9 +204,10 @@ export function describe({ keys, kind }) {
     }
     case 'motion': return describeMotion(keys)
     default: {
-      if (k === '@') return times(t(`매크로 ${quote(rest[1])} 실행`, `replay macro ${quote(rest[1])}`, `重放宏 ${quote(rest[1])}`))
-      if (k === 'r') return t(`글자를 ${quote(rest[1])} 로 바꾸기`, `replace the character with ${quote(rest[1])}`, `把字符替换为 ${quote(rest[1])}`)
-      if (k === 'm') return t(`위치를 ${quote(rest[1])} 로 표시`, `set mark ${quote(rest[1])}`, `设置标记 ${quote(rest[1])}`)
+      const arg = rest[1] ?? '' // @ · r · m 의 대상 글자 (키 기록이 그 앞에서 끝날 수 있음)
+      if (k === '@') return times(t(`매크로 ${quote(arg)} 실행`, `replay macro ${quote(arg)}`, `重放宏 ${quote(arg)}`))
+      if (k === 'r') return t(`글자를 ${quote(arg)} 로 바꾸기`, `replace the character with ${quote(arg)}`, `把字符替换为 ${quote(arg)}`)
+      if (k === 'm') return t(`위치를 ${quote(arg)} 로 표시`, `set mark ${quote(arg)}`, `设置标记 ${quote(arg)}`)
       const two = rest.slice(0, 2).join('')
       const a = ACTION[two] ?? ACTION[k]
       return a ? withReg(times(tr(a))) : quote(keys.join(''))

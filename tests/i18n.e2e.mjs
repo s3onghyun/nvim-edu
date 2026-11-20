@@ -8,7 +8,7 @@ import { normalizeLang } from '../src/i18n.js'
 
 const KEY = { '<Esc>': 'Escape', '<CR>': 'Enter', '<C-a>': 'Control+a', '<C-v>': 'Control+v', '<C-b>': 'Control+b', '<C-u>': 'Control+u', '<Left>': 'ArrowLeft', '<Right>': 'ArrowRight' }
 const BASE = process.env.BASE_URL ?? 'http://localhost:4168/'
-const server = process.env.BASE_URL ? null : await preview({ preview: { port: 4168 } })
+const server = process.env.BASE_URL ? null : await preview({ preview: { port: 4168, strictPort: true } })
 const browser = await pw[process.env.BROWSER ?? 'chromium'].launch()
 const page = await browser.newPage()
 const HANGUL = /[ㄱ-ㅎㅏ-ㅣ가-힣]/

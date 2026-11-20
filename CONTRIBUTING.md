@@ -46,7 +46,7 @@ Vim 레벨은 코드가 아니라 데이터 파일 **`src/levels/vim-levels.json
      "id": "unique-level-id",
      "chapter": "edit",
      "title": "레벨 제목",
-     "desc": "설명 문구 (HTML 태그 <b>, <code> 사용 가능)",
+     "desc": "설명 문구 (HTML 태그 <b>, <code>, <em>, <kbd> 사용 가능)",
      "keys": ["ciw", "C"],
      "lang": "js",
      "start": "const old = \"value\";",
@@ -60,7 +60,7 @@ Vim 레벨은 코드가 아니라 데이터 파일 **`src/levels/vim-levels.json
    |------|------|------|
    | `id` | ✓ | 소문자·숫자·하이픈. 전체에서 유일 (URL `#id`, `levels.en.js` 키) |
    | `chapter` | ✓ | `move` \| `edit` \| `object` \| `power` \| `real` \| `guru` |
-   | `title`, `desc` | ✓ | 한국어 제목·설명. `desc` 는 HTML 허용 |
+   | `title`, `desc` | ✓ | 한국어 제목·설명. HTML 은 `<b>` `<code>` `<em>` `<kbd>` 만, 속성 없이 (`npm test` 가 검사) |
    | `keys` | ✓ | 이 레벨에서 배우는 키 목록 (문자열 배열) |
    | `lang` | | `js` \| `py` \| `yaml` (구문 강조). 없으면 생략 |
    | `start` | ✓ | 시작 버퍼. 줄바꿈은 `\n` |
@@ -156,7 +156,7 @@ Vim levels live in a data file, **`src/levels/vim-levels.json`**, not in code. T
    |------|------|------|
    | `id` | ✓ | lowercase letters, digits, hyphens; unique (URL `#id`, key in `levels.en.js`) |
    | `chapter` | ✓ | `move` \| `edit` \| `object` \| `power` \| `real` \| `guru` |
-   | `title`, `desc` | ✓ | Korean title and description; `desc` may contain HTML |
+   | `title`, `desc` | ✓ | Korean title and description; HTML is limited to `<b>` `<code>` `<em>` `<kbd>` without attributes (checked by `npm test`) |
    | `keys` | ✓ | keys taught by the level (array of strings) |
    | `lang` | | `js` \| `py` \| `yaml` for syntax highlighting; omit otherwise |
    | `start` | ✓ | starting buffer, `\n` between lines |

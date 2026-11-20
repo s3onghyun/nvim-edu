@@ -22,7 +22,7 @@ execFileSync('nvim', ['--clean', '--headless', '-l', new URL('./nvim-diff/runner
 const real = JSON.parse(readFileSync(join(dir, 'out.json'), 'utf8'))
 
 // 2) 사이트 에디터 (케이스마다 새로 로드해서 레지스터·매크로가 섞이지 않게)
-const server = await preview({ preview: { port: 4174 } })
+const server = await preview({ preview: { port: 4174, strictPort: true } })
 const browser = await pw[process.env.BROWSER ?? 'chromium'].launch()
 const page = await browser.newPage()
 const ours = []

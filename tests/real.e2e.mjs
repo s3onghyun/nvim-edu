@@ -8,7 +8,7 @@ import { watchCsp } from './csp.mjs'
 const KEY_GAP = Number(process.env.KEY_GAP ?? 40)
 const KEY = { '<Esc>': 'Escape', '<CR>': 'Enter', '<C-a>': 'Control+a', '<C-v>': 'Control+v' }
 const BASE = process.env.BASE_URL ?? 'http://localhost:4171/'
-const server = process.env.BASE_URL ? null : await preview({ preview: { port: 4171 } })
+const server = process.env.BASE_URL ? null : await preview({ preview: { port: 4171, strictPort: true } })
 const name = process.env.BROWSER ?? 'chromium'
 // UI_LANG=en · zh-CN 이면 그 언어 화면으로 (레벨 데이터도 node 쪽에서 같은 언어로 불러옴)
 const QS = process.env.UI_LANG ? `?lang=${process.env.UI_LANG}` : ''

@@ -12,7 +12,7 @@ const KEY = {
 
 // BASE_URL 을 주면 배포된 사이트를, 아니면 로컬 빌드를 검증. BROWSER=chromium|firefox|webkit
 const BASE = process.env.BASE_URL ?? 'http://localhost:4179/'
-const server = process.env.BASE_URL ? null : await preview({ preview: { port: 4179 } })
+const server = process.env.BASE_URL ? null : await preview({ preview: { port: 4179, strictPort: true } })
 const name = process.env.BROWSER ?? 'chromium'
 // UI_LANG=en · zh-CN 이면 그 언어 화면으로 (레벨 데이터도 node 쪽에서 같은 언어로 불러옴)
 const QS = process.env.UI_LANG ? `?lang=${process.env.UI_LANG}` : ''
