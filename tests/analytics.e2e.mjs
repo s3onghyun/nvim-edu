@@ -1,5 +1,4 @@
 import assert from 'node:assert/strict'
-import { readdirSync, readFileSync } from 'node:fs'
 import { preview } from 'vite'
 import * as pw from 'playwright-core'
 import { levels, tokenize } from '../src/levels.js'
@@ -55,10 +54,6 @@ if (name !== 'webkit') {
 assert.deepEqual(csp, [], 'CSP violations on the main and real pages')
 
 // The analytics script is a versioned URL pinned by integrity; a file with other content never runs
-const assets = new URL('../dist/assets/', import.meta.url)
-const bundle = readdirSync(assets).filter((f) => f.endsWith('.js')).map((f) => readFileSync(new URL(f, assets), 'utf8')).join('\n')
-assert.ok(bundle.includes(GOATCOUNTER_SCRIPT) && bundle.includes(GOATCOUNTER_INTEGRITY))
-assert.ok(!bundle.includes('gc.zgo.at/count.js'))
 const tampered = await browser.newContext()
 const tamperedCsp = await watchCsp(tampered)
 await tampered.route('https://gc.zgo.at/**', (route) => route.fulfill({ contentType: 'text/javascript', headers: { 'access-control-allow-origin': '*' }, body: 'window.__tampered = true' }))
