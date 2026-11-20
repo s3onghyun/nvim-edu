@@ -1,12 +1,16 @@
 import assert from 'node:assert/strict'
+import { readdirSync, readFileSync } from 'node:fs'
 import { preview } from 'vite'
 import * as pw from 'playwright-core'
 import { levels, tokenize } from '../src/levels.js'
+import { GOATCOUNTER_INTEGRITY, GOATCOUNTER_SCRIPT } from '../src/analytics.js'
+import { watchCsp } from './csp.mjs'
 
 const server = await preview({ preview: { port: 4173 } })
 const name = process.env.BROWSER ?? 'chromium'
 const browser = await pw[name].launch()
 const page = await browser.newPage()
+const csp = await watchCsp(page)
 const sent = []
 await page.exposeFunction('__recordGoatEvent', (event) => sent.push(event))
 await page.addInitScript(() => {
@@ -46,6 +50,31 @@ if (name !== 'webkit') {
   await page.waitForFunction(() => window.crossOriginIsolated && window.__real, null, { timeout: 30000 })
   assert.equal((await events()).filter((event) => event.path === 'real-vim-opened' && event.event === true).length, 2)
 }
+
+assert.deepEqual(csp, [], 'CSP violations on the main and real pages')
+
+// The analytics script is a versioned URL pinned by integrity; a file with other content never runs
+const assets = new URL('../dist/assets/', import.meta.url)
+const bundle = readdirSync(assets).filter((f) => f.endsWith('.js')).map((f) => readFileSync(new URL(f, assets), 'utf8')).join('\n')
+assert.ok(bundle.includes(GOATCOUNTER_SCRIPT) && bundle.includes(GOATCOUNTER_INTEGRITY))
+assert.ok(!bundle.includes('gc.zgo.at/count.js'))
+const tampered = await browser.newContext()
+const tamperedCsp = await watchCsp(tampered)
+await tampered.route('https://gc.zgo.at/**', (route) => route.fulfill({ contentType: 'text/javascript', headers: { 'access-control-allow-origin': '*' }, body: 'window.__tampered = true' }))
+await tampered.route('https://*.goatcounter.com/**', (route) => route.fulfill({ status: 204 }))
+await tampered.addInitScript(() => {
+  addEventListener('error', (e) => { if (e.target?.src?.startsWith('https://gc.zgo.at/')) window.__goatScriptError = true }, true)
+})
+const tamperedPage = await tampered.newPage()
+await tamperedPage.goto('http://localhost:4173/#hjkl')
+const script = tamperedPage.locator('script[src^="https://gc.zgo.at/"]')
+assert.equal(await script.getAttribute('src'), GOATCOUNTER_SCRIPT)
+assert.equal(await script.getAttribute('integrity'), GOATCOUNTER_INTEGRITY)
+assert.equal(await script.getAttribute('crossorigin'), 'anonymous')
+await tamperedPage.waitForFunction(() => window.__goatScriptError)
+assert.equal(await tamperedPage.evaluate(() => window.__tampered), undefined)
+assert.deepEqual(tamperedCsp, [])
+await tampered.close()
 
 const dnt = await browser.newContext()
 await dnt.addInitScript(() => {

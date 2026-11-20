@@ -1,5 +1,9 @@
 // GoatCounter is cookieless. Keep the endpoint here so a future site-code change is one edit.
 export const GOATCOUNTER_ENDPOINT = 'https://s3onghyun.goatcounter.com/count'
+// A versioned, immutable script pinned by its Subresource Integrity hash (published by GoatCounter),
+// so the browser refuses any other file served under this URL.
+export const GOATCOUNTER_SCRIPT = 'https://gc.zgo.at/count.v4.js'
+export const GOATCOUNTER_INTEGRITY = 'sha384-nRw6qfbWyJha9LhsOtSb2YJDyZdKvvCFh0fJYlkquSFjUxp9FVNugbfy8q1jdxI+'
 
 const pending = []
 
@@ -32,9 +36,10 @@ export function initializeAnalytics() {
     window.goatcounter = { ...window.goatcounter, no_onload: true }
     const script = document.createElement('script')
     script.async = true
-    // real/ runs under COEP require-corp; a no-cors cross-origin script is blocked there.
+    // CORS mode is required for the integrity check, and real/ runs under COEP require-corp.
     script.crossOrigin = 'anonymous'
-    script.src = 'https://gc.zgo.at/count.js'
+    script.integrity = GOATCOUNTER_INTEGRITY
+    script.src = GOATCOUNTER_SCRIPT
     script.dataset.goatcounter = GOATCOUNTER_ENDPOINT
     script.dataset.goatcounterSettings = JSON.stringify({ no_onload: true })
     script.addEventListener('load', flush)
