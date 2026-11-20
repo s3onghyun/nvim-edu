@@ -32,7 +32,7 @@
    ```
 
 PR 마다 CI 가 `test (chromium)`, `test (firefox)`, `test (webkit)` (각각 `npm test`, `test:en`, `test:zh`) 와
-`nvim-diff` (`test:nvim`) 를 실행하고, 네 가지가 모두 통과해야 머지합니다. 처음 기여하는 분의 PR 은
+`nvim-diff` (`test:nvim`) 를 실행합니다. 메인테이너는 diff 를 읽고 네 검사가 모두 초록이 된 뒤 머지합니다. 처음 기여하는 분의 PR 은
 메인테이너가 변경 내용을 확인한 뒤 CI 실행을 승인합니다. CI 구성의 이유는 [docs/MAINTAINERS.md](docs/MAINTAINERS.md) 에 있습니다.
 
 ### 새로운 레벨 추가하기
@@ -141,7 +141,7 @@ Everyone taking part is expected to follow the [Code of Conduct](CODE_OF_CONDUCT
    ```
 
 On every pull request CI runs `test (chromium)`, `test (firefox)` and `test (webkit)` (each runs `npm test`,
-`test:en` and `test:zh`) plus `nvim-diff` (`test:nvim`); a pull request is merged when all four pass. For a
+`test:en` and `test:zh`) plus `nvim-diff` (`test:nvim`); the maintainer merges after reading the diff and seeing all four green. For a
 first-time contributor, a maintainer approves the CI run after looking at the diff. Why CI is set up this way:
 [docs/MAINTAINERS.md](docs/MAINTAINERS.md).
 

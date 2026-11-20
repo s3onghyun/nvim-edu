@@ -35,7 +35,7 @@ Neovim 风格的界面：neo-tree 侧边栏、bufferline、lualine、cmdline 消
 
 ## 隐私与统计
 
-本站使用不依赖 Cookie 的 [GoatCounter](https://www.goatcounter.com/) 统计。只记录页面浏览和汇总的产品事件（完成关卡或练习、打开真 Vim 模式、切换韩语/英语/中文）；绝不会发送按键、解法或你输入的其他文本。开启 Do Not Track 或 Global Privacy Control 时不发送统计。
+本站使用不依赖 Cookie 的 [GoatCounter](https://www.goatcounter.com/) 统计。只记录页面浏览和汇总的产品事件（完成关卡或练习、打开真 Vim 模式、切换韩语/英语/中文）；绝不会发送按键、解法或你输入的其他文本。开启 Do Not Track 或 Global Privacy Control 时不发送统计。另外，主页面从 Google Fonts 加载字体（JetBrains Mono、Nanum Gothic Coding），所以无论 Do Not Track 或 Global Privacy Control 如何设置，每次访问 Google 都会收到你的 IP 地址和浏览器信息；真 Vim 页面不加载这些字体。
 
 ## 和真正的 Neovim 表现一致吗？
 
