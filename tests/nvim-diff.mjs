@@ -9,6 +9,7 @@ import * as pw from 'playwright-core'
 import { cases } from './nvim-diff/cases.mjs'
 import { tokenize } from '../src/levels.js'
 import { expected } from './level-report.mjs'
+import { watchCsp } from './csp.mjs'
 
 const KEY = {
   '<Esc>': 'Escape', '<CR>': 'Enter', '<BS>': 'Backspace',
@@ -25,6 +26,7 @@ const real = JSON.parse(readFileSync(join(dir, 'out.json'), 'utf8'))
 const server = await preview({ preview: { port: 4174, strictPort: true } })
 const browser = await pw[process.env.BROWSER ?? 'chromium'].launch()
 const page = await browser.newPage()
+const csp = await watchCsp(page)
 const ours = []
 for (const [, text, cursor, keys] of cases) {
   await page.goto('http://localhost:4174/#sandbox')
@@ -58,4 +60,5 @@ for (const d of diffs) {
   console.log(expected('커서', d.nvim.cursor, d.site.cursor).map((l) => `  ${l}`).join('\n'))
 }
 console.log(`\n${cases.length}개 중 ${cases.length - diffs.length}개 일치, ${diffs.length}개 다름`)
-process.exit(diffs.length ? 1 : 0)
+if (csp.length) console.log(`FAIL CSP 위반\n  ${JSON.stringify(csp)}`)
+process.exit(diffs.length || csp.length ? 1 : 0)

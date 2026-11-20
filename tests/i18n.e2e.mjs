@@ -5,12 +5,14 @@ import * as pw from 'playwright-core'
 import { levels, tokenize } from '../src/levels.js'
 import { missions } from '../src/drill.js'
 import { normalizeLang } from '../src/i18n.js'
+import { watchCsp } from './csp.mjs'
 
 const KEY = { '<Esc>': 'Escape', '<CR>': 'Enter', '<C-a>': 'Control+a', '<C-v>': 'Control+v', '<C-b>': 'Control+b', '<C-u>': 'Control+u', '<Left>': 'ArrowLeft', '<Right>': 'ArrowRight' }
 const BASE = process.env.BASE_URL ?? 'http://localhost:4168/'
 const server = process.env.BASE_URL ? null : await preview({ preview: { port: 4168, strictPort: true } })
 const browser = await pw[process.env.BROWSER ?? 'chromium'].launch()
 const page = await browser.newPage()
+const csp = await watchCsp(page)
 const HANGUL = /[ㄱ-ㅎㅏ-ㅣ가-힣]/
 const LANG = normalizeLang(process.env.UI_LANG) ?? 'en'
 if (LANG === 'ko') throw new Error('i18n.e2e: UI_LANG must be en or zh-CN')
@@ -82,6 +84,8 @@ if (await page.evaluate(() => window.__real.ready)) {
 await open(`${BASE}?lang=ko`)
 const ko = await page.locator('.tagline').innerText()
 if (!HANGUL.test(ko)) problems.push({ where: 'ko dashboard', found: [ko] })
+
+if (csp.length) problems.push({ where: 'CSP violations', found: csp.map((v) => JSON.stringify(v)) })
 
 await browser.close()
 server?.httpServer.close()

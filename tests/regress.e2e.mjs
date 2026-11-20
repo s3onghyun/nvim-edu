@@ -2,12 +2,14 @@
 import { preview } from 'vite'
 import * as pw from 'playwright-core'
 import { levels } from '../src/levels.js'
+import { watchCsp } from './csp.mjs'
 
 const BASE = process.env.BASE_URL ?? 'http://localhost:4178/'
 const server = process.env.BASE_URL ? null : await preview({ preview: { port: 4178, strictPort: true } })
 const name = process.env.BROWSER ?? 'chromium'
 const browser = await pw[name].launch()
 const page = await browser.newPage()
+const csp = await watchCsp(page)
 let failed = 0
 
 const state = () => page.evaluate(() => ({ doc: document.querySelector('.cm-content').innerText, pos: document.querySelector('#pos').textContent }))
@@ -208,6 +210,7 @@ expect('망가진 저장값으로 페이지 오류 없음', pageErrors, [])
 
 // 5) 폰 폭(390px)에서 페이지가 가로로 밀리지 않음 (긴 레벨 제목·정규식 때문에 생겼던 문제). 해설 표도 펼쳐서 확인
 const phone = await browser.newPage({ viewport: { width: 390, height: 844 } })
+const phoneCsp = await watchCsp(phone)
 const wide = []
 for (const id of ['', ...levels.map((l) => l.id)]) {
   for (const lang of ['ko', 'en', 'zh-CN']) {
@@ -223,6 +226,7 @@ expect('390px 폭에서 언어 메뉴가 화면 안', await phone.evaluate(() =>
   const r = document.querySelector('#lang-menu').getBoundingClientRect()
   return r.width > 0 && r.left >= 0 && r.right <= 390 && document.documentElement.scrollWidth <= 390
 }), true)
+expect('CSP 위반 없음', [...csp, ...phoneCsp], [])
 
 await browser.close()
 server?.httpServer.close()
