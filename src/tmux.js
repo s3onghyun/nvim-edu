@@ -186,7 +186,8 @@ function run(s, term, cmd) {
   const [c0, ...args] = cmd.trim().split(/\s+/)
   if (!c0) return
   if (cmd.trim() === 'clear') { term.lines = []; return }
-  if (SHELL_OUT[cmd.trim()]) { term.lines.push(...SHELL_OUT[cmd.trim()]); return }
+  // 자기 키만: constructor · toString 같은 Object.prototype 이름의 명령은 출력이 아님
+  if (Object.hasOwn(SHELL_OUT, cmd.trim())) { term.lines.push(...SHELL_OUT[cmd.trim()]); return }
   if (c0 === 'claude' || c0 === 'agent') { term.program = 'claude'; term.lines.push(...AGENT_LOG); return }
   if (c0 === 'exit') {
     if (inside) return killPane(s, term.id)

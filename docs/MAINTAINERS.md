@@ -21,7 +21,7 @@ contributor, and a contributor never needs secrets or special access to get a gr
   chromium leg), and `deploy` runs only on a push to `main`, after `test` and `nvim-diff` pass.
 - **SHA-pinned actions:** every `uses:` is pinned to a full commit SHA with the version in a comment.
   Dependabot (`.github/dependabot.yml`) opens weekly updates for the pins and for npm packages.
-- **Checks a pull request must pass before merge:** `test (chromium)`, `test (firefox)` and
+- **Checks the maintainer waits for before merging:** `test (chromium)`, `test (firefox)` and
   `test (webkit)` (each runs `npm test`, `npm run test:en` and `npm run test:zh` with
   `BROWSER` set), and `nvim-diff` (`npm run test:nvim` against Neovim 0.11.0). Cross-browser runs
   catch engine-specific input bugs; `nvim-diff` keeps the emulator honest against real Neovim.

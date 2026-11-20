@@ -3,16 +3,18 @@ import { preview } from 'vite'
 import * as pw from 'playwright-core'
 import { levels, tokenize } from '../src/levels.js'
 import { solveReport } from './level-report.mjs'
+import { watchCsp } from './csp.mjs'
 
 const KEY_GAP = Number(process.env.KEY_GAP ?? 40)
 const KEY = { '<Esc>': 'Escape', '<CR>': 'Enter', '<C-a>': 'Control+a', '<C-v>': 'Control+v' }
 const BASE = process.env.BASE_URL ?? 'http://localhost:4171/'
-const server = process.env.BASE_URL ? null : await preview({ preview: { port: 4171 } })
+const server = process.env.BASE_URL ? null : await preview({ preview: { port: 4171, strictPort: true } })
 const name = process.env.BROWSER ?? 'chromium'
 // UI_LANG=en · zh-CN 이면 그 언어 화면으로 (레벨 데이터도 node 쪽에서 같은 언어로 불러옴)
 const QS = process.env.UI_LANG ? `?lang=${process.env.UI_LANG}` : ''
 const browser = await pw[name].launch()
 const page = await browser.newPage()
+const csp = await watchCsp(page)
 page.on('pageerror', (e) => console.log('pageerror:', e.message))
 let failed = 0
 
@@ -29,8 +31,8 @@ if (name === 'webkit') {
   await p2.goto(`${BASE}real/${QS}#x`)
   await p2.waitForFunction(() => window.__real?.ready || document.querySelector('.fallback'), null, { timeout: 15000 })
   const r = await p2.evaluate(() => (window.__real.ready ? 'vim 실행' : 'fallback 안내'))
-  const ok = errors.length === 0
-  console.log(`${ok ? 'PASS' : 'FAIL'} webkit 두 번째 방문: ${r}${errors.length ? ` errors=${errors}` : ''}`)
+  const ok = errors.length === 0 && csp.length === 0
+  console.log(`${ok ? 'PASS' : 'FAIL'} webkit 두 번째 방문: ${r}${errors.length ? ` errors=${errors}` : ''}${csp.length ? ` csp=${JSON.stringify(csp)}` : ''}`)
   console.log(`real ${name}: ${ok ? 'ALL PASS' : '1 FAIL'}`)
   await browser.close(); server?.httpServer.close(); process.exit(ok ? 0 : 1)
 }
@@ -54,6 +56,26 @@ for (const level of levels.filter((l) => !l.kind)) {
   const got = { done, count, text: state?.lines.join('\n'), cursor: state && [state.line, state.col], mode: state?.mode }
   console.log(ok ? `PASS real:${level.id} done=${done} count=${count}/${tokens.length}` : solveReport('진짜 Vim(vim.wasm) 풀이', level, tokens, got))
 }
+
+// real/index.html 의 Content-Security-Policy: 모든 레벨을 푸는 동안 위반 0건
+if (csp.length) failed++
+console.log(`${csp.length ? 'FAIL' : 'PASS'} CSP 위반 없음${csp.length ? `\n  ${JSON.stringify(csp)}` : ''}`)
+
+// 'unsafe-eval' 이 없으므로 Vim 스크립트(jsevalfunc)가 페이지 JavaScript 를 실행하지 못함
+await page.goto('about:blank')
+await page.goto(`${BASE}real/${QS}#sandbox`)
+await page.waitForFunction(() => window.__real?.ready, null, { timeout: 30000 })
+await page.focus('#vim-input')
+for (const c of ":call jsevalfunc('window.__fromvim = 1', [], v:true)") {
+  await page.keyboard.press(c === ' ' ? 'Space' : c)
+  await page.waitForTimeout(KEY_GAP)
+}
+await page.keyboard.press('Enter')
+for (let i = 0; i < 50 && !csp.length; i++) await page.waitForTimeout(100)
+const fromVim = await page.evaluate(() => window.__fromvim)
+const evalBlocked = fromVim === undefined && csp.length > 0 && csp.every((v) => v.blocked === 'eval')
+if (!evalBlocked) failed++
+console.log(`${evalBlocked ? 'PASS' : 'FAIL'} jsevalfunc 차단 (CSP)${evalBlocked ? '' : ` fromVim=${fromVim} csp=${JSON.stringify(csp)}`}`)
 
 await browser.close()
 server?.httpServer.close()

@@ -4,13 +4,10 @@ import { VimWasm, checkBrowserCompatibility } from 'vim-wasm'
 import { chapters, levels, tokenize, stars } from './levels.js'
 import { t as tr, translateDom, mountLangMenu } from './i18n.js'
 import { initializeAnalytics, trackEvent, trackPageView } from './analytics.js'
+import { store, loadProgress } from './storage.js'
 import './style.css'
 
 const $ = (s) => document.querySelector(s)
-const store = {
-  get(k, d) { try { return JSON.parse(localStorage.getItem(`nvim-edu:${k}`)) ?? d } catch { return d } },
-  set(k, v) { try { localStorage.setItem(`nvim-edu:${k}`, JSON.stringify(v)) } catch {} },
-}
 document.documentElement.dataset.scheme = store.get('scheme', 'tokyonight')
 const escapeHtml = (s) => String(s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]))
 // 고정 문구 번역은 #chapter 등을 채우기 전에 (data-en 이 안쪽 span 을 새로 만듦)
@@ -83,7 +80,7 @@ function onState(st) {
   done = true
   trackEvent(`level-cleared/${level.id}`)
   const s = stars(count, par)
-  const progress = store.get('progress', {})
+  const progress = loadProgress()
   progress[level.id] = Math.max(progress[level.id] ?? 0, s)
   store.set('progress', progress)
   const next = vimLevels[vimLevels.indexOf(level) + 1]

@@ -35,7 +35,7 @@ Languages: English, Korean and Simplified Chinese. Picked from `?lang=en|ko|zh-C
 
 ## Privacy and analytics
 
-This site uses cookie-free [GoatCounter](https://www.goatcounter.com/) analytics. It records page views and only aggregate product events (a level or drill finished, opening real Vim mode, and a Korean/English/Chinese language change); it never sends keystrokes, solutions, or other text you enter. Analytics is disabled when Do Not Track or Global Privacy Control is enabled.
+This site uses cookie-free [GoatCounter](https://www.goatcounter.com/) analytics. It records page views and only aggregate product events (a level or drill finished, opening real Vim mode, and a Korean/English/Chinese language change); it never sends keystrokes, solutions, or other text you enter. Analytics is disabled when Do Not Track or Global Privacy Control is enabled. Separately, the main page loads its fonts (JetBrains Mono and Nanum Gothic Coding) from Google Fonts, so Google receives your IP address and browser details on each visit, whatever your Do Not Track or Global Privacy Control setting; the real Vim page does not load them.
 
 ## Does it behave like real Neovim?
 

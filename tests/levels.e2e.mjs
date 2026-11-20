@@ -3,6 +3,7 @@ import { preview } from 'vite'
 import * as pw from 'playwright-core'
 import { chapters, levels, tokenize, difficultyLabel, difficultyText } from '../src/levels.js'
 import { solveReport } from './level-report.mjs'
+import { watchCsp } from './csp.mjs'
 
 const KEY = {
   '<Esc>': 'Escape', '<CR>': 'Enter', '<C-a>': 'Control+a', '<C-v>': 'Control+v', '<C-b>': 'Control+b', '<C-u>': 'Control+u',
@@ -11,12 +12,13 @@ const KEY = {
 
 // BASE_URL 을 주면 배포된 사이트를, 아니면 로컬 빌드를 검증. BROWSER=chromium|firefox|webkit
 const BASE = process.env.BASE_URL ?? 'http://localhost:4179/'
-const server = process.env.BASE_URL ? null : await preview({ preview: { port: 4179 } })
+const server = process.env.BASE_URL ? null : await preview({ preview: { port: 4179, strictPort: true } })
 const name = process.env.BROWSER ?? 'chromium'
 // UI_LANG=en · zh-CN 이면 그 언어 화면으로 (레벨 데이터도 node 쪽에서 같은 언어로 불러옴)
 const QS = process.env.UI_LANG ? `?lang=${process.env.UI_LANG}` : ''
 const browser = await pw[name].launch({ executablePath: name === 'chromium' ? process.env.CHROME_PATH || undefined : undefined })
 const page = await browser.newPage()
+const csp = await watchCsp(page)
 let failed = 0
 
 // 난이도는 챕터 데이터에서 나와 파일 트리와 도움말에 모두 텍스트로 보여야 한다.
@@ -88,6 +90,10 @@ for (const m of ['mission-move', 'mission-delete', 'mission-change', 'mission-tm
     console.log(`${ok ? 'PASS' : 'FAIL'} ${m} #${run + 1}${ok ? '' : ` ${stuck}\n${await page.locator('.cm-content, #term').first().innerText()}`}`)
   }
 }
+
+// index.html 의 Content-Security-Policy 가 레벨·tmux·미션 어디서도 막는 것이 없어야 함
+if (csp.length) failed++
+console.log(`${csp.length ? 'FAIL' : 'PASS'} CSP 위반 없음${csp.length ? `\n  ${JSON.stringify(csp)}` : ''}`)
 
 await browser.close()
 server?.httpServer.close()

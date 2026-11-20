@@ -3,7 +3,7 @@
 // id        필수  문자열. 소문자·숫자·하이픈 (URL #id 와 levels.en.js 키로 씀). 전체에서 유일
 // chapter   필수  'move' | 'edit' | 'object' | 'power' | 'real' | 'guru' (src/levels.js 의 chapters)
 // title     필수  문자열 (한국어. 영어는 levels.en.js 에 같은 id 로)
-// desc      필수  문자열, HTML 허용 (<b> <code> <kbd> <em>)
+// desc      필수  문자열. HTML 은 <b> <code> <kbd> <em> 만, 속성 없이 (title 도 같음. 아래 HTML_TAGS)
 // keys      필수  문자열 배열. 이 레벨에서 배우는 키 (화면 위 칩)
 // lang      선택  'js' | 'py' | 'yaml'. 구문 강조
 // start     필수  시작 버퍼. 줄바꿈은 \n
@@ -15,6 +15,34 @@
 export const VIM_CHAPTERS = ['move', 'edit', 'object', 'power', 'real', 'guru']
 export const FIELDS = ['id', 'chapter', 'title', 'desc', 'keys', 'lang', 'start', 'cursor', 'goal', 'solution']
 const LANGS = ['js', 'py', 'yaml']
+
+// title · desc · tmux 체크 라벨은 화면에 HTML 로 들어감 (innerHTML). 그래서 쓸 수 있는 태그를 좁힘:
+// 이 태그만, 속성 없이. 그 밖의 태그와 javascript: · on…= 는 레벨 PR 에서 npm test 가 막는다
+export const HTML_TAGS = ['b', 'code', 'em', 'kbd']
+const ALLOWED_TAG = new RegExp(`^</?(${HTML_TAGS.join('|')})>$`)
+const ALLOWED = `허용: ${HTML_TAGS.map((t) => `<${t}>`).join(' ')}, 속성 없이`
+// 브라우저가 태그로 읽는 것: < 다음에 글자 · / · ! · ?
+export function markupProblems(text) {
+  if (typeof text !== 'string') return []
+  const bad = [...text.matchAll(/<[a-zA-Z/!?][^>]*>?/g)].map(([tag]) => tag).filter((tag) => !ALLOWED_TAG.test(tag))
+  return [...bad, ...(text.match(/javascript:|\bon[a-z]+\s*=/gi) ?? [])]
+}
+const markupError = (field, text) => {
+  const problems = markupProblems(text)
+  return problems.length ? `${field} 에 쓸 수 없는 HTML: ${problems.join(' ')} (${ALLOWED})` : null
+}
+
+// 번역 표(EN · ZH_CN: { chapters, levels: { id: { title, desc, checks: [라벨] } } })와
+// tmux 레벨([{ id, title, desc, checks: [{ label }] }])처럼 HTML 로 보이는 글자만 검사
+export function validateMarkup(source, { chapters = {}, levels = [] }) {
+  const list = Array.isArray(levels) ? levels : Object.entries(levels).map(([id, l]) => ({ ...l, id }))
+  const fields = [
+    ...Object.entries(chapters).map(([id, title]) => [`챕터 ${id}: title`, title]),
+    ...list.flatMap((l) => [['title', l.title], ['desc', l.desc], ...(l.checks ?? []).map((c, i) => [`checks[${i}]`, c?.label ?? c])]
+      .map(([f, text]) => [`레벨 ${l.id}: ${f}`, text])),
+  ]
+  return fields.map(([f, text]) => markupError(f, text)).filter(Boolean).map((e) => `${source} ${e}`)
+}
 
 const isStr = (v) => typeof v === 'string' && v.length > 0
 const isPos = (v) => Array.isArray(v) && v.length === 2 && v.every((n) => Number.isInteger(n) && n >= 0)
@@ -39,6 +67,7 @@ export function validateLevels(levels) {
     seen.add(l.id)
     if (!VIM_CHAPTERS.includes(l.chapter)) err(`chapter 는 ${VIM_CHAPTERS.join(' | ')} 중 하나여야 합니다 (지금: ${JSON.stringify(l.chapter)})`)
     for (const k of ['title', 'desc', 'solution']) if (!isStr(l[k])) err(`${k} 는 빈 문자열이 아닌 문자열이어야 합니다`)
+    for (const k of ['title', 'desc']) { const e = markupError(k, l[k]); if (e) err(e) }
     if (!Array.isArray(l.keys) || !l.keys.length || !l.keys.every(isStr)) err('keys 는 문자열 배열이어야 합니다')
     if (l.lang !== undefined && !LANGS.includes(l.lang)) err(`lang 은 ${LANGS.join(' | ')} 중 하나이거나 생략해야 합니다 (지금: ${JSON.stringify(l.lang)})`)
     if (typeof l.start !== 'string') err('start 는 문자열이어야 합니다')

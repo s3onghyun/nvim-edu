@@ -11,6 +11,7 @@ import { renderTmux, tmuxMode, tmuxTarget } from './tmux-view.js'
 import { t as tr, translateDom, mountLangMenu } from './i18n.js'
 import { initializeAnalytics, trackEvent, trackPageView } from './analytics.js'
 import { replay } from './explain.js'
+import { store, loadProgress, loadRecords, loadDays } from './storage.js'
 import './style.css'
 
 // 문법 강조는 레벨이 쓸 때만 불러옴 (첫 화면 번들에서 빼서 따로 받음)
@@ -47,13 +48,10 @@ const highlight = syntaxHighlighting(HighlightStyle.define([
   { tag: t.heading, color: 'var(--blue)', fontWeight: 'bold' },
 ]))
 
-const store = {
-  get(k, d) { try { return JSON.parse(localStorage.getItem(`nvim-edu:${k}`)) ?? d } catch { return d } },
-  set(k, v) { try { localStorage.setItem(`nvim-edu:${k}`, JSON.stringify(v)) } catch {} },
-}
-const progress = store.get('progress', {})
-const records = store.get('records', {}) // 미션별 최고 기록 { time, keys }
-const days = store.get('days', []) // 미션을 완료한 날짜들
+// 저장값은 storage.js 가 모양을 검사해서 돌려줌 (망가진 항목은 버림)
+const progress = loadProgress()
+const records = loadRecords() // 미션별 최고 기록 { time, keys }
+const days = loadDays() // 미션을 완료한 날짜들
 const buffers = [] // 최근 연 화면들 (bufferline)
 
 let view, level, count, keyLog, keyTokens, done
@@ -206,10 +204,12 @@ function renderNav() {
     `<a href="#${id}" class="${cls} ${id === active ? 'active' : ''}"><span class="ico">${ico}</span><span class="name">${title}</span><span class="meta">${meta}</span></a>`
   const cleared = levels.filter((l) => progress[l.id]).length
   const s = streak(days)
+  // 기록 하나가 이상해도 목록 전체가 안 그려지는 일은 없게: 그 항목만 기록 없음으로
+  const best = (id) => (Number.isFinite(records[id]?.time) ? `${records[id].time.toFixed(1)}s` : '')
   $('#nav').innerHTML =
     `<div class="root">nvim-edu/ <span class="dim">${s ? `🔥${s} · ` : ''}${cleared}/${levels.length}</span></div>` +
     `<div class="dir">missions/</div>` +
-    missions.map((m) => file(m.id, m.title, { cls: 'drill', ico: '◆', meta: records[m.id] ? `${records[m.id].time.toFixed(1)}s` : '' })).join('') +
+    missions.map((m) => file(m.id, m.title, { cls: 'drill', ico: '◆', meta: best(m.id) })).join('') +
     chapters.map((c) => `<div class="dir" data-chapter="${c.id}">${c.title}/ <span class="difficulty" aria-label="${difficultyText(c.difficulty)}">${difficultyLabel(c.difficulty)}</span></div>` +
       levels.filter((l) => l.chapter === c.id).map((l) => file(l.id, l.title, {
         cls: progress[l.id] ? 'cleared' : '', ico: progress[l.id] ? '●' : '○', meta: '★'.repeat(progress[l.id] ?? 0),

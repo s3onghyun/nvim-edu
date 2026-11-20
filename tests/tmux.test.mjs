@@ -94,6 +94,16 @@ test('tmux kill-session 이후에도 대상 없는 attach 이 남아 있는 세�
   assert.equal(pane(t).lines.at(-1), "can't find session: nosuch")
 })
 
+test('Object.prototype 이름의 쉘 명령도 command not found', () => {
+  const s = createTmux()
+  for (const cmd of ['constructor', 'toString', 'valueOf', 'hasOwnProperty', '__proto__']) {
+    assert.doesNotThrow(() => line(s, cmd), cmd)
+    assert.equal(pane(s).lines.at(-1), `zsh: command not found: ${cmd}`)
+  }
+  line(s, 'ls')
+  assert.equal(pane(s).lines.at(-1), 'README.md  package.json  src  tests')
+})
+
 test('모든 tmux 레벨: 시작 상태는 미완료, 모범 답안으로 완료', async () => {
   const { levels, tokenize } = await import('../src/levels.js')
   const KEY = { '<C-b>': 'C-b', '<CR>': 'Enter', '<Esc>': 'Escape', '<C-u>': 'C-u', '<Left>': 'Left', '<Right>': 'Right', '<Up>': 'Up', '<Down>': 'Down' }
