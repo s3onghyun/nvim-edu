@@ -2,6 +2,9 @@
 <html lang="ko">
 <head>
   <meta charset="utf-8" />
+  <!-- GitHub Pages cannot send headers, so the policy is a meta tag. Styles need 'unsafe-inline' because CodeMirror injects <style> elements -->
+  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' https://gc.zgo.at; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data: https://s3onghyun.goatcounter.com; connect-src 'self' https://s3onghyun.goatcounter.com; base-uri 'none'; form-action 'none'; object-src 'none'" />
+  <meta name="referrer" content="strict-origin-when-cross-origin" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <title>nvim-edu</title>
   <meta name="description" content="Learn Vim/Neovim and tmux keys right in your browser: levels, drills and a real Vim mode. From hjkl to macros, :g and tmux copy mode. (한국어 지원)" />

@@ -32,7 +32,7 @@
    ```
 
 PR 마다 CI 가 `test (chromium)`, `test (firefox)`, `test (webkit)` (각각 `npm test`, `test:en`, `test:zh`) 와
-`nvim-diff` (`test:nvim`) 를 실행하고, 네 가지가 모두 통과해야 머지합니다. 처음 기여하는 분의 PR 은
+`nvim-diff` (`test:nvim`) 를 실행합니다. 메인테이너는 diff 를 읽고 네 검사가 모두 초록이 된 뒤 머지합니다. 처음 기여하는 분의 PR 은
 메인테이너가 변경 내용을 확인한 뒤 CI 실행을 승인합니다. CI 구성의 이유는 [docs/MAINTAINERS.md](docs/MAINTAINERS.md) 에 있습니다.
 
 ### 새로운 레벨 추가하기
@@ -46,7 +46,7 @@ Vim 레벨은 코드가 아니라 데이터 파일 **`src/levels/vim-levels.json
      "id": "unique-level-id",
      "chapter": "edit",
      "title": "레벨 제목",
-     "desc": "설명 문구 (HTML 태그 <b>, <code> 사용 가능)",
+     "desc": "설명 문구 (HTML 태그 <b>, <code>, <em>, <kbd> 사용 가능)",
      "keys": ["ciw", "C"],
      "lang": "js",
      "start": "const old = \"value\";",
@@ -60,7 +60,7 @@ Vim 레벨은 코드가 아니라 데이터 파일 **`src/levels/vim-levels.json
    |------|------|------|
    | `id` | ✓ | 소문자·숫자·하이픈. 전체에서 유일 (URL `#id`, `levels.en.js` 키) |
    | `chapter` | ✓ | `move` \| `edit` \| `object` \| `power` \| `real` \| `guru` |
-   | `title`, `desc` | ✓ | 한국어 제목·설명. `desc` 는 HTML 허용 |
+   | `title`, `desc` | ✓ | 한국어 제목·설명. HTML 은 `<b>` `<code>` `<em>` `<kbd>` 만, 속성 없이 (`npm test` 가 검사) |
    | `keys` | ✓ | 이 레벨에서 배우는 키 목록 (문자열 배열) |
    | `lang` | | `js` \| `py` \| `yaml` (구문 강조). 없으면 생략 |
    | `start` | ✓ | 시작 버퍼. 줄바꿈은 `\n` |
@@ -141,7 +141,7 @@ Everyone taking part is expected to follow the [Code of Conduct](CODE_OF_CONDUCT
    ```
 
 On every pull request CI runs `test (chromium)`, `test (firefox)` and `test (webkit)` (each runs `npm test`,
-`test:en` and `test:zh`) plus `nvim-diff` (`test:nvim`); a pull request is merged when all four pass. For a
+`test:en` and `test:zh`) plus `nvim-diff` (`test:nvim`); the maintainer merges after reading the diff and seeing all four green. For a
 first-time contributor, a maintainer approves the CI run after looking at the diff. Why CI is set up this way:
 [docs/MAINTAINERS.md](docs/MAINTAINERS.md).
 
@@ -156,7 +156,7 @@ Vim levels live in a data file, **`src/levels/vim-levels.json`**, not in code. T
    |------|------|------|
    | `id` | ✓ | lowercase letters, digits, hyphens; unique (URL `#id`, key in `levels.en.js`) |
    | `chapter` | ✓ | `move` \| `edit` \| `object` \| `power` \| `real` \| `guru` |
-   | `title`, `desc` | ✓ | Korean title and description; `desc` may contain HTML |
+   | `title`, `desc` | ✓ | Korean title and description; HTML is limited to `<b>` `<code>` `<em>` `<kbd>` without attributes (checked by `npm test`) |
    | `keys` | ✓ | keys taught by the level (array of strings) |
    | `lang` | | `js` \| `py` \| `yaml` for syntax highlighting; omit otherwise |
    | `start` | ✓ | starting buffer, `\n` between lines |

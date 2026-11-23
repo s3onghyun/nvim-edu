@@ -2,6 +2,9 @@
 <html lang="ko" data-scheme="tokyonight">
 <head>
   <meta charset="utf-8" />
+  <!-- 'wasm-unsafe-eval' compiles vim.wasm; the Vim worker is a blob: script. No 'unsafe-eval': Vim script cannot run page JavaScript -->
+  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' https://gc.zgo.at 'wasm-unsafe-eval'; worker-src 'self' blob:; style-src 'self' 'unsafe-inline'; img-src 'self' data: https://s3onghyun.goatcounter.com; connect-src 'self' https://s3onghyun.goatcounter.com; base-uri 'none'; form-action 'none'; object-src 'none'" />
+  <meta name="referrer" content="strict-origin-when-cross-origin" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <title>nvim-edu · real Vim</title>
   <!-- COOP/COEP 를 서비스 워커로 붙임 (SharedArrayBuffer 필요). 첫 방문엔 한 번 새로고침됨 -->

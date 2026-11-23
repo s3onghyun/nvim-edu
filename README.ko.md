@@ -35,7 +35,7 @@ Neovim 같은 화면: neo-tree 사이드바, bufferline, lualine, cmdline 메시
 
 ## 개인정보·분석
 
-이 사이트는 쿠키 없는 [GoatCounter](https://www.goatcounter.com/) 분석을 사용합니다. 페이지 조회와 레벨·미션 완료, 진짜 Vim 모드 열기, 한국어/영어/중국어 언어 변경 같은 집계 이벤트만 기록하며, 입력한 키·풀이·그 밖의 텍스트는 전송하지 않습니다. Do Not Track 또는 Global Privacy Control을 켜면 분석을 보내지 않습니다.
+이 사이트는 쿠키 없는 [GoatCounter](https://www.goatcounter.com/) 분석을 사용합니다. 페이지 조회와 레벨·미션 완료, 진짜 Vim 모드 열기, 한국어/영어/중국어 언어 변경 같은 집계 이벤트만 기록하며, 입력한 키·풀이·그 밖의 텍스트는 전송하지 않습니다. Do Not Track 또는 Global Privacy Control을 켜면 분석을 보내지 않습니다. 이와 별도로 메인 페이지는 글꼴(JetBrains Mono, Nanum Gothic Coding)을 Google Fonts 에서 불러오므로, Do Not Track·Global Privacy Control 설정과 관계없이 방문할 때마다 Google 이 IP 주소와 브라우저 정보를 받습니다. 진짜 Vim 페이지는 이 글꼴을 불러오지 않습니다.
 
 ## 개발
 
