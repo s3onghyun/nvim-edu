@@ -189,9 +189,11 @@ function fail(message) {
 }
 
 gridEl.addEventListener('keydown', (e) => {
+  if (!timing.interactive) return
   const key = toNvimKey(e)
+  if (!key && !e.isComposing && e.keyCode !== 229) return
   const counted = page.countKey(e)
-  if (!worker || !key || (!counted && !page.done)) return // 수식 키 · 한글 입력은 보내지 않음
+  if (!key || (!counted && !page.done)) return // 수식 키 · 한글 입력은 보내지 않음
   e.preventDefault()
   notify('nvim_input', [key])
 })

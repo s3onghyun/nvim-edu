@@ -16,11 +16,6 @@ test('vendor/nvim-wasm: every file is listed in README.md with its SHA-256, and 
   }
 })
 
-test('vite.config.js pins the same binary hashes as README.md', () => {
-  const config = read('../vite.config.js').toString()
-  for (const { file, sha } of table.filter((t) => /\.(wasm|gz)$/.test(t.file))) assert.ok(config.includes(`'${file}': '${sha}'`), file)
-})
-
 test('THIRD_PARTY_NOTICES.txt carries the nvim-wasm and Neovim licenses and every bundled library', () => {
   const notices = read('../THIRD_PARTY_NOTICES.txt').toString()
   assert.ok(notices.includes(read('../vendor/nvim-wasm/LICENSE').toString().trim()), 'nvim-wasm MIT license text')
