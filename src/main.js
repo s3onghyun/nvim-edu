@@ -461,6 +461,7 @@ function startRound() {
 
 function startMission(mission) {
   $('#real-link').hidden = true
+  $('#nvim-link').hidden = true
   $('#difficulty').hidden = true
   if (mission.tmux) return startTmuxMission(mission)
   clearInterval(session?.timer)
@@ -591,9 +592,10 @@ function load(id) {
   $('#hint-text').hidden = true
   $('#hint-text').innerHTML = lvl.solution ? `<code>${escapeHtml(lvl.solution)}</code>` : ''
   $('#explain').innerHTML = ''
-  // 같은 레벨을 진짜 Vim(vim.wasm)으로 — tmux 레벨은 해당 없음
-  $('#real-link').hidden = lvl.kind === 'tmux'
+  // 같은 레벨을 진짜 Vim(vim.wasm) · 진짜 Neovim(nvim-wasm)으로 — tmux 레벨은 해당 없음
+  $('#real-link').hidden = $('#nvim-link').hidden = lvl.kind === 'tmux'
   $('#real-link').href = `real/#${lvl.id}`
+  $('#nvim-link').href = `nvim/#${lvl.id}`
   lvl.kind === 'tmux' ? mountTmux(lvl) : mount(lvl)
   renderNav()
   return id
@@ -616,6 +618,7 @@ document.addEventListener('keydown', (e) => {
   if (DASH_KEYS[e.key]) location.hash = DASH_KEYS[e.key]
   if (e.key === 'c') cycleScheme()
   if (e.key === 'r') location.href = 'real/'
+  if (e.key === 'v') location.href = 'nvim/'
 })
 $('#dash-scheme').onclick = (e) => { e.preventDefault(); cycleScheme() }
 

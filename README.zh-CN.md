@@ -25,6 +25,7 @@
 | **每日挑战** | 按日期生成，当天所有人题目相同。记录 🔥 连续天数 |
 | **自由练习** | 没有目标，随便练 |
 | **真 Vim 模式**（beta） | 在浏览器里运行的真正 Vim 8.2（[vim.wasm](https://github.com/rhysd/vim.wasm)）里解同样的关卡，并按 Neovim 默认值配置（`nostartofline`、`nrformats=bin,hex`、`Y`=`y$` 等） |
+| **真 Neovim 模式**（beta） | 借助 [nvim-wasm](https://github.com/MuNeNiCK/nvim-wasm)，在浏览器里以默认设置运行真正的 Neovim（0.12-dev，WebAssembly）来解同样的关卡。只有打开这个模式时才下载（首次约 2.9MB，压缩后）；支持 Chrome、Firefox、Edge 和 Safari。小尺寸触屏会先显示提示，可以留在模拟器里练习 |
 
 Neovim 风格的界面：neo-tree 侧边栏、bufferline、lualine、cmdline 消息、相对行号、缓冲区末尾之后的 `~`、
 `:colorscheme tokyonight | catppuccin | gruvbox | tokyonight-day`。
@@ -35,7 +36,7 @@ Neovim 风格的界面：neo-tree 侧边栏、bufferline、lualine、cmdline 消
 
 ## 隐私与统计
 
-本站使用不依赖 Cookie 的 [GoatCounter](https://www.goatcounter.com/) 统计。只记录页面浏览和汇总的产品事件（完成关卡或练习、打开真 Vim 模式、切换韩语/英语/中文）；绝不会发送按键、解法或你输入的其他文本。开启 Do Not Track 或 Global Privacy Control 时不发送统计。另外，主页面从 Google Fonts 加载字体（JetBrains Mono、Nanum Gothic Coding），所以无论 Do Not Track 或 Global Privacy Control 如何设置，每次访问 Google 都会收到你的 IP 地址和浏览器信息；真 Vim 页面不加载这些字体。
+本站使用不依赖 Cookie 的 [GoatCounter](https://www.goatcounter.com/) 统计。只记录页面浏览和汇总的产品事件（完成关卡或练习、打开真 Vim 或真 Neovim 模式、切换韩语/英语/中文）；绝不会发送按键、解法或你输入的其他文本。开启 Do Not Track 或 Global Privacy Control 时不发送统计。另外，主页面从 Google Fonts 加载字体（JetBrains Mono、Nanum Gothic Coding），所以无论 Do Not Track 或 Global Privacy Control 如何设置，每次访问 Google 都会收到你的 IP 地址和浏览器信息；真 Vim 和真 Neovim 页面不加载这些字体。
 
 ## 和真正的 Neovim 表现一致吗？
 
@@ -43,6 +44,7 @@ Neovim 风格的界面：neo-tree 侧边栏、bufferline、lualine、cmdline 消
 
 - `tests/nvim-diff.mjs` 把同样的按键（`:help` 里的常用命令加上每个关卡的答案，共 180 个用例）分别输入 `nvim --headless` 和网站的编辑器，再比较文本、光标和模式。CI 每次推送都用 Neovim 0.11.0 跑一遍。
 - 一开始只有 130/169 一致。修过模拟器之后，现在是 **180/180**。修复都在 `patches/` 里（由 patch-package 应用）。
+- `tests/nvim.e2e.mjs` 还会在真 Neovim 模式的真正 Neovim 里，用正好等于标准键数的按键解完每个 Vim 关卡（Chromium、Firefox、WebKit）。
 
 ```bash
 npm run test:nvim   # 需要 PATH 里有 nvim
@@ -75,8 +77,12 @@ npm run test:zh   # 简体中文界面：同上，外加检查没有 `undefined`
 | `src/main.js` | 编辑器（[CodeMirror 6](https://codemirror.net/) + codemirror-vim）、计分、界面 |
 | `src/analytics.js` | 不依赖 Cookie 的 GoatCounter 页面浏览和事件；Do Not Track / GPC 下跳过 |
 | `src/real.js`、`real/index.html` | 真 Vim 模式。状态来自 Vim 的 `titlestring`（命令执行到一半时从 JS 注入命令会让 Vim 卡住） |
+| `src/nvim.js`、`nvim/index.html` | 真 Neovim 模式：通过 msgpack-RPC 连接的 UI。状态由 Neovim 上报（`SafeState`/`ModeChanged` → `rpcnotify`） |
+| `src/nvim-worker.js`、`src/nvim-grid.js` | 在 Web Worker 里运行 nvim-wasm（WASI，改编自 nvim-wasm 的 Asyncify 演示）；绘制 Neovim 的 UI 网格 |
+| `src/real-level.js` | 真 Vim 和真 Neovim 页面共用的关卡界面（目标、按键数、通关判定） |
+| `vendor/nvim-wasm/` | 固定版本、未修改的 nvim-wasm 文件；来源提交和 SHA-256 见其中的 README |
 | `patches/` | 让模拟器和真正 Neovim 一致的修复 |
-| `tests/` | `nvim-diff`（对比真正的 Neovim）、`regress`（实际使用中发现的 bug）、`levels`、`real`、`i18n`、`tmux`、`analytics`、`levels-schema`（关卡数据 schema）、`level-report`（易读的逐关失败信息） |
+| `tests/` | `nvim-diff`（对比真正的 Neovim）、`regress`（实际使用中发现的 bug）、`levels`、`real`、`nvim`（延迟加载、回退、在真 Neovim 里解每个关卡）、`vendor`（哈希和许可证声明）、`i18n`、`tmux`、`analytics`、`levels-schema`（关卡数据 schema）、`level-report`（易读的逐关失败信息） |
 
 ## 添加关卡
 
@@ -94,16 +100,17 @@ npm run test:zh   # 简体中文界面：同上，外加检查没有 `undefined`
 
 `goal` 是 `{ "text": ... }` 或 `{ "cursor": [line, col] }`；`solution` 使用 `<Esc> <CR> <C-a>` 记法，它的按键数就是标准键数。
 
-`npm test` 会在模拟器和真 Vim 里检查答案确实能通关。分步说明和标准键数准则见 [CONTRIBUTING.md](CONTRIBUTING.md)。欢迎 PR！
+`npm test` 会在模拟器、真 Vim 和真 Neovim 里检查答案确实能通关。分步说明和标准键数准则见 [CONTRIBUTING.md](CONTRIBUTING.md)。欢迎 PR！
 
 ## 已知限制
 
 - Vim 行为来自模拟器；与真正 Neovim 的差异由 `tests/nvim-diff.mjs` 跟踪。
 - tmux 模拟器只模仿默认按键绑定（没有 `C-b :` 命令提示符、鼠标和调整大小）。
 - 真 Vim 模式需要 `SharedArrayBuffer`。GitHub Pages 发不了 COOP/COEP 头，所以由 [coi-serviceworker](https://github.com/gzuidhof/coi-serviceworker) 补上，但**在 Safari 里不太可靠**（会显示提示）。首次要下载约 0.8MB（压缩后）；构建时把 Vim 运行时裁剪到关卡用得到的文件。极快的输入（按键间隔 0 ms，比如自动化）可能被 vim.wasm 打乱顺序；人类打字速度（40 ms 以上）没有问题。
+- 真 Neovim 模式用的是 nvim-wasm 的 Asyncify 构建，不需要 `SharedArrayBuffer`，也不需要 COOP/COEP 头。为了减小下载量，构建时去掉了 Neovim 文档（不能用 `:help`）、拼写文件和关卡用不到的语言的语法文件。和真 Vim 页面一样，文件类型插件和缩进脚本是关闭的，所以关卡的行为和 `tests/nvim-diff` 一致。nvim-wasm 无法列出目录，所以 Neovim 靠通配查找的东西（matchparen 等内置插件、`:colorscheme`、`:packadd`）都加载不了；构建时去掉了这些文件，Lua 模块和语法文件由 `src/nvim.js` 按确切路径加载。没有系统剪贴板（`"+`）和 tree-sitter 解析器。需要支持 WebAssembly 异常处理的较新 Chrome、Firefox、Edge、Safari。
 - 需要实体键盘（不支持触屏输入）。
 - 进度只保存在你浏览器的 localStorage 里。
 
 ## 许可证
 
-MIT
+MIT。真 Neovim 模式一并分发了 [nvim-wasm](https://github.com/MuNeNiCK/nvim-wasm)（MIT，© MuNeNiCK，感谢作者允许嵌入）和 [Neovim](https://neovim.io/)（Apache-2.0，部分为 Vim 许可证）及其中捆绑的库；全文见 [THIRD_PARTY_NOTICES.txt](THIRD_PARTY_NOTICES.txt)。

@@ -80,6 +80,17 @@ if (await page.evaluate(() => window.__real.ready)) {
   await scan('real #x (cleared)')
 }
 
+// 진짜 Neovim 페이지: Neovim 이 뜨거나(격자 글자도 DOM 이라 같이 검사) 미지원 안내 문구 — 둘 다 대상 언어여야 함
+await page.goto('about:blank'); await page.goto(`${BASE}nvim/?lang=${LANG}#x`)
+await page.waitForFunction(() => window.__real?.ready || document.querySelector('.fallback'), null, { timeout: 60000 })
+await scan('nvim #x')
+if (await page.evaluate(() => window.__real.ready)) {
+  await page.focus('#nvim-grid')
+  for (const k of tokenize('3lxfmx')) { await page.keyboard.press(k); await page.waitForTimeout(40) }
+  await page.waitForFunction(() => window.__real.done, null, { timeout: 5000 }).catch(() => {})
+  await scan('nvim #x (cleared)')
+}
+
 // 한국어 모드는 여전히 한국어인지 (반대 방향 회귀)
 await open(`${BASE}?lang=ko`)
 const ko = await page.locator('.tagline').innerText()

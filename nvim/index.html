@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="ko" data-scheme="tokyonight">
+<head>
+  <meta charset="utf-8" />
+  <!-- 'wasm-unsafe-eval' compiles nvim.wasm in the worker. No 'unsafe-eval'. No COOP/COEP needed: the Asyncify build does not use SharedArrayBuffer -->
+  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' https://gc.zgo.at 'wasm-unsafe-eval'; worker-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https://s3onghyun.goatcounter.com; connect-src 'self' https://s3onghyun.goatcounter.com; base-uri 'none'; form-action 'none'; object-src 'none'" />
+  <meta name="referrer" content="strict-origin-when-cross-origin" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>nvim-edu · real Neovim</title>
+</head>
+<body class="real">
+  <header class="bufferline">
+    <a href="../" class="logo"><span>nvim</span>-edu</a>
+    <span class="buf active" data-en="Real Neovim &lt;span class=&quot;dim&quot;&gt;(beta)&lt;/span&gt;" data-zh-cn="真 Neovim &lt;span class=&quot;dim&quot;&gt;(beta)&lt;/span&gt;">진짜 Neovim <span class="dim">(beta)</span></span>
+    <span class="spacer"></span>
+    <label class="scheme"><span data-en="Level" data-zh-cn="关卡">레벨</span>
+      <select id="level" aria-label="레벨 선택" data-en-label="Choose a level" data-zh-cn-label="选择关卡"></select>
+    </label>
+    <button id="lang" class="lang" aria-label="언어 전환" data-en-label="Switch language" data-zh-cn-label="切换语言" title="Language / 언어 / 语言"><svg class="lang-icon" aria-hidden="true" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"></circle><path d="M4 12h16M12 4c3 3 3 13 0 16M12 4c-3 3-3 13 0 16"></path></svg></button>
+    <a class="gh" id="back" href="../" data-en="Back to emulator ←" data-zh-cn="回到模拟器 ←">에뮬레이터로 ←</a>
+  </header>
+  <main>
+    <div class="float help">
+      <span class="float-title" data-en="Help · &lt;span id=&quot;chapter&quot;&gt;&lt;/span&gt;" data-zh-cn="帮助 · &lt;span id=&quot;chapter&quot;&gt;&lt;/span&gt;">도움말 · <span id="chapter"></span></span>
+      <h2 id="title"></h2>
+      <p id="desc"></p>
+      <ul id="checks" class="checks"></ul>
+      <div class="help-foot">
+        <div id="keychips" class="chips"></div>
+        <div class="actions">
+          <button id="reset" data-en="↺ Restart" data-zh-cn="↺ 重新开始">↺ 처음부터</button>
+          <button id="hint" data-en="? Solution" data-zh-cn="? 参考答案">? 모범 답안</button>
+          <span id="hint-text" hidden></span>
+        </div>
+      </div>
+    </div>
+    <p class="dim real-note" data-en="A &lt;b&gt;real Neovim&lt;/b&gt; (0.12-dev, WebAssembly) runs inside your browser: Neovim&#39;s defaults plus line numbers and 2-space indent, like the rest of the site. Click the screen to type. Built on &lt;a href=&quot;https://github.com/MuNeNiCK/nvim-wasm&quot; target=&quot;_blank&quot; rel=&quot;noopener&quot;&gt;nvim-wasm&lt;/a&gt; (MIT) and &lt;a href=&quot;https://neovim.io/&quot; target=&quot;_blank&quot; rel=&quot;noopener&quot;&gt;Neovim&lt;/a&gt; (Apache-2.0 / Vim license) · &lt;a href=&quot;../THIRD_PARTY_NOTICES.txt&quot;&gt;licenses&lt;/a&gt;" data-zh-cn="浏览器里跑着一个&lt;b&gt;真正的 Neovim&lt;/b&gt;（0.12-dev，WebAssembly）：Neovim 默认设置，外加行号和 2 空格缩进（和网站其他部分一样）。点击屏幕即可输入。基于 &lt;a href=&quot;https://github.com/MuNeNiCK/nvim-wasm&quot; target=&quot;_blank&quot; rel=&quot;noopener&quot;&gt;nvim-wasm&lt;/a&gt;（MIT）和 &lt;a href=&quot;https://neovim.io/&quot; target=&quot;_blank&quot; rel=&quot;noopener&quot;&gt;Neovim&lt;/a&gt;（Apache-2.0 / Vim 许可证）· &lt;a href=&quot;../THIRD_PARTY_NOTICES.txt&quot;&gt;许可证&lt;/a&gt;">브라우저 안에서 <b>진짜 Neovim</b>(0.12-dev, WebAssembly)이 돌아갑니다. Neovim 기본 설정에 줄 번호와 2칸 들여쓰기만 사이트와 맞췄습니다. 화면을 클릭하면 입력을 받습니다. <a href="https://github.com/MuNeNiCK/nvim-wasm" target="_blank" rel="noopener">nvim-wasm</a>(MIT)과 <a href="https://neovim.io/" target="_blank" rel="noopener">Neovim</a>(Apache-2.0 / Vim 라이선스) 기반 · <a href="../THIRD_PARTY_NOTICES.txt">라이선스</a></p>
+    <div class="workspace">
+      <div class="win">
+        <div class="winbar" id="winbar">nvim</div>
+        <div class="vim-box nvim-box" id="vim-box">
+          <div id="nvim-grid" class="nvim-grid" tabindex="0" role="application" aria-label="Neovim" aria-roledescription="editor"></div>
+          <div id="vim-loading" class="vim-loading"></div>
+        </div>
+      </div>
+      <div class="win">
+        <div class="winbar"><span class="dim">goal</span> [RO]</div>
+        <div id="goal"></div>
+      </div>
+    </div>
+    <div id="banner" class="float notify" hidden></div>
+  </main>
+  <footer>
+    <div class="lualine">
+      <span id="mode" data-mode="normal">NORMAL</span>
+      <span class="ll-b">⎇ real nvim</span>
+      <span id="keys"></span>
+      <span class="ll-b" id="count"></span>
+      <span id="pos">1:1</span>
+    </div>
+    <div id="cmdline" role="status"></div>
+  </footer>
+  <script type="module" src="../src/nvim.js"></script>
+</body>
+</html>
