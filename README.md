@@ -53,14 +53,15 @@ npm run test:nvim   # needs nvim on PATH
 ## Development
 
 ```bash
-npm install
+npm ci                                # Node.js 22, same as CI
+npx playwright-core install chromium  # one-time browser download for the tests
 npm run dev       # http://localhost:5173
 npm test          # build, then solve every level and drill in a real Chromium
 npm run test:en   # English UI: every level, plus a scan that no Korean text is left
 npm run test:zh   # Simplified Chinese UI: the same, plus no `undefined` or raw data-* text
 ```
 
-`npm test` needs a Playwright browser: `npx playwright-core install chromium`. Run with `BROWSER=firefox` or `BROWSER=webkit` for other engines.
+`npm test` needs the Playwright browser downloaded above (on Linux, `npx playwright-core install --with-deps chromium` also installs the system libraries). Run with `BROWSER=firefox` or `BROWSER=webkit` for other engines.
 
 ## Project layout
 
@@ -101,6 +102,10 @@ Add one object to `src/levels/vim-levels.json` (its English text to `src/levels.
 `goal` is `{ "text": ... }` or `{ "cursor": [line, col] }`; `solution` uses `<Esc> <CR> <C-a>` notation and its key count is the par.
 
 `npm test` checks that the solution really clears the level, in the emulator, in real Vim and in real Neovim. See [CONTRIBUTING.md](CONTRIBUTING.md) for step-by-step instructions and par guidelines. PRs welcome!
+
+## Contributing
+
+New contributors are welcome. Pick a [`good first issue`](https://github.com/s3onghyun/nvim-edu/issues?q=is%3Aopen+label%3A%22good+first+issue%22) (each lists the files, commands and done criteria), comment to claim it, and a maintainer assigns it to you. CI runs on every pull request, including from forks (read-only, no secrets, never deploys). Setup, tests and level rules: [CONTRIBUTING.md](CONTRIBUTING.md).
 
 ## Known limitations
 
