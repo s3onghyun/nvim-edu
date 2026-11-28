@@ -12,6 +12,12 @@
 보안 문제는 공개 이슈 대신 [SECURITY.md](SECURITY.md) 를 따라 비공개로 알려 주세요.
 참여하는 모든 분은 [행동 강령](CODE_OF_CONDUCT.md)을 지켜 주세요.
 
+### 할 일 찾기와 신청하기
+
+- 처음이라면 [`good first issue`](https://github.com/s3onghyun/nvim-edu/issues?q=is%3Aopen+label%3A%22good+first+issue%22) 부터 보세요. 1시간 안쪽의 작은 작업이고, 고칠 파일 · 실행할 명령 · 완료 조건이 이슈에 적혀 있습니다. 조금 더 큰 작업은 [`help wanted`](https://github.com/s3onghyun/nvim-edu/issues?q=is%3Aopen+label%3A%22help+wanted%22) 에 있습니다.
+- 하고 싶은 이슈에 댓글로 신청하면 메인테이너가 그 이슈를 할당(assign)해 드립니다. 이미 누군가에게 할당된 이슈는 그분 작업이니 다른 이슈를 골라 주세요.
+- 이슈 없이 새 레벨이나 기능을 하고 싶다면 먼저 이슈나 [Discussions](https://github.com/s3onghyun/nvim-edu/discussions) 에서 이야기해 주세요.
+
 ### 로컬 개발과 테스트
 
 1. Node.js 22 (CI 와 같은 버전) 에서 `npm ci` 를 실행합니다. `postinstall` 이 `patches/` 의 에뮬레이터 수정을 patch-package 로 적용합니다.
@@ -29,11 +35,14 @@
    npm run test:zh           # 간체 중국어 화면
    BROWSER=firefox npm test  # BROWSER=chromium|firefox|webkit
    npm run test:nvim         # 실제 Neovim 과 비교 (Neovim 0.11 이 PATH 에 있어야 함, CI 는 0.11.0)
+   node --test tests/tmux.test.mjs  # 단위 테스트 파일 하나만 (브라우저 필요 없음, 몇 초)
    ```
 
 PR 마다 CI 가 `test (chromium)`, `test (firefox)`, `test (webkit)` (각각 `npm test`, `test:en`, `test:zh`) 와
 `nvim-diff` (`test:nvim`) 를 실행합니다. 메인테이너는 diff 를 읽고 네 검사가 모두 초록이 된 뒤 머지합니다. 처음 기여하는 분의 PR 은
-메인테이너가 변경 내용을 확인한 뒤 CI 실행을 승인합니다. CI 구성의 이유는 [docs/MAINTAINERS.md](docs/MAINTAINERS.md) 에 있습니다.
+메인테이너가 변경 내용을 확인한 뒤 CI 실행을 승인합니다. 포크에서 온 PR 의 CI 는 읽기 전용 토큰으로 돌고 비밀값을 받지 않으며,
+GitHub Pages 에 배포하지 않습니다 (배포는 `main` 에 push 될 때만). 그래서 초록 CI 를 받는 데 특별한 권한이 필요 없습니다.
+CI 구성의 이유는 [docs/MAINTAINERS.md](docs/MAINTAINERS.md) 에 있습니다.
 
 ### 새로운 레벨 추가하기
 
@@ -121,6 +130,12 @@ Questions and ideas go to [Discussions](https://github.com/s3onghyun/nvim-edu/di
 Report security problems privately as described in [SECURITY.md](SECURITY.md), not in a public issue.
 Everyone taking part is expected to follow the [Code of Conduct](CODE_OF_CONDUCT.md).
 
+### Finding a task and claiming it
+
+- New here? Start with [`good first issue`](https://github.com/s3onghyun/nvim-edu/issues?q=is%3Aopen+label%3A%22good+first+issue%22): small tasks (under an hour) whose issue lists the files to touch, the commands to run and when it is done. Larger tasks are under [`help wanted`](https://github.com/s3onghyun/nvim-edu/issues?q=is%3Aopen+label%3A%22help+wanted%22).
+- Comment on the issue you want, and a maintainer assigns it to you. An issue that is already assigned belongs to that contributor, so please pick another one.
+- For a new level or feature without an issue, open an issue or a [Discussion](https://github.com/s3onghyun/nvim-edu/discussions) first.
+
 ### Local development and tests
 
 1. Use Node.js 22 (the version CI uses) and run `npm ci`. Its `postinstall` step applies the emulator fixes in `patches/` with patch-package.
@@ -138,12 +153,14 @@ Everyone taking part is expected to follow the [Code of Conduct](CODE_OF_CONDUCT
    npm run test:zh           # Simplified Chinese UI
    BROWSER=firefox npm test  # BROWSER=chromium|firefox|webkit
    npm run test:nvim         # compare with real Neovim (Neovim 0.11 on your PATH; CI uses 0.11.0)
+   node --test tests/tmux.test.mjs  # a single unit test file (no browser, a few seconds)
    ```
 
 On every pull request CI runs `test (chromium)`, `test (firefox)` and `test (webkit)` (each runs `npm test`,
 `test:en` and `test:zh`) plus `nvim-diff` (`test:nvim`); the maintainer merges after reading the diff and seeing all four green. For a
-first-time contributor, a maintainer approves the CI run after looking at the diff. Why CI is set up this way:
-[docs/MAINTAINERS.md](docs/MAINTAINERS.md).
+first-time contributor, a maintainer approves the CI run after looking at the diff. CI for a pull request from a fork
+runs with a read-only token and no secrets, and it never deploys GitHub Pages (only a push to `main` deploys), so you need
+no special access to get a green run. Why CI is set up this way: [docs/MAINTAINERS.md](docs/MAINTAINERS.md).
 
 ### Adding a New Level
 

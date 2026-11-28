@@ -41,15 +41,16 @@ Neovim 같은 화면: neo-tree 사이드바, bufferline, lualine, cmdline 메시
 ## 개발
 
 ```bash
-npm install
+npm ci                                # Node.js 22 (CI 와 같은 버전)
+npx playwright-core install chromium  # 테스트용 브라우저 한 번 받기
 npm run dev      # http://localhost:5173
 npm test         # 빌드 후 모든 레벨/미션을 실제 Chromium 으로 풀어서 검증
 npm run test:en  # 영어 화면: 모든 레벨 + 화면에 한글이 남지 않았는지
 npm run test:zh  # 간체 중국어 화면: 위와 같은 검사 + undefined · data-* 원문이 새지 않았는지
 ```
 
-`npm test` 는 Playwright 브라우저가 필요합니다: `npx playwright-core install chromium`
-(이미 받아 둔 Chrome 이 있으면 `CHROME_PATH=/path/to/chrome npm test`).
+`npm test` 는 위에서 받은 Playwright 브라우저가 필요합니다 (Linux 에서 `npx playwright-core install --with-deps chromium` 은 시스템 라이브러리까지 설치).
+이미 받아 둔 Chrome 이 있으면 `CHROME_PATH=/path/to/chrome npm test`. 다른 엔진은 `BROWSER=firefox` 또는 `BROWSER=webkit`.
 
 ## 실제 Neovim 과 같은가?
 
@@ -110,6 +111,10 @@ npm run test:nvim   # nvim 이 PATH 에 있어야 함
 `goal` 은 `{ "text": ... }` 또는 `{ "cursor": [줄, 칸] }`, `solution` 은 `<Esc> <CR> <C-a>` 표기이고 키 수가 곧 par 입니다.
 
 `npm test` 가 그 답안으로 실제로 클리어되는지 확인해 줍니다. 자세한 단계 및 par 가이드는 [CONTRIBUTING.md](CONTRIBUTING.md)를 참고하세요. PR 환영합니다.
+
+## 기여하기
+
+처음 기여하는 분도 환영합니다. [`good first issue`](https://github.com/s3onghyun/nvim-edu/issues?q=is%3Aopen+label%3A%22good+first+issue%22) 에서 하나 골라 (고칠 파일 · 명령 · 완료 조건이 적혀 있음) 댓글로 신청하면 메인테이너가 할당해 드립니다. 포크에서 온 PR 도 CI 가 돌고 (읽기 전용, 비밀값 없음, 배포 안 함), 설정 · 테스트 · 레벨 규칙은 [CONTRIBUTING.md](CONTRIBUTING.md) 에 있습니다.
 
 ## 알려진 한계
 

@@ -53,14 +53,15 @@ npm run test:nvim   # 需要 PATH 里有 nvim
 ## 开发
 
 ```bash
-npm install
+npm ci                                # Node.js 22，和 CI 相同
+npx playwright-core install chromium  # 一次性下载测试用的浏览器
 npm run dev       # http://localhost:5173
 npm test          # 构建后在真正的 Chromium 里解完每个关卡和练习
 npm run test:en   # 英文界面：每个关卡，外加检查没有残留韩文
 npm run test:zh   # 简体中文界面：同上，外加检查没有 `undefined` 或原样的 data-* 文本
 ```
 
-`npm test` 需要一个 Playwright 浏览器：`npx playwright-core install chromium`。用 `BROWSER=firefox` 或 `BROWSER=webkit` 可以换其他引擎。
+`npm test` 需要上面下载的 Playwright 浏览器（在 Linux 上，`npx playwright-core install --with-deps chromium` 会连系统库一起安装）。用 `BROWSER=firefox` 或 `BROWSER=webkit` 可以换其他引擎。
 
 ## 项目结构
 
@@ -101,6 +102,10 @@ npm run test:zh   # 简体中文界面：同上，外加检查没有 `undefined`
 `goal` 是 `{ "text": ... }` 或 `{ "cursor": [line, col] }`；`solution` 使用 `<Esc> <CR> <C-a>` 记法，它的按键数就是标准键数。
 
 `npm test` 会在模拟器、真 Vim 和真 Neovim 里检查答案确实能通关。分步说明和标准键数准则见 [CONTRIBUTING.md](CONTRIBUTING.md)。欢迎 PR！
+
+## 参与贡献
+
+欢迎第一次参与的朋友。从 [`good first issue`](https://github.com/s3onghyun/nvim-edu/issues?q=is%3Aopen+label%3A%22good+first+issue%22) 里挑一个（每个都写明了要改的文件、命令和完成标准），留言认领，维护者会把它分配给你。来自 fork 的 PR 也会跑 CI（只读、没有密钥、不会部署）。环境搭建、测试和关卡规则见 [CONTRIBUTING.md](CONTRIBUTING.md)。
 
 ## 已知限制
 
