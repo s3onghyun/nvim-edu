@@ -97,7 +97,7 @@ Vim 레벨은 코드가 아니라 데이터 파일 **`src/levels/vim-levels.json
 | 검사 | 메시지 예 | 고칠 곳 |
 |------|------|------|
 | 스키마 (`tests/levels-schema.test.mjs`) | `레벨 my-level: cursor [5,0] 가 start 버퍼 밖입니다` | 해당 필드 |
-| 에뮬레이터 / 진짜 Vim 풀이 (`levels.e2e`, `real.e2e`) | `FAIL 레벨 my-level [에뮬레이터 풀이]` 다음에 `solution`, `기대 버퍼`/`실제 버퍼`, `기대 커서`/`실제 커서`, 모드 | `solution` 또는 `goal` |
+| 에뮬레이터 / 진짜 Vim · 진짜 Neovim 풀이 (`levels.e2e`, `real.e2e`, `nvim.e2e`) | `FAIL 레벨 my-level [에뮬레이터 풀이]` 다음에 `solution`, `기대 버퍼`/`실제 버퍼`, `기대 커서`/`실제 커서`, 모드 | `solution` 또는 `goal` |
 | par/별 | `par/별: 클리어 타수 2 ≠ par 3 (solution 키 수)` | 답안 끝의 남는 키 제거 (중간에 이미 클리어됨) |
 | 실제 Neovim 비교 (`nvim-diff`) | `DIFF 레벨:my-level [실제 Neovim 비교]` 다음에 기대(Neovim)/실제(사이트) 버퍼·커서 | 답안이 에뮬레이터에서만 동작함 → 다른 키로 |
 
@@ -181,7 +181,7 @@ Every message names the level `id` and the check that failed.
 | Check | Example | Fix |
 |------|------|------|
 | Schema (`tests/levels-schema.test.mjs`) | `레벨 my-level: cursor [5,0] 가 start 버퍼 밖입니다` (cursor outside `start`) | the named field |
-| Emulator / real Vim solve (`levels.e2e`, `real.e2e`) | `FAIL 레벨 my-level [에뮬레이터 풀이]` followed by `solution`, expected/actual buffer (`기대 버퍼`/`실제 버퍼`), cursor, and mode | `solution` or `goal` |
+| Emulator / real Vim / real Neovim solve (`levels.e2e`, `real.e2e`, `nvim.e2e`) | `FAIL 레벨 my-level [에뮬레이터 풀이]` followed by `solution`, expected/actual buffer (`기대 버퍼`/`실제 버퍼`), cursor, and mode | `solution` or `goal` |
 | Par / stars | `par/별: 클리어 타수 2 ≠ par 3` (cleared after 2 keys, par is 3) | drop trailing keys; the level clears early |
 | Real Neovim diff (`nvim-diff`) | `DIFF 레벨:my-level [실제 Neovim 비교]` followed by expected (Neovim) vs actual (site) buffer and cursor | the solution only works in the emulator; use other keys |
 
