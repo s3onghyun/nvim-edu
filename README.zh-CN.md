@@ -100,7 +100,7 @@ npm run test:zh   # 简体中文界面：同上，外加检查没有 `undefined`
 
 `goal` 是 `{ "text": ... }` 或 `{ "cursor": [line, col] }`；`solution` 使用 `<Esc> <CR> <C-a>` 记法，它的按键数就是标准键数。
 
-`npm test` 会在模拟器和真 Vim 里检查答案确实能通关。分步说明和标准键数准则见 [CONTRIBUTING.md](CONTRIBUTING.md)。欢迎 PR！
+`npm test` 会在模拟器、真 Vim 和真 Neovim 里检查答案确实能通关。分步说明和标准键数准则见 [CONTRIBUTING.md](CONTRIBUTING.md)。欢迎 PR！
 
 ## 已知限制
 

@@ -100,7 +100,7 @@ Add one object to `src/levels/vim-levels.json` (its English text to `src/levels.
 
 `goal` is `{ "text": ... }` or `{ "cursor": [line, col] }`; `solution` uses `<Esc> <CR> <C-a>` notation and its key count is the par.
 
-`npm test` checks that the solution really clears the level, in the emulator and in real Vim. See [CONTRIBUTING.md](CONTRIBUTING.md) for step-by-step instructions and par guidelines. PRs welcome!
+`npm test` checks that the solution really clears the level, in the emulator, in real Vim and in real Neovim. See [CONTRIBUTING.md](CONTRIBUTING.md) for step-by-step instructions and par guidelines. PRs welcome!
 
 ## Known limitations
 
